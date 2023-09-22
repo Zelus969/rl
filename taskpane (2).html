@@ -17,24 +17,26 @@
 </body>
 
 <script>
+
     Office.onReady((info) => {
         if (info.host === Office.HostType.Outlook) {
             document.getElementById("helloButton").onclick = sayHello;
-
-            // Add an event handler for item selection changes
-            Office.context.mailbox.addHandlerAsync(Office.EventType.ItemSelectionChanged, function (eventArgs) {
-                var selectedItems = eventArgs.getAddedEntities(Office.MailboxEnums.EntityType.Message);
-
-                if (selectedItems.length === 1) {
-                    // Only one item is selected, hide your task pane
-                    document.getElementById('taskPane').style.display = 'none';
-                } else if (selectedItems.length > 1) {
-                    // Multiple items are selected, show your task pane
-                    document.getElementById('taskPane').style.display = 'block';
-                }
-            });
         }
     });
+
+    // Add an event handler for item selection changes
+    Office.context.mailbox.addHandlerAsync(Office.EventType.ItemSelectionChanged, function (eventArgs) {
+        var selectedItems = eventArgs.getAddedEntities(Office.MailboxEnums.EntityType.Message);
+
+        if (selectedItems.length === 1) {
+            // Only one item is selected, hide your task pane
+            document.getElementById('taskPane').style.display = 'none';
+        } else if (selectedItems.length > 1) {
+            // Multiple items are selected, show your task pane
+            document.getElementById('taskPane').style.display = 'block';
+        }
+    });
+
 
     function sayHello() {
         var messageText = document.getElementById("messageText").value;
