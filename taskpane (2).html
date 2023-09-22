@@ -1,0 +1,45 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+
+<body>
+    <p>This add-in will insert the text 'Hello world2!!!' in a new message.</p>
+    <textarea id="messageText" style="resize:none; width: 100%; box-sizing: border-box;" rows="10"></textarea><br>
+    <button id="helloButton">Say hello</button>
+
+    <!-- The following image URL tracks diagnostic data for this sample add-in. Please remove the image tag if you reuse this sample in your own code project. -->
+    <img src="https://pnptelemetry.azurewebsites.net/pnp-officeaddins/samples/outlook-add-in-hello-world-run" />
+</body>
+
+<script>
+    Office.onReady((info) => {
+        if (info.host === Office.HostType.Outlook) {
+            document.getElementById("helloButton").onclick = sayHello;
+
+            // Add an event handler for item selection changes
+            Office.context.mailbox.addHandlerAsync(Office.EventType.ItemSelectionChanged, function (eventArgs) {
+                var selectedItems = eventArgs.getAddedEntities(Office.MailboxEnums.EntityType.Message);
+
+                if (selectedItems.length === 1) {
+                    // Only one item is selected, hide your task pane
+                    document.getElementById('taskPane').style.display = 'none';
+                } else if (selectedItems.length > 1) {
+                    // Multiple items are selected, show your task pane
+                    document.getElementById('taskPane').style.display = 'block';
+                }
+            });
+        }
+    });
+
+    function sayHello() {
+        var messageText = document.getElementById("messageText").value;
+        Office.context.mailbox.item.displayReplyForm("Reply", { htmlBody: messageText });
+    }
+</script>
+
+</html>
