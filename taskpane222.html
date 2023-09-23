@@ -6,30 +6,29 @@
 </head>
 <body>
     <div>
-        <h1>Selected Email Subject Lines</h1>
+        <h1>Selected Email Subject Lines!</h1>
         <ul id="subjectList"></ul>
     </div>
 
     <script>
         Office.onReady(function (info) {
             if (info.host === Office.MailboxEnums.HostType.Outlook) {
-                // Define a function to update the subject lines in the side pane
-                function updateSubjectLines() {
-                    Office.context.mailbox.getSelectedDataAsync(Office.MailboxEnums.ItemType.Message, { propertyId: 'subject' }, function (result) {
-                        if (result.status === Office.AsyncResultStatus.Succeeded) {
-                            var subjectLines = result.value.map(function (item) {
-                                return '<li>' + item.subject + '</li>';
-                            });
-                            document.getElementById('subjectList').innerHTML = subjectLines.join('');
-                        }
-                    });
+                // Define a function to handle the item selection change event
+                function handleItemSelectionChanged(eventArgs) {
+                    var selectedItems = eventArgs.getSnapshot();
+
+                    // Check the number of selected items
+                    if (selectedItems.length >= 2) {
+                        // Multiple emails are selected, show the task pane
+                        Office.addin.showTaskpane();
+                    } else {
+                        // Less than two emails are selected, close the task pane if it's open
+                        Office.addin.closeTaskpane();
+                    }
                 }
 
                 // Add an event handler for the item selection changed event
-                Office.context.mailbox.addHandlerAsync(Office.EventType.ItemSelectionChanged, updateSubjectLines);
-
-                // Initially update the subject lines if emails are already selected
-                updateSubjectLines();
+                Office.context.mailbox.addHandlerAsync(Office.EventType.ItemSelectionChanged, handleItemSelectionChanged);
             }
         });
     </script>
