@@ -1,33 +1,33 @@
-// This function is called when the Office JavaScript library is ready
-Office.onReady(function (info) {
-    if (info.host === Office.MailboxEnums.HostType.Outlook) {
-        // Add a handler for the custom button click event
-        document.getElementById("openMultipleEmailsButton").onclick = function () {
-            // Get selected items
-            Office.context.mailbox.getSelectedDataAsync(Office.MailboxEnums.ItemType.Message, function (result) {
-                if (result.status === Office.AsyncResultStatus.Succeeded) {
-                    var selectedEmails = result.value;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Outlook Add-in</title>
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+<body>
+    <button id="openMultipleEmailsButton">Open Task Pane for Multiple Emails</button>
 
-                    // Check if multiple emails are selected
-                    if (selectedEmails.length > 1) {
-                        // Show the task pane
-                        Office.addin.showTaskpane({
-                            taskpaneId: "yourTaskPaneId",
-                            title: "Multiple Emails Task Pane",
-                            url: "taskpane.html",
-                            width: 350,
-                            height: 400,
-                        });
-                    } else {
-                        // Handle the case when only one email is selected or no emails are selected
-                        // You can provide different behavior here if needed
-                        console.log("Please select multiple emails to open the side pane.");
-                    }
-                } else {
-                    // Handle the case when getting selected data fails
-                    console.error("Error getting selected data: " + result.error.message);
-                }
-            });
-        };
-    }
-});
+    <script type="text/javascript">
+        // Handle the click event for your custom button
+        Office.onReady(function (info) {
+            if (info.host === Office.MailboxEnums.HostType.Outlook) {
+                document.getElementById("openMultipleEmailsButton").onclick = function () {
+                    // Get the selected items
+                    Office.context.mailbox.getSelectedDataAsync(Office.MailboxEnums.ItemType.Message, function (result) {
+                        if (result.status === Office.AsyncResultStatus.Succeeded) {
+                            var selectedEmails = result.value;
+                            if (selectedEmails.length >= 2) {
+                                // Multiple emails are selected, show the task pane
+                                Office.addin.showTaskpane();
+                            } else {
+                                // Less than two emails are selected, close the task pane if it's open
+                                Office.addin.closeTaskpane();
+                            }
+                        }
+                    });
+                };
+            }
+        });
+    </script>
+</body>
+</html>
