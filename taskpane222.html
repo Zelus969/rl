@@ -5,27 +5,25 @@
     <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-    <button id="openMultipleEmailsButton">Open Task Pane for Multiple Emails</button>
-
     <script type="text/javascript">
-        // Handle the click event for your custom button
         Office.onReady(function (info) {
             if (info.host === Office.MailboxEnums.HostType.Outlook) {
-                document.getElementById("openMultipleEmailsButton").onclick = function () {
-                    // Get the selected items
-                    Office.context.mailbox.getSelectedDataAsync(Office.MailboxEnums.ItemType.Message, function (result) {
-                        if (result.status === Office.AsyncResultStatus.Succeeded) {
-                            var selectedEmails = result.value;
-                            if (selectedEmails.length >= 2) {
-                                // Multiple emails are selected, show the task pane
-                                Office.addin.showTaskpane();
-                            } else {
-                                // Less than two emails are selected, close the task pane if it's open
-                                Office.addin.closeTaskpane();
-                            }
-                        }
-                    });
-                };
+                // Define a function to handle the item selection change event
+                function handleItemSelectionChanged(eventArgs) {
+                    var selectedItems = eventArgs.getSnapshot();
+
+                    // Check the number of selected items
+                    if (selectedItems.length >= 2) {
+                        // Multiple emails are selected, show the task pane
+                        Office.addin.showTaskpane();
+                    } else {
+                        // Less than two emails are selected, close the task pane if it's open
+                        Office.addin.closeTaskpane();
+                    }
+                }
+
+                // Add an event handler for the item selection changed event
+                Office.context.mailbox.addHandlerAsync(Office.EventType.ItemSelectionChanged, handleItemSelectionChanged);
             }
         });
     </script>
