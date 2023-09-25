@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Add some space (margin) below the refresh button */
+        #refreshButton {
+            margin-bottom: 10px;
+        }
+
+        /* Style for the text area */
+        #notes {
+            width: 100%;
+            min-height: 50px; /* Set a minimum height */
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none; /* Disable manual resizing */
+            overflow: hidden; /* Hide the scrollbars initially */
+        }
+    </style>
+    <title>Date of Birth Selector</title>
+</head>
+<body>
+    <button id="refreshButton">Refresh</button>
+    <form>
+        <label for="dob">DOB:</label>
+        <input type="date" id="dob" name="dob">
+    </form>
+    <p id="ageLabel">Age:</p>
+    <textarea id="notes" placeholder="Enter your notes here..."></textarea>
+
+    <script>
+        // Function to automatically resize the textarea
+        function autoResize() {
+            const textarea = document.getElementById("notes");
+            textarea.style.height = "auto"; // Reset the height to auto
+            textarea.style.height = (textarea.scrollHeight) + "px"; // Set the height to fit the content
+        }
+
+        // Attach the autoResize function to the input's input event
+        const notesTextarea = document.getElementById("notes");
+        notesTextarea.addEventListener("input", autoResize);
+
+        // Function to calculate age based on DOB
+        function calculateAge() {
+            const dobInput = document.getElementById("dob");
+            const ageLabel = document.getElementById("ageLabel");
+
+            if (dobInput.value) {
+                const dobDate = new Date(dobInput.value);
+                const today = new Date();
+
+                let years = today.getFullYear() - dobDate.getFullYear();
+                let months = today.getMonth() - dobDate.getMonth();
+                let days = today.getDate() - dobDate.getDate();
+
+                if (days < 0) {
+                    months--; // Adjust months
+                    const tempDate = new Date(dobDate);
+                    tempDate.setMonth(tempDate.getMonth() + 1);
+                    days = (tempDate - today) / (1000 * 60 * 60 * 24); // Calculate days
+                }
+
+                if (months < 0) {
+                    years--; // Adjust years
+                    months += 12;
+                }
+
+                ageLabel.textContent = `Age: ${years} years, ${months} months, ${days} days`;
+            } else {
+                ageLabel.textContent = "Age:";
+            }
+        }
+
+        // Attach the calculateAge function to the input's change event
+        const dobInput = document.getElementById("dob");
+        dobInput.addEventListener("change", calculateAge);
+
+        // Function to refresh the page
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        // Attach the refreshPage function to the refresh button's click event
+        const refreshButton = document.getElementById("refreshButton");
+        refreshButton.addEventListener("click", refreshPage);
+    </script>
+</body>
+</html>
