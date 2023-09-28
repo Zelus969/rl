@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combined Page</title>
+    <style>
+        /* Add some space (margin) below the refresh button */
+        #refreshButton {
+            margin-bottom: 10px;
+        }
+
+        /* Style for the text area */
+        #notes {
+            width: 100%;
+            height: 10vh; /* Set height to 10% of the viewport height */
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none; /* Disable manual resizing */
+            overflow: hidden; /* Hide the scrollbars initially */
+        }
+
+	/* Add margin below the text area */
+	table {
+    	width: 100%;
+    	border-collapse: collapse;
+    	table-layout: fixed;
+    	margin-top: 10px; /* Add margin space below the text area */
+	}
+
+        /* Additional styles for the table and button */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Format columns 2, 4, and 6 in £ format */
+        input[name="income[]"],
+        input[name="income_per_payment[]"],
+        input[name="income_difference[]"],
+        input[name="description[]"],
+        select[name="frequency[]"],
+        select[name="compare_to[]"] {
+            text-align: center;
+            width: 100%; /* Make input fields 100% width of their parent cell */
+        }
+
+        /* Wrap text in header columns */
+        th {
+            white-space: normal;
+        }
+
+        /* Make the border white for inputs in column 4 and 6 */
+        td:nth-child(4) input,
+        td:nth-child(6) input {
+            border: 1px solid white;
+            pointer-events: none;
+        }
+
+        /* Apply background color to cells in column 4 and 6 */
+        td:nth-child(4),
+        td:nth-child(6) {
+            background-color: #f0f0f0;
+        }
+
+        /* Apply border to inputs in column 4 and 6 */
+        td:nth-child(4) input,
+        td:nth-child(6) input {
+            border: 1px solid #f0f0f0;
+            background-color: #f0f0f0;
+            pointer-events: none;
+        }
+
+        /* Remove borders for inputs in column 1 and 2 */
+        td:nth-child(1) input,
+        td:nth-child(2) input {
+            border: 1px solid white;
+        }
+
+        /* Add margin to the button to create space between the table and the button */
+        #addRowButton {
+            margin-top: 10px; /* Adjust the value to control the amount of space */
+        }
+    </style>
+</head>
+<body>
+    <button id="refreshButton">Refresh</button>
+    <form>
+        <label for="dob" style="margin-top: 10px;">DOB:</label>
+	<input type="date" id="dob" name="dob" style="margin-top: 10px;">
+    </form>
+    <p id="ageLabel">Age:</p>
+    <textarea id="notes" placeholder="Enter your notes here..."></textarea>
+
+    <!-- Table from the first code snippet -->
+    <table>
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th>Income</th>
+                <th>Freq.</th>
+                <th>£</th>
+                <th>Vs.</th>
+                <th>Diff.</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Row 1 -->
+            <tr>
+                <td><input type="text" name="description[]" /></td>
+                <td><input type="text" name="income[]" class="income-input" data-row-index="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" /></td>
+                <td>
+                    <select name="frequency[]">
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="bi-annually">Bi-annually</option>
+                        <option value="annually">Annually</option>
+                    </select>
+                </td>
+                <td><input type="text" name="income_per_payment[]" readonly /></td>
+                <td>
+                    <select name="compare_to[]">
+                        <option value="1" selected>Row 1</option>
+                        <option value="2">Row 2</option>
+                        <option value="3">Row 3</option>
+                        <!-- Add options for all rows -->
+                    </select>
+                </td>
+                <td><input type="text" name="income_difference[]" readonly /></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Add a button to add a new row -->
+    <button id="addRowButton">Add Row</button>
+
+    <script>
+	// Function to automatically resize the textarea
+        function autoResize() {
+            const textarea = document.getElementById("notes");
+            textarea.style.height = "auto"; // Reset the height to auto
+            textarea.style.height = (textarea.scrollHeight) + "px"; // Set the height to fit the content
+        }
+
+        // Attach the autoResize function to the input's input event
+        const notesTextarea = document.getElementById("notes");
+        notesTextarea.addEventListener("input", autoResize);
+
+        // Function to calculate age based on DOB
+        function calculateAge() {
+            const dobInput = document.getElementById("dob");
+            const ageLabel = document.getElementById("ageLabel");
+
+            if (dobInput.value) {
+                const dobDate = new Date(dobInput.value);
+                const today = new Date();
+
+                let years = today.getFullYear() - dobDate.getFullYear();
+                let months = today.getMonth() - dobDate.getMonth();
+                let days = today.getDate() - dobDate.getDate();
+
+                if (days < 0) {
+                    months--; // Adjust months
+                    const tempDate = new Date(dobDate);
+                    tempDate.setMonth(tempDate.getMonth() + 1);
+                    days = (tempDate - today) / (1000 * 60 * 60 * 24); // Calculate days
+                }
+
+                if (months < 0) {
+                    years--; // Adjust years
+                    months += 12;
+                }
+
+                ageLabel.textContent = `Age: ${years} years, ${months} months, ${days} days`;
+            } else {
+                ageLabel.textContent = "Age:";
+            }
+        }
+
+        // Attach the calculateAge function to the input's change event
+        const dobInput = document.getElementById("dob");
+        dobInput.addEventListener("change", calculateAge);
+
+        // Function to refresh the page
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        // Attach the refreshPage function to the refresh button's click event
+        const refreshButton = document.getElementById("refreshButton");
+        refreshButton.addEventListener("click", refreshPage);
+
+	// JavaScript code to calculate income per payment and income difference
+        const tableBody = document.querySelector('tbody');
+
+        function calculateIncomeDifference() {
+            const incomeInputs = tableBody.querySelectorAll('.income-input');
+            
+            incomeInputs.forEach(input => {
+                const rowIndex = input.closest('tr').rowIndex - 1; // Adjust for 0-based index
+                const row = tableBody.rows[rowIndex];
+                const incomeInput = row.querySelector('[name="income[]"]');
+                const incomeDifferenceInput = row.querySelector('[name="income_difference[]"]');
+
+                const income = parseFloat(incomeInput.value);
+                const frequencySelect = row.querySelector('[name="frequency[]"]');
+                const frequency = frequencySelect.value;
+
+                // Calculate income per payment
+                let incomePerPayment = 0;
+                if (frequency === 'monthly') {
+                    incomePerPayment = income / 12;
+                } else if (frequency === 'quarterly') {
+                    incomePerPayment = income / 4;
+                } else if (frequency === 'bi-annually') {
+                    incomePerPayment = income / 2;
+                } else if (frequency === 'annually') {
+                    incomePerPayment = income;
+                }
+
+                incomePerPaymentInput = row.querySelector('[name="income_per_payment[]"]');
+                incomePerPaymentInput.value = isNaN(incomePerPayment) ? '' : `£${incomePerPayment.toFixed(2)}`;
+
+                // Calculate income difference
+                const compareToSelect = row.querySelector('[name="compare_to[]"]');
+                const compareTo = parseInt(compareToSelect.value);
+
+                if (!isNaN(compareTo) && compareTo !== rowIndex + 1) {
+                    const compareRow = tableBody.rows[compareTo - 1]; // Adjust for 0-based index
+                    const compareIncomePerPayment = parseFloat(compareRow.querySelector('[name="income_per_payment[]"]').value.replace("£", ""));
+                    const incomeDifference = incomePerPayment - compareIncomePerPayment;
+                    incomeDifferenceInput.value = isNaN(incomeDifference) ? '' : `£${incomeDifference.toFixed(2)}`;
+                } else {
+                    incomeDifferenceInput.value = '';
+                }
+            });
+        }
+
+        // Function to add a new row to the table
+        function addNewRow() {
+            const newRow = tableBody.insertRow();
+            const rowIndex = tableBody.rows.length - 1; // Adjust for 0-based index
+            newRow.innerHTML = `
+                <td><input type="text" name="description[]" /></td>
+                <td><input type="text" name="income[]" class="income-input" data-row-index="${rowIndex}" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" /></td>
+                <td>
+                    <select name="frequency[]">
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="bi-annually">Bi-annually</option>
+                        <option value="annually">Annually</option>
+                    </select>
+                </td>
+                <td><input type="text" name="income_per_payment[]" readonly /></td>
+                <td>
+                    <select name="compare_to[]">
+                        ${Array.from({ length: tableBody.rows.length }, (_, i) => `<option value="${i + 1}">Row ${i + 1}</option>`).join('')}
+                    </select>
+                </td>
+                <td><input type="text" name="income_difference[]" readonly /></td>
+            `;
+
+            // Attach event listener to the new income input field
+            const incomeInput = newRow.querySelector('[name="income[]"]');
+            incomeInput.addEventListener('input', calculateIncomeDifference);
+
+            // Update "Vs." dropdown options for all rows
+            updateCompareToOptions();
+        }
+
+        // Function to dynamically update "Vs." dropdown options for all rows
+        function updateCompareToOptions() {
+            const compareToSelects = document.querySelectorAll('[name="compare_to[]"]');
+            compareToSelects.forEach(select => {
+                select.innerHTML = Array.from({ length: compareToSelects.length }, (_, i) => `<option value="${i + 1}">Row ${i + 1}</option>`).join('');
+            });
+        }
+
+        // Attach event listener to the "Add Row" button
+        const addRowButton = document.getElementById('addRowButton');
+        addRowButton.addEventListener('click', addNewRow);
+
+        // Attach event listeners to all input fields in the table
+        tableBody.addEventListener('input', calculateIncomeDifference);
+
+        // Initialize "Vs." dropdown options
+        updateCompareToOptions();
+    </script>
+</body>
+</html>
+
