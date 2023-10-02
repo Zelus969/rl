@@ -124,6 +124,15 @@
         td:nth-child(2) input {
             border: 1px solid white;
         }
+
+	/* Add this CSS to your existing styles */
+	.textarea-description {
+    	width: 100%;
+    	box-sizing: border-box;
+    	overflow-y: hidden; /* Hide the vertical scrollbar */
+	resize: none;
+	}
+
     </style>
 </head>
 <body>
@@ -169,7 +178,7 @@
         <p>∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should <mark><span id="pensionWiseInfo"></span> guidance</mark> from PensionWise or I can refer you to a regulated Financial Adviser.
         <p>∎ Thank you for your patience <mark><span id="nameOutput4">(name)</span></mark>.
     </div>
-	<br><textarea id="notes" placeholder="Enter your notes here..."></textarea>
+	<br><textarea id="notes" placeholder="Enter your notes here..." oninput="resizeTextarea(this)"></textarea>
 	<button type="button" onclick="clearWebAddress()">Clear</button>
 	<input type="text" id="webAddress" name="webAddress" placeholder="Enter 'Quote Results' URL">
 	<button type="button" onclick="openWebAddress()">Open</button>
@@ -189,7 +198,7 @@
         <tbody>
             <!-- Row 1 -->
             <tr>
-                <td><input type="text" name="description[]" /></td>
+                <td><textarea name="description[]" class="textarea-description" rows="1"></textarea></td>
                 <td><input type="text" name="income[]" class="income-input" data-row-index="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" /></td>
                 <td>
                     <select name="frequency[]">
@@ -220,6 +229,19 @@
     <br><id="ageLabel">Age: <span id="ageValue"></span>
 
     <script>
+	function resizeTextarea(textarea) {
+    		textarea.style.height = 'auto'; // Reset the height to auto to calculate the new height
+    		textarea.style.height = textarea.scrollHeight + 'px'; // Set the new height based on content
+	}
+
+	// Attach the resizeTextarea function to all textarea elements with the name "description[]"
+        const descriptionTextareas = document.querySelectorAll('textarea[name="description[]"]');
+        descriptionTextareas.forEach(textarea => {
+            textarea.addEventListener('input', function () {
+                resizeTextarea(this);
+            });
+        });
+
         function toggleCollapsible(id) {
             var content = document.getElementById(id);
             if (content.style.display === 'block') {
@@ -418,7 +440,7 @@
             const newRow = tableBody.insertRow();
             const rowIndex = tableBody.rows.length - 1; // Adjust for 0-based index
             newRow.innerHTML = `
-                <td><input type="text" name="description[]" /></td>
+                <td><textarea name="description[]" class="textarea-description" rows="1"></textarea></td>
                 <td><input type="text" name="income[]" class="income-input" data-row-index="${rowIndex}" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" /></td>
                 <td>
                     <select name="frequency[]">
@@ -440,6 +462,12 @@
             // Attach event listener to the new income input field
             const incomeInput = newRow.querySelector('[name="income[]"]');
             incomeInput.addEventListener('input', calculateIncomeDifference);
+		
+	    // Attach event listener to the description textarea for resizing
+            const descriptionTextarea = newRow.querySelector('.textarea-description');
+    	    descriptionTextarea.addEventListener('input', function () {
+            	resizeTextarea(this);
+    	    });
 
             // Update "Vs." dropdown options for all rows
             updateCompareToOptions();
@@ -498,8 +526,6 @@
         setAdditionalInfo();
         setPensionWiseInfo();
 	calculateAge();
-
-
        
     </script>
 </body>
