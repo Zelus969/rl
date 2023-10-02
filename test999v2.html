@@ -170,7 +170,10 @@
         <p>∎ Thank you for your patience <mark><span id="nameOutput4">(name)</span></mark>.
     </div>
 	<br><textarea id="notes" placeholder="Enter your notes here..."></textarea>
-	
+	<input type="text" id="webAddress" name="webAddress" placeholder="https://example.com">
+        <button type="button" onclick="clearWebAddress()">Clear</button>
+	<button type="button" onclick="openWebAddress()">Open</button>
+
 	<table>
         <thead>
             <tr>
@@ -447,6 +450,17 @@
             compareToSelects.forEach(select => {
                 select.innerHTML = Array.from({ length: compareToSelects.length }, (_, i) => `<option value="${i + 1}">Row ${i + 1}</option>`).join('');
             });
+        }
+
+	function openWebAddress() {
+            var webAddressInput = document.getElementById("webAddress").value;
+            if (webAddressInput) {
+                window.open(webAddressInput, "_blank");
+            }
+        }
+
+	function clearWebAddress() {
+            document.getElementById("webAddress").value = "";
         }
 
         // Attach event listener to the "Add Row" button
