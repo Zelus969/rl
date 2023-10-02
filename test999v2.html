@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Add styles for the frozen pane */
+        .frozen-pane {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Style for the collapsible button */
+        .collapsible {
+            background-color: #f1f1f1;
+            color: #333;
+            cursor: pointer;
+            padding: 12px;
+            width: 100%;
+            text-align: center;
+            border: none;
+            outline: none;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover effect for the collapsible button */
+        .collapsible:hover {
+            background-color: #ddd;
+        }
+
+        /* Style for the collapsible content */
+        .content {
+            display: none;
+            padding: 12px;
+            border-top: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        /* Style for the input container */
+        .input-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+	 /* Style for the text area */
+        #notes {
+            width: 100%;
+            height: 10vh; /* Set height to 10% of the viewport height */
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none; /* Disable manual resizing */
+            overflow: hidden; /* Hide the scrollbars initially */
+        }
+
+	/* Add margin below the text area */
+	table {
+    	width: 100%;
+    	border-collapse: collapse;
+    	table-layout: fixed;
+    	margin-top: 10px; /* Add margin space below the text area */
+	}
+
+	* Additional styles for the table and button */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Format columns 2, 4, and 6 in £ format */
+        input[name="income[]"],
+        input[name="income_per_payment[]"],
+        input[name="income_difference[]"],
+        input[name="description[]"],
+        select[name="frequency[]"],
+        select[name="compare_to[]"] {
+            text-align: center;
+            width: 100%; /* Make input fields 100% width of their parent cell */
+        }
+
+        /* Wrap text in header columns */
+        th {
+            white-space: normal;
+        }
+
+        /* Make the border white for inputs in column 4 and 6 */
+        td:nth-child(4) input,
+        td:nth-child(6) input {
+            border: 1px solid white;
+            pointer-events: none;
+        }
+
+        /* Apply background color to cells in column 4 and 6 */
+        td:nth-child(4),
+        td:nth-child(6) {
+            background-color: #f0f0f0;
+        }
+
+        /* Apply border to inputs in column 4 and 6 */
+        td:nth-child(4) input,
+        td:nth-child(6) input {
+            border: 1px solid #f0f0f0;
+            background-color: #f0f0f0;
+            pointer-events: none;
+        }
+
+        /* Remove borders for inputs in column 1 and 2 */
+        td:nth-child(1) input,
+        td:nth-child(2) input {
+            border: 1px solid white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Create a frozen pane div to hold the elements you want to keep fixed -->
+    <div class="frozen-pane">
+	<button id="refreshButton">Refresh</button>
+        <br><br><input type="text" id="nameInput" placeholder="Enter Name">	
+        <br><br><label for="dob">DOB:</label>
+	<input type="date" id="dob">
+    	<br><id="ageLabel">Age: <span id="ageValue"></span>
+        <br><br><label for="enquiryType">Enquiry Type:</label>
+        <select id="enquiryType">
+        	<option value="RL enquiry">RL enquiry</option>
+                <option value="Annuity UK">Annuity UK</option>
+                <option value="Annuity Line">Annuity Line</option>
+                <option value="The Annuity Service">The Annuity Service</option>
+                <option value="British Life">British Life</option>
+        </select>
+        <br><label for="pwCheckbox">PW:</label>
+        <input type="checkbox" id="pwCheckbox">
+        <br><label for="faCheckbox">FA:</label>
+        <input type="checkbox" id="faCheckbox">
+	<br><br><button class="collapsible" onclick="toggleCollapsible('box1')">Intro Script</button>
+    </div>
+
+    <!-- Add a collapsible container below the frozen pane -->
+    <div class="content" id="box1">
+        <p>∎ Good <span id="greeting"></span>. Please could I speak with <span id="namePlaceholder">(name)</span>?</p>
+        <p>∎ Hello <span id="nameOutput">(name)</span>, my name is Johnathon Davis, I'm an Annuity Consultant with Retirement Line and I'm calling you regarding <span id="enquiryText">(default)</span></p>
+        <p>∎ Is it convenient to talk for a few minutes?</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;"> Data Protection</p>
+        <p>∎ I have the details of your enquiry in front of me <span id="nameOutput2">(name)</span>.</p>
+        <p>∎ To protect your privacy, could I ask you a couple of Data Protection questions to validate I am speaking to the right person?</p>
+        <p>∎ Please could you confirm your data of birth and postcode?</p>
+        <p>∎ Thank you very much for that <span id="nameOutput3">(name)</span>.</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;"> Regulatory Information</p>
+        <p>∎ Before I explain how we can assist you, please may I make you aware of a few key points of regulatory information, which I will confirm in writing:</p>
+        <p>∎ Firstly, for your protection, all of our calls are recorded for training and compliance purposes.</p>
+        <p><span id="additionalInfo"></span></p>
+        <p>∎ Retirement Line Limited is authorised and regulated by the Financial Conduct Authority.</p>
+        <p>∎ We are an annuity broker and work on a non-advised basis, which means that I will not be giving you any advice, just factual information, both verbally and in writing, to help you make your own informed decision.</p>
+        <p>∎ From the options available to you through pension freedoms, we only arrange annuities.</p>
+        <p>∎ If we arrange an annuity for you, there is no fee to pay for our service as we will be paid a commission from the provider which is taken into account when calculating their annuity rate.</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;"> Guidance</p>
+        <p>∎ Can I please ask if you have taken guidance from PensionWise, the Government’s pension guidance service in the last 12 months?</p>
+        <p>∎ Have you taken advice and received a personal recommendation from a financial adviser?</p>
+        <p>∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings</p>
+        <p><span id="pensionWiseInfo"></span></p>
+        <p>∎ Thank you for your patience <span id="nameOutput4">(name)</span>.</p>
+    </div>
+	<br><textarea id="notes" placeholder="Enter your notes here..."></textarea>
+	
+	<table>
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th>Income</th>
+                <th>Freq.</th>
+                <th>£</th>
+                <th>Vs.</th>
+                <th>Diff.</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Row 1 -->
+            <tr>
+                <td><input type="text" name="description[]" /></td>
+                <td><input type="text" name="income[]" class="income-input" data-row-index="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" /></td>
+                <td>
+                    <select name="frequency[]">
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="bi-annually">Bi-annually</option>
+                        <option value="annually">Annually</option>
+                    </select>
+                </td>
+                <td><input type="text" name="income_per_payment[]" readonly /></td>
+                <td>
+                    <select name="compare_to[]">
+                        <option value="1" selected>Row 1</option>
+                        <option value="2">Row 2</option>
+                        <option value="3">Row 3</option>
+                        <!-- Add options for all rows -->
+                    </select>
+                </td>
+                <td><input type="text" name="income_difference[]" readonly /></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Add a button to add a new row -->
+    <br><button id="addRowButton">Add Row</button>
+
+    <script>
+        function toggleCollapsible(id) {
+            var content = document.getElementById(id);
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+                setGreeting();
+                setEnquiryText();
+                setAdditionalInfo();
+                setPensionWiseInfo();
+            }
+        }
+
+        function setGreeting() {
+            var greetingElement = document.getElementById('greeting');
+            var currentTime = new Date();
+            var hours = currentTime.getHours();
+
+            if (hours < 12) {
+                greetingElement.textContent = 'morning';
+            } else if (hours < 18) {
+                greetingElement.textContent = 'afternoon';
+            } else {
+                greetingElement.textContent = 'evening';
+            }
+
+            var nameInput = document.getElementById('nameInput');
+            var namePlaceholder = document.getElementById('namePlaceholder');
+            var nameOutput = document.getElementById('nameOutput');
+            var nameOutput2 = document.getElementById('nameOutput2');
+            var nameOutput3 = document.getElementById('nameOutput3');
+            var nameOutput4 = document.getElementById('nameOutput4');
+
+            // Check if the name input is empty or contains only whitespace characters
+            var nameValue = nameInput.value.trim();
+            if (nameValue === '') {
+                namePlaceholder.textContent = '(name)';
+                nameOutput.textContent = '(name)';
+                nameOutput2.textContent = '(name)';
+                nameOutput3.textContent = '(name)';
+                nameOutput4.textContent = '(name)';
+            } else {
+                namePlaceholder.textContent = nameValue;
+                nameOutput.textContent = nameValue;
+                nameOutput2.textContent = nameValue;
+                nameOutput3.textContent = nameValue;
+                nameOutput4.textContent = nameValue;
+            }
+        }
+
+        function setEnquiryText() {
+            var enquiryType = document.getElementById('enquiryType').value;
+            var enquiryText = document.getElementById('enquiryText');
+
+            switch (enquiryType) {
+                case 'RL enquiry':
+                    enquiryText.textContent = 'your enquiry made on our website.';
+                    break;
+                case 'Annuity UK':
+                    enquiryText.textContent = 'your enquiry made on the Annuity UK website.';
+                    break;
+                case 'Annuity Line':
+                    enquiryText.textContent = 'your enquiry made on the Annuity Line website.';
+                    break;
+                case 'The Annuity Service':
+                    enquiryText.textContent = 'your enquiry made on The Annuity Service website.';
+                    break;
+                case 'British Life':
+                    enquiryText.textContent = 'your enquiry made on the Annuity Search website.';
+                    break;
+                default:
+                    enquiryText.textContent = '(default)';
+                    break;
+            }
+        }
+
+        function setAdditionalInfo() {
+            var enquiryType = document.getElementById('enquiryType').value;
+            var additionalInfo = document.getElementById('additionalInfo');
+
+            switch (enquiryType) {
+                case 'Annuity UK':
+                    additionalInfo.textContent = '∎ The Annuity UK service is provided by Retirement Line.';
+                    break;
+                case 'Annuity Line':
+                    additionalInfo.textContent = '∎ The Annuity Line service is provided by Retirement Line.';
+                    break;
+                case 'The Annuity Service':
+                    additionalInfo.textContent = '∎ The Annuity Service is provided by Retirement Line.';
+                    break;
+                default:
+                    additionalInfo.textContent = ''; // Clear the content if not matching any of the specified types
+                    break;
+            }
+        }
+
+        function setPensionWiseInfo() {
+            var pensionWiseCheckbox = document.getElementById('pwCheckbox');
+            var pensionWiseInfo = document.getElementById('pensionWiseInfo');
+
+            if (pensionWiseCheckbox.checked) {
+                pensionWiseInfo.textContent = '∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should re-seek guidance from PensionWise or I can refer you to a regulated Financial Adviser.';
+            } else {
+                pensionWiseInfo.textContent = '∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should seek guidance from PensionWise or I can refer you to a regulated Financial Adviser.';
+            }
+        }
+
+	// Function to refresh the page
+        function refreshPage() {
+            window.location.reload();
+        }
+
+	function calculateAge() {
+    const dobInput = document.getElementById("dob");
+    const ageValue = document.getElementById("ageValue");
+
+    if (dobInput.value) {
+        const dobDate = new Date(dobInput.value);
+        const today = new Date();
+
+        let years = today.getFullYear() - dobDate.getFullYear();
+        let months = today.getMonth() - dobDate.getMonth();
+        let days = today.getDate() - dobDate.getDate();
+
+        if (days < 0) {
+            // Calculate the total days in the previous month
+            const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);
+            const daysInPreviousMonth = tempDate.getDate();
+
+            // Calculate days remaining in the previous month
+            days += daysInPreviousMonth;
+
+            months--; // Adjust months
+        }
+
+        if (months < 0) {
+            years--; // Adjust years
+            months += 12;
+        }
+
+        ageValue.textContent = `${years} years, ${months} months, ${days} days`;
+    } else {
+        ageValue.textContent = ''; // Clear age value if DOB is empty
+    }
+}
+
+
+	// JavaScript code to calculate income per payment and income difference
+        const tableBody = document.querySelector('tbody');
+
+        function calculateIncomeDifference() {
+            const incomeInputs = tableBody.querySelectorAll('.income-input');
+            
+            incomeInputs.forEach(input => {
+                const rowIndex = input.closest('tr').rowIndex - 1; // Adjust for 0-based index
+                const row = tableBody.rows[rowIndex];
+                const incomeInput = row.querySelector('[name="income[]"]');
+                const incomeDifferenceInput = row.querySelector('[name="income_difference[]"]');
+
+                const income = parseFloat(incomeInput.value);
+                const frequencySelect = row.querySelector('[name="frequency[]"]');
+                const frequency = frequencySelect.value;
+
+                // Calculate income per payment
+                let incomePerPayment = 0;
+                if (frequency === 'monthly') {
+                    incomePerPayment = income / 12;
+                } else if (frequency === 'quarterly') {
+                    incomePerPayment = income / 4;
+                } else if (frequency === 'bi-annually') {
+                    incomePerPayment = income / 2;
+                } else if (frequency === 'annually') {
+                    incomePerPayment = income;
+                }
+
+                incomePerPaymentInput = row.querySelector('[name="income_per_payment[]"]');
+                incomePerPaymentInput.value = isNaN(incomePerPayment) ? '' : `£${incomePerPayment.toFixed(2)}`;
+
+                // Calculate income difference
+                const compareToSelect = row.querySelector('[name="compare_to[]"]');
+                const compareTo = parseInt(compareToSelect.value);
+
+                if (!isNaN(compareTo) && compareTo !== rowIndex + 1) {
+                    const compareRow = tableBody.rows[compareTo - 1]; // Adjust for 0-based index
+                    const compareIncomePerPayment = parseFloat(compareRow.querySelector('[name="income_per_payment[]"]').value.replace("£", ""));
+                    const incomeDifference = incomePerPayment - compareIncomePerPayment;
+                    incomeDifferenceInput.value = isNaN(incomeDifference) ? '' : `£${incomeDifference.toFixed(2)}`;
+                } else {
+                    incomeDifferenceInput.value = '';
+                }
+            });
+        }
+
+        // Function to add a new row to the table
+        function addNewRow() {
+            const newRow = tableBody.insertRow();
+            const rowIndex = tableBody.rows.length - 1; // Adjust for 0-based index
+            newRow.innerHTML = `
+                <td><input type="text" name="description[]" /></td>
+                <td><input type="text" name="income[]" class="income-input" data-row-index="${rowIndex}" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" /></td>
+                <td>
+                    <select name="frequency[]">
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="bi-annually">Bi-annually</option>
+                        <option value="annually">Annually</option>
+                    </select>
+                </td>
+                <td><input type="text" name="income_per_payment[]" readonly /></td>
+                <td>
+                    <select name="compare_to[]">
+                        ${Array.from({ length: tableBody.rows.length }, (_, i) => `<option value="${i + 1}">Row ${i + 1}</option>`).join('')}
+                    </select>
+                </td>
+                <td><input type="text" name="income_difference[]" readonly /></td>
+            `;
+
+            // Attach event listener to the new income input field
+            const incomeInput = newRow.querySelector('[name="income[]"]');
+            incomeInput.addEventListener('input', calculateIncomeDifference);
+
+            // Update "Vs." dropdown options for all rows
+            updateCompareToOptions();
+        }
+
+        // Function to dynamically update "Vs." dropdown options for all rows
+        function updateCompareToOptions() {
+            const compareToSelects = document.querySelectorAll('[name="compare_to[]"]');
+            compareToSelects.forEach(select => {
+                select.innerHTML = Array.from({ length: compareToSelects.length }, (_, i) => `<option value="${i + 1}">Row ${i + 1}</option>`).join('');
+            });
+        }
+
+        // Attach event listener to the "Add Row" button
+        const addRowButton = document.getElementById('addRowButton');
+        addRowButton.addEventListener('click', addNewRow);
+
+        // Attach event listeners to all input fields in the table
+        tableBody.addEventListener('input', calculateIncomeDifference);
+
+        // Initialize "Vs." dropdown options
+        updateCompareToOptions();
+
+
+	
+	// Attach the refreshPage function to the refresh button's click event
+        const refreshButton = document.getElementById("refreshButton");
+        refreshButton.addEventListener("click", refreshPage);
+
+        var nameInput = document.getElementById('nameInput');
+        var enquiryType = document.getElementById('enquiryType');
+        var pwCheckbox = document.getElementById('pwCheckbox');
+
+        nameInput.addEventListener('input', setGreeting);
+        enquiryType.addEventListener('change', setEnquiryText);
+        enquiryType.addEventListener('change', setAdditionalInfo);
+        pwCheckbox.addEventListener('change', setPensionWiseInfo);
+
+	// Attach the calculateAge function to the input's change event
+        const dobInput = document.getElementById("dob");
+        dobInput.addEventListener("change", calculateAge);
+
+        // Initialize the enquiry text
+        setEnquiryText();
+        setAdditionalInfo();
+        setPensionWiseInfo();
+	calculateAge();
+
+
+       
+    </script>
+</body>
+</html>
