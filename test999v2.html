@@ -149,8 +149,7 @@
     <!-- Add a collapsible container below the frozen pane -->
     <div class="content" id="box1">
         <p>∎ Good <span id="greeting"></span>. Please could I speak with <span id="namePlaceholder">(name)</span>?</p>
-        <p>∎ Hello <span id="nameOutput">(name)</span>, my name is Johnathon Davis, I'm an Annuity Consultant with Retirement Line and I'm calling you regarding <span id="enquiryText">(default)</span></p>
-        <p>∎ Is it convenient to talk for a few minutes?</p>
+        <p>∎ Hello <span id="nameOutput">(name)</span>, my name is Johnathon Davis, I'm an Annuity Consultant with Retirement Line and I'm calling you regarding <mark><span id="enquiryText">(default)</span></mark>.
         <p style="text-align: center; font-weight: bold; text-decoration: underline;"> Data Protection</p>
         <p>∎ I have the details of your enquiry in front of me <span id="nameOutput2">(name)</span>.</p>
         <p>∎ To protect your privacy, could I ask you a couple of Data Protection questions to validate I am speaking to the right person?</p>
@@ -159,7 +158,7 @@
         <p style="text-align: center; font-weight: bold; text-decoration: underline;"> Regulatory Information</p>
         <p>∎ Before I explain how we can assist you, please may I make you aware of a few key points of regulatory information, which I will confirm in writing:</p>
         <p>∎ Firstly, for your protection, all of our calls are recorded for training and compliance purposes.</p>
-        <p><span id="additionalInfo"></span></p>
+        <p><mark><span id="additionalInfo"></span></mark>
         <p>∎ Retirement Line Limited is authorised and regulated by the Financial Conduct Authority.</p>
         <p>∎ We are an annuity broker and work on a non-advised basis, which means that I will not be giving you any advice, just factual information, both verbally and in writing, to help you make your own informed decision.</p>
         <p>∎ From the options available to you through pension freedoms, we only arrange annuities.</p>
@@ -167,8 +166,7 @@
         <p style="text-align: center; font-weight: bold; text-decoration: underline;"> Guidance</p>
         <p>∎ Can I please ask if you have taken guidance from PensionWise, the Government’s pension guidance service in the last 12 months?</p>
         <p>∎ Have you taken advice and received a personal recommendation from a financial adviser?</p>
-        <p>∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings</p>
-        <p><span id="pensionWiseInfo"></span></p>
+        <p>∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should <mark><span id="pensionWiseInfo"></span> guidance</mark> from PensionWise or I can refer you to a regulated Financial Adviser.
         <p>∎ Thank you for your patience <span id="nameOutput4">(name)</span>.</p>
     </div>
 	<br><textarea id="notes" placeholder="Enter your notes here..."></textarea>
@@ -274,19 +272,19 @@
 
             switch (enquiryType) {
                 case 'RL enquiry':
-                    enquiryText.textContent = 'your enquiry made on our website.';
+                    enquiryText.textContent = 'your enquiry made on our website';
                     break;
                 case 'Annuity UK':
-                    enquiryText.textContent = 'your enquiry made on the Annuity UK website.';
+                    enquiryText.textContent = 'your enquiry made on the Annuity UK website';
                     break;
                 case 'Annuity Line':
-                    enquiryText.textContent = 'your enquiry made on the Annuity Line website.';
+                    enquiryText.textContent = 'your enquiry made on the Annuity Line website';
                     break;
                 case 'The Annuity Service':
-                    enquiryText.textContent = 'your enquiry made on The Annuity Service website.';
+                    enquiryText.textContent = 'your enquiry made on The Annuity Service website';
                     break;
                 case 'British Life':
-                    enquiryText.textContent = 'your enquiry made on the Annuity Search website.';
+                    enquiryText.textContent = 'your enquiry made on the Annuity Search website';
                     break;
                 default:
                     enquiryText.textContent = '(default)';
@@ -319,9 +317,9 @@
             var pensionWiseInfo = document.getElementById('pensionWiseInfo');
 
             if (pensionWiseCheckbox.checked) {
-                pensionWiseInfo.textContent = '∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should re-seek guidance from PensionWise or I can refer you to a regulated Financial Adviser.';
+                pensionWiseInfo.textContent = 're-seek';
             } else {
-                pensionWiseInfo.textContent = '∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should seek guidance from PensionWise or I can refer you to a regulated Financial Adviser.';
+                pensionWiseInfo.textContent = 'seek';
             }
         }
 
