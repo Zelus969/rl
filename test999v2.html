@@ -130,10 +130,7 @@
     <!-- Create a frozen pane div to hold the elements you want to keep fixed -->
     <div class="frozen-pane">
 	<button id="refreshButton">Refresh</button>
-        <br><br><input type="text" id="nameInput" placeholder="Enter Name">	
-        <br><br><label for="dob">DOB:</label>
-	<input type="date" id="dob">
-    	<br><id="ageLabel">Age: <span id="ageValue"></span>
+        <input type="text" id="nameInput" placeholder="Enter Name">
         <br><br><label for="enquiryType">Enquiry Type:</label>
         <select id="enquiryType">
         	<option value="RL enquiry">RL enquiry</option>
@@ -216,6 +213,9 @@
 
     <!-- Add a button to add a new row -->
     <br><button id="addRowButton">Add Row</button>
+    <br><br><label for="dob">DOB:</label>
+    <input type="date" id="dob">
+    <br><id="ageLabel">Age: <span id="ageValue"></span>
 
     <script>
         function toggleCollapsible(id) {
