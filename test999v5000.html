@@ -124,6 +124,7 @@
 	}
 
 	/* Apply background color to cells in column 6 for the second table */
+	#secondTable td:nth-child(3),
 	#secondTable td:nth-child(5) {
     	background-color: #f0f0f0;
 	}
@@ -137,7 +138,8 @@
         }
 
         /* Apply border to inputs in column 4 and 6 */
-        #secondTable td:nth-child(5) input {
+        #secondTable td:nth-child(3) input,
+	#secondTable td:nth-child(5) input {
             border: 1px solid #f0f0f0;
             background-color: #f0f0f0;
             pointer-events: none;
@@ -323,11 +325,11 @@
                         <option value="3%">3%</option>
                         <option value="5%">5%</option>
                     </select>
+	            <br>
+		    <input type="text" name="income_term[]" readonly />
                 </td>
                 <td><input type="text" name="gma[]" class="income-input" data-row-index="0" oninput="calculateGrowth();">
                 <td>
-		    <input type="text" name="income_term[]" readonly />
-		    <br>
 		    <input type="text" name="gma_growth[]" readonly />
 		    <br>
 		    <input type="text" name="22income_per_payment[]" readonly />
@@ -747,11 +749,11 @@
                         <option value="3%">3%</option>
                         <option value="5%">5%</option>
                     </select>
+		<br>
+		    <input type="text" name="income_term[]" readonly />
         </td>
         <td><input type="text" name="gma[]" class="income-input" data-row-index="${rowIndex}" oninput="calculateGrowth();" /></td>
         <td>	    
-		    <input type="text" name="income_term[]" readonly />
-		    <br>
 		    <input type="text" name="gma_growth[]" readonly />
 		    <br>
 		    <input type="text" name="22income_per_payment[]" readonly />
@@ -807,14 +809,14 @@ function calculateGrowth() {
         const growth = (incomeInput * termSelect + gmaInput) - parseFloat(netValueInput.value) || 0;
 	
 	const wow = (incomeInput * termSelect);
-	incomeTerm.value = isNaN(wow) ? '' : `£${wow.toFixed(2)} Income`;
+	incomeTerm.value = isNaN(wow) ? '' : `£${wow.toFixed(2)}`;
 
         // Set the value of the gma_growth input for the current row
-        gmaGrowth.value = isNaN(growth) ? '' : `£${growth.toFixed(2)} Growth`;
+        gmaGrowth.value = isNaN(growth) ? '' : `£${growth.toFixed(2)}`;
 	
 	// Calculate the percentage
         const percentage = ((growth / netValueInput.value) * 100).toFixed(2); // Calculate the percentage with 2 decimal places
-        gmaPer.value = isNaN(percentage) ? '' : `${percentage}% Incr.`;
+        gmaPer.value = isNaN(percentage) ? '' : `${percentage}%`;
 
 
     });
