@@ -93,7 +93,8 @@
 	select[name="term[]"],
 	select[name="escalation[]"],
 	input[name="gma[]"],
-	input[name="gma_growth[]"] {
+	input[name="gma_growth[]"],
+ 	input[name="income_term[]"] {
             text-align: center;
             width: 100%; /* Make input fields 100% width of their parent cell */
         }
@@ -305,7 +306,7 @@
                     </select>
                 </td>
                 <td>
-		    <select name="escalation[]">
+		    <select name="escalation[]" disabled>
                         <option value="Level">Level</option>
                         <option value="3%">3%</option>
                         <option value="5%">5%</option>
@@ -313,6 +314,8 @@
 		</td>
                 <td><input type="text" name="gma[]" class="income-input" data-row-index="0" oninput="calculateGrowth();">
                 <td>
+		    <input type="text" name="income_term[]" readonly />
+		    <br>
 		    <input type="text" name="gma_growth[]" readonly />
 		    <br>
 		    <input type="text" name="22income_per_payment[]" readonly />
@@ -727,7 +730,7 @@
             </select>
         </td>
         <td>
-            <select name="escalation[]">
+            <select name="escalation[]" disabled>
                 <option value="Level">Level</option>
                 <option value="3%">3%</option>
                 <option value="5%">5%</option>
@@ -735,7 +738,9 @@
             </select>
         </td>
         <td><input type="text" name="gma[]" class="income-input" data-row-index="${rowIndex}" oninput="calculateGrowth();" /></td>
-        <td>
+        <td>	    
+		    <input type="text" name="income_term[]" readonly />
+		    <br>
 		    <input type="text" name="gma_growth[]" readonly />
 		    <br>
 		    <input type="text" name="22income_per_payment[]" readonly />
@@ -782,20 +787,23 @@ function calculateGrowth() {
         const termSelect = parseInt(row.querySelector('[name="term[]"]').value);
         const gmaInput = parseFloat(row.querySelector('[name="gma[]"]').value) || 0;
 
+	const incomeTerm = row.querySelector('[name="income_term[]"]');
         const gmaGrowth = row.querySelector('[name="gma_growth[]"]');
 
 	const gmaPer = row.querySelector('[name="22income_per_payment[]"]');
 
         // Calculate the growth for the current row
         const growth = (incomeInput * termSelect + gmaInput) - parseFloat(netValueInput.value) || 0;
+	
+	const wow = (incomeInput * termSelect);
+	incomeTerm.value = isNaN(wow) ? '' : `£${wow.toFixed(2)} Income`;
 
         // Set the value of the gma_growth input for the current row
-        gmaGrowth.value = isNaN(growth) ? '' : `£${growth.toFixed(2)}`;
-
-
-	// Calculate the percentage based on income divided by 30000
+        gmaGrowth.value = isNaN(growth) ? '' : `£${growth.toFixed(2)} Growth`;
+	
+	// Calculate the percentage
         const percentage = ((growth / netValueInput.value) * 100).toFixed(2); // Calculate the percentage with 2 decimal places
-        gmaPer.value = isNaN(percentage) ? '' : `${percentage}%`;
+        gmaPer.value = isNaN(percentage) ? '' : `${percentage}% Incr.`;
 
 
     });
