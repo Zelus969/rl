@@ -105,26 +105,39 @@
         }
 
         /* Make the border white for inputs in column 4 and 6 */
-        td:nth-child(4) input,
-        td:nth-child(6) input {
+        #firstTable td:nth-child(4) input,
+        #firstTable td:nth-child(6) input {
+            border: 1px solid white;
+            pointer-events: none;
+        }
+
+	/* Make the border white for inputs in column 4 and 6 */
+        #secondTable td:nth-child(5) input {
             border: 1px solid white;
             pointer-events: none;
         }
 
 	/* Apply background color to cells in column 4 and 6 for the first table */
 	#firstTable td:nth-child(4),
-	#firstTable td:nth-child(6) {
+	#firstTable td:nth-child(5) {
     	background-color: #f0f0f0;
 	}
 
 	/* Apply background color to cells in column 6 for the second table */
-	#secondTable td:nth-child(6) {
+	#secondTable td:nth-child(5) {
     	background-color: #f0f0f0;
 	}
 
         /* Apply border to inputs in column 4 and 6 */
-        td:nth-child(4) input,
-        td:nth-child(6) input {
+        #firstTable td:nth-child(4) input,
+        #firstTable td:nth-child(5) input {
+            border: 1px solid #f0f0f0;
+            background-color: #f0f0f0;
+            pointer-events: none;
+        }
+
+        /* Apply border to inputs in column 4 and 6 */
+        #secondTable td:nth-child(5) input {
             border: 1px solid #f0f0f0;
             background-color: #f0f0f0;
             pointer-events: none;
@@ -132,6 +145,7 @@
 
         /* Remove borders for inputs in column 1 and 2 */
         td:nth-child(2) input,
+	td:nth-child(4) input,
  	td:nth-child(5) input {
             border: 1px solid white;
         }
@@ -216,7 +230,6 @@
                 <th>Income</th>
                 <th>Freq.</th>
                 <th>£/%</th>
-                <th>Vs.</th>
                 <th>Diff.</th>
             </tr>
         </thead>
@@ -245,8 +258,9 @@
                         <option value="3">Row 3</option>
                         <!-- Add options for all rows -->
                     </select>
+		    <br>
+		    <input type="text" name="income_difference[]" readonly />
                 </td>
-                <td><input type="text" name="income_difference[]" readonly /></td>
             </tr>
         </tbody>
     </table>
@@ -266,7 +280,6 @@
                 <th>Note</th>
                 <th>Income</th>
                 <th>Term</th>
-                <th>Escalation</th>
                 <th>GMA</th>
                 <th>Growth</th>
             </tr>
@@ -304,14 +317,13 @@
                         <option value="24">24</option>
 			<option value="25">25</option>
                     </select>
-                </td>
-                <td>
+		    <br>
 		    <select name="escalation[]" disabled>
                         <option value="Level">Level</option>
                         <option value="3%">3%</option>
                         <option value="5%">5%</option>
                     </select>
-		</td>
+                </td>
                 <td><input type="text" name="gma[]" class="income-input" data-row-index="0" oninput="calculateGrowth();">
                 <td>
 		    <input type="text" name="income_term[]" readonly />
@@ -594,8 +606,9 @@
                     <select name="compare_to[]">
                         ${Array.from({ length: tableBody.rows.length }, (_, i) => `<option value="${i + 1}">Row ${i + 1}</option>`).join('')}
                     </select>
+		    <br>
+	            <input type="text" name="income_difference[]" readonly />
                 </td>
-                <td><input type="text" name="income_difference[]" readonly /></td>
             `;
 
             // Attach event listener to the new income input field
@@ -728,14 +741,12 @@
                         <option value="24">24</option>
 			<option value="25">25</option>
             </select>
-        </td>
-        <td>
-            <select name="escalation[]" disabled>
-                <option value="Level">Level</option>
-                <option value="3%">3%</option>
-                <option value="5%">5%</option>
-                <!-- Add more options as needed -->
-            </select>
+		<br>
+		    <select name="escalation[]" disabled>
+                        <option value="Level">Level</option>
+                        <option value="3%">3%</option>
+                        <option value="5%">5%</option>
+                    </select>
         </td>
         <td><input type="text" name="gma[]" class="income-input" data-row-index="${rowIndex}" oninput="calculateGrowth();" /></td>
         <td>	    
