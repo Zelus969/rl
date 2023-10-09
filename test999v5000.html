@@ -528,6 +528,23 @@
     }
 }
 
+	
+	function formatCurrencyWithCommas(value) {
+  if (isNaN(value)) return '';
+  
+  // Round to 2 decimal places and convert to string
+  const formattedValue = value.toFixed(2).toString();
+
+  // Split the string into parts before and after the decimal point
+  const [integerPart, decimalPart] = formattedValue.split('.');
+
+  // Add commas for thousands in the integer part
+  const integerWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // Combine the integer and decimal parts with the currency symbol '£'
+  return `£${integerWithCommas}.${decimalPart}`;
+}
+
 
 	// JavaScript code to calculate income per payment and income difference
         const tableBody = document.querySelector('tbody');
@@ -563,7 +580,7 @@
                 }
 
                 incomePerPaymentInput = row.querySelector('[name="income_per_payment[]"]');
-                incomePerPaymentInput.value = isNaN(incomePerPayment) ? '' : `£${incomePerPayment.toFixed(2)}`;
+                incomePerPaymentInput.value = formatCurrencyWithCommas(incomePerPayment);
 
                 // Calculate income difference
                 const compareToSelect = row.querySelector('[name="compare_to[]"]');
@@ -573,7 +590,7 @@
                     const compareRow = tableBody.rows[compareTo - 1]; // Adjust for 0-based index
                     const compareIncomePerPayment = parseFloat(compareRow.querySelector('[name="income_per_payment[]"]').value.replace("£", ""));
                     const incomeDifference = incomePerPayment - compareIncomePerPayment;
-                    incomeDifferenceInput.value = isNaN(incomeDifference) ? '' : `£${incomeDifference.toFixed(2)}`;
+                    incomeDifferenceInput.value = formatCurrencyWithCommas(incomeDifference);
                 } else {
                     incomeDifferenceInput.value = '';
                 }
@@ -809,10 +826,10 @@ function calculateGrowth() {
         const growth = (incomeInput * termSelect + gmaInput) - parseFloat(netValueInput.value) || 0;
 	
 	const wow = (incomeInput * termSelect);
-	incomeTerm.value = isNaN(wow) ? '' : `£${wow.toFixed(2)}`;
+	incomeTerm.value = formatCurrencyWithCommas(wow);
 
         // Set the value of the gma_growth input for the current row
-        gmaGrowth.value = isNaN(growth) ? '' : `£${growth.toFixed(2)}`;
+        gmaGrowth.value = formatCurrencyWithCommas(growth);
 	
 	// Calculate the percentage
         const percentage = ((growth / netValueInput.value) * 100).toFixed(2); // Calculate the percentage with 2 decimal places
