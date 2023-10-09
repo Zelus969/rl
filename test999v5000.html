@@ -187,7 +187,8 @@
         <input type="checkbox" id="pwCheckbox">
         <br><label for="faCheckbox">FA:</label>
         <input type="checkbox" id="faCheckbox">
-	<br><br><button class="collapsible" onclick="toggleCollapsible('box1')">Intro Script</button>
+	<br><textarea id="notes" placeholder="Enter notes here..." oninput="resizeTextarea(this)"></textarea>
+	<br><button class="collapsible" onclick="toggleCollapsible('box1')">Intro Script</button>
     </div>
 
     <!-- Add a collapsible container below the frozen pane -->
@@ -214,8 +215,7 @@
         <p>∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should <mark><span id="pensionWiseInfo"></span> guidance</mark> from PensionWise or I can refer you to a regulated Financial Adviser.
         <p>∎ Thank you for your patience <mark><span id="nameOutput4">(name)</span></mark>.
     </div>
-	<br><textarea id="notes" placeholder="Enter notes here..." oninput="resizeTextarea(this)"></textarea>
-	<button type="button" onclick="clearWebAddress()">Clear</button>
+	<br><button type="button" onclick="clearWebAddress()">Clear</button>
 	<input type="text" id="webAddress" name="webAddress" placeholder="Enter 'Quote Results' URL">
 	<button type="button" onclick="openWebAddress()">Open</button>
 	(Click 'Re-Quote')
