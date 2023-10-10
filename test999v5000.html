@@ -331,8 +331,6 @@
                 <td><input type="text" name="gma[]" class="income-input" data-row-index="0" oninput="calculateGrowth();">
                 <td>
 		    <input type="text" name="gma_growth[]" readonly />
-		    <br>
-		    <input type="text" name="22income_per_payment[]" readonly />
 		</td>
             </tr>
         </tbody>
@@ -772,8 +770,6 @@
         <td><input type="text" name="gma[]" class="income-input" data-row-index="${rowIndex}" oninput="calculateGrowth();" /></td>
         <td>	    
 		    <input type="text" name="gma_growth[]" readonly />
-		    <br>
-		    <input type="text" name="22income_per_payment[]" readonly />
 		</td>
     `;
 
@@ -820,8 +816,6 @@ function calculateGrowth() {
 	const incomeTerm = row.querySelector('[name="income_term[]"]');
         const gmaGrowth = row.querySelector('[name="gma_growth[]"]');
 
-	const gmaPer = row.querySelector('[name="22income_per_payment[]"]');
-
         // Calculate the growth for the current row
         const growth = (incomeInput * termSelect + gmaInput) - parseFloat(netValueInput.value) || 0;
 	
@@ -831,10 +825,6 @@ function calculateGrowth() {
         // Set the value of the gma_growth input for the current row
         gmaGrowth.value = formatCurrencyWithCommas(growth);
 	
-	// Calculate the percentage
-        const percentage = ((growth / netValueInput.value) * 100).toFixed(2); // Calculate the percentage with 2 decimal places
-        gmaPer.value = isNaN(percentage) ? '' : `${percentage}%`;
-
 
     });
 }
