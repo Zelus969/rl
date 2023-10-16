@@ -721,12 +721,21 @@
         }
 
         // Function to dynamically update "Vs." dropdown options for all rows
-        function updateCompareToOptions() {
-            const compareToSelects = document.querySelectorAll('[name="compare_to[]"]');
-            compareToSelects.forEach(select => {
-                select.innerHTML = Array.from({ length: compareToSelects.length }, (_, i) => `<option value="${i + 1}">Row ${i + 1}</option>`).join('');
-            });
-        }
+function updateCompareToOptions() {
+    const compareToSelects = document.querySelectorAll('[name="compare_to[]"]');
+    
+    compareToSelects.forEach((select, currentIndex) => {
+        // Store the currently selected value
+        const selectedValue = select.value;
+        
+        // Update the options for this select element
+        select.innerHTML = Array.from({ length: compareToSelects.length }, (_, i) => {
+            const optionValue = i + 1;
+            const isSelected = optionValue === +selectedValue ? 'selected' : '';
+            return `<option value="${optionValue}" ${isSelected}>Row ${optionValue}</option>`;
+        }).join('');
+    });
+}
 
 	function openWebAddress() {
             var webAddressInput = document.getElementById("webAddress").value;
