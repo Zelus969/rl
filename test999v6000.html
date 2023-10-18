@@ -88,6 +88,7 @@
         input[name="income_difference[]"],
         input[name="description[]"],
         select[name="frequency[]"],
+	input[name="income_per_payment[]"],
         select[name="compare_to[]"],
 
 	select[name="term[]"],
@@ -336,14 +337,14 @@
 			<option value="25">25</option>
                     </select>
 		    <br>
-		    <select name="escalation[]" disabled>
+		    <select name="escalation[]">
                         <option value="Level">Level</option>
                         <option value="3%">3%</option>
                         <option value="5%">5%</option>
                     </select>
 	            <br>
 		    <input type="text" name="income_term[]" readonly />
-                </td>
+		</td>
                 <td><input type="text" name="gma[]" class="income-input" data-row-index="0" oninput="calculateGrowth();">
                 <td>
 		    <input type="text" name="gma_growth[]" readonly />
@@ -846,7 +847,7 @@ function updateCompareToOptions() {
 			<option value="25">25</option>
             </select>
 		<br>
-		    <select name="escalation[]" disabled>
+		    <select name="escalation[]">
                         <option value="Level">Level</option>
                         <option value="3%">3%</option>
                         <option value="5%">5%</option>
@@ -888,6 +889,8 @@ addRowButtonSecondTable.addEventListener('click', addNewRowToSecondTable);
 	// Attach event listeners to all input fields in the table
 tableBody2.addEventListener('input', calculateGrowth);
 
+
+
 function calculateGrowth() {
     const incomeInputs = tableBody2.querySelectorAll('.income-input');
     const netValueInput = document.getElementById("NetValue");
@@ -901,12 +904,24 @@ function calculateGrowth() {
         const gmaInput = parseFloat(row.querySelector('[name="gma[]"]').value) || 0;
 
 	const incomeTerm = row.querySelector('[name="income_term[]"]');
+	const escalationSelect = row.querySelector('[name="escalation[]"]');
         const gmaGrowth = row.querySelector('[name="gma_growth[]"]');
 
+	// Get the selected escalation value (level, 3%, or 5%)
+        const escalation = escalationSelect.value;
+
         // Calculate the growth for the current row
-        const growth = (incomeInput * termSelect + gmaInput) - parseFloat(netValueInput.value) || 0;
+	let wow;
+        if (escalation === "Level") {
+            wow = incomeInput * termSelect;
+        } else if (escalation === "3%") {
+            wow = incomeInput * (Math.pow(1.03, termSelect) - 1) / 0.03;
+        } else if (escalation === "5%") {
+            wow = incomeInput * (Math.pow(1.05, termSelect) - 1) / 0.05;
+        }
+
+        const growth = (wow + gmaInput) - parseFloat(netValueInput.value) || 0;
 	
-	const wow = (incomeInput * termSelect);
 	incomeTerm.value = formatCurrencyWithCommas(wow);
 
         // Set the value of the gma_growth input for the current row
@@ -916,9 +931,37 @@ function calculateGrowth() {
     });
 }
 
-
-
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
