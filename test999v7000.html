@@ -483,6 +483,7 @@
     <p style="text-align: center; font-weight: bold; text-decoration: underline;"> ESCALATION</p>
 
     <input type="text" id="income4" placeholder="Enter Income">
+    <br>
     <label for="escalation2">Escalation:</label>
     <input type="text" id="escalation2" name="escalation2">
     <br>
@@ -1247,10 +1248,10 @@ function updateJL() {
                     const cumulativeIncomeCell = row.insertCell(2);
                     
                     const incomeValue = income * Math.pow((1 + escalation / 100), year - 1);
-                    incomeCell.textContent = incomeValue.toFixed(2);
+                    incomeCell.textContent = formatCurrencyWithCommas(incomeValue);
 
                     cumulativeIncome += incomeValue;
-                    cumulativeIncomeCell.textContent = cumulativeIncome.toFixed(2);
+                    cumulativeIncomeCell.textContent = formatCurrencyWithCommas(cumulativeIncome);
 
                     // Highlight the row if cumulative income is greater than or equal to net value
                     if (!highlighted && cumulativeIncome >= netValue) {
