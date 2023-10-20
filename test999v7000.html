@@ -498,6 +498,7 @@
             <tr>
                 <th>Year</th>
                 <th>Income</th>
+		<th>Increase</th>
                 <th>Cumulative Income</th>
             </tr>
         </thead>
@@ -1207,9 +1208,6 @@ function updateJL() {
 
 
 
-
-
-
 // Add event listeners for the input fields and slider
         const incomeInput7 = document.getElementById("income4");
         const escalationInput = document.getElementById("escalation2");
@@ -1245,12 +1243,16 @@ function updateJL() {
                     yearCell.textContent = year;
 
                     const incomeCell = row.insertCell(1);
-                    const cumulativeIncomeCell = row.insertCell(2);
+		    const increaseCell = row.insertCell(2); // New column for increase
+                    const cumulativeIncomeCell = row.insertCell(3);
                     
                     const incomeValue = income * Math.pow((1 + escalation / 100), year - 1);
                     incomeCell.textContent = formatCurrencyWithCommas(incomeValue);
 
-                    cumulativeIncome += incomeValue;
+                    const increaseValue = year > 1 ? incomeValue - (income * Math.pow(1 + escalation / 100, year - 2)) : 0; // Calculate increase
+            	    increaseCell.textContent = formatCurrencyWithCommas(increaseValue);
+
+		    cumulativeIncome += incomeValue;
                     cumulativeIncomeCell.textContent = formatCurrencyWithCommas(cumulativeIncome);
 
                     // Highlight the row if cumulative income is greater than or equal to net value
@@ -1268,6 +1270,8 @@ function updateJL() {
 
         // Initial table update
         updateTable();
+
+
 
 
 
