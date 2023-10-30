@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-	 /* Style for the text area */
+	 /* Add styles for the frozen pane */
+        .frozen-pane {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+	/* Style for the text area */
         #notes {
             width: 100%;
             padding: 10px;
@@ -220,12 +230,8 @@
         <input type="checkbox" id="faCheckbox">
 	<br><input type="text" id="NetValue" placeholder="Enter Net Value" oninput="test999()">
 	<br><br><textarea id="notes" placeholder="Enter notes here..." oninput="resizeTextarea(this)"></textarea>
-    </div>
-
-
-
-	<div class="tab-content">
-        <div class="tab-buttons">
+    
+	        <div class="tab-buttons">
 	    <div class="tab-button" onclick="openTab('tab1', 0)">🕮</div>
             <div class="tab-button" onclick="openTab('tab2', 1)">QUOTES</div>
             <div class="tab-button" onclick="openTab('tab3', 2)">GP</div>
@@ -235,6 +241,9 @@
             <div class="tab-button" onclick="openTab('tab7', 6)">↗</div>
         </div>
 
+
+
+</div>
 
 	<div id="tab1" class="tab">
 		<p>∎ Good <span id="greeting"></span>. Please could I speak with <mark><span id="namePlaceholder">(name)</span></mark>?</p>
