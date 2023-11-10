@@ -223,6 +223,7 @@
                 <option value="Annuity Line">Annuity Line</option>
                 <option value="The Annuity Service">The Annuity Service</option>
                 <option value="British Life">British Life</option>
+		<option value="Tesco">Tesco</option>
         </select>
         <br><label for="pwCheckbox">PW:</label>
         <input type="checkbox" id="pwCheckbox">
@@ -239,6 +240,7 @@
             <div class="tab-button" onclick="openTab('tab5', 4)">DOB</div>
             <div class="tab-button" onclick="openTab('tab6', 5)">JL</div>
             <div class="tab-button" onclick="openTab('tab7', 6)">↗</div>
+	    <div class="tab-button" onclick="openTab('tab8', 7)">£</div>
         </div>
 
 
@@ -526,6 +528,18 @@
 
 
         </div>
+
+
+
+
+
+
+        <div id="tab8" class="tab">
+
+        </div>
+
+
+
     </div>
 	
 
@@ -655,6 +669,9 @@
                 case 'British Life':
                     enquiryText.textContent = 'your enquiry made on the Annuity Search website';
                     break;
+		case 'Tesco':
+                    enquiryText.textContent = 'your enquiry made through the Tesco Pension Scheme';
+                    break;
                 default:
                     enquiryText.textContent = '(default)';
                     break;
@@ -674,6 +691,9 @@
                     break;
                 case 'The Annuity Service':
                     additionalInfo.textContent = '∎ The Annuity Service is provided by Retirement Line.';
+                    break;
+	        case 'Tesco':
+                    additionalInfo.innerHTML = "∎ This may also be requested by Tesco's, who may wish to monitor a small number of calls for quality assurance purposes. <br><br>∎ Tesco have appointed Retirement Line to provide their annuity brokering service.";
                     break;
                 default:
                     additionalInfo.textContent = ''; // Clear the content if not matching any of the specified types
