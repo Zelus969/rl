@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+	 /* Add styles for the frozen pane */
+        .frozen-pane {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+	/* Style for the text area */
+        #notes {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none; /* Disable manual resizing */
+            overflow: hidden; /* Hide the scrollbars initially */
+        }
+
+	/* Add margin below the text area */
+	table {
+    	width: 100%;
+    	border-collapse: collapse;
+    	table-layout: fixed;
+    	margin-top: 10px; /* Add margin space below the text area */
+	}
+
+	* Additional styles for the table and button */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Format columns 2, 4, and 6 in £ format */
+        input[name="income[]"],
+        input[name="income_per_payment[]"],
+	input[name="22income_per_payment[]"],
+        input[name="income_difference[]"],
+        input[name="description[]"],
+        select[name="frequency[]"],
+	input[name="income_per_payment[]"],
+        select[name="compare_to[]"],
+
+	select[name="term[]"],
+	select[name="escalation[]"],
+	input[name="gma[]"],
+	input[name="gma_growth[]"],
+ 	input[name="income_term[]"] {
+            text-align: center;
+            width: 100%; /* Make input fields 100% width of their parent cell */
+        }
+
+        /* Wrap text in header columns */
+        th {
+            white-space: normal;
+        }
+
+        /* Make the border white for inputs in column 4 and 6 */
+        #firstTable td:nth-child(4) input,
+        #firstTable td:nth-child(6) input {
+            border: 1px solid white;
+            pointer-events: none;
+        }
+
+	/* Make the border white for inputs in column 4 and 6 */
+        #secondTable td:nth-child(5) input {
+            border: 1px solid white;
+            pointer-events: none;
+        }
+
+	/* Apply background color to cells in column 4 and 6 for the first table */
+	#firstTable td:nth-child(4),
+	#firstTable td:nth-child(5) {
+    	background-color: #f0f0f0;
+	}
+
+	/* Apply background color to cells in column 6 for the second table */
+	#secondTable td:nth-child(3),
+	#secondTable td:nth-child(5) {
+    	background-color: #f0f0f0;
+	}
+
+        /* Apply border to inputs in column 4 and 6 */
+        #firstTable td:nth-child(4) input,
+        #firstTable td:nth-child(5) input {
+            border: 1px solid #f0f0f0;
+            background-color: #f0f0f0;
+            pointer-events: none;
+        }
+
+        /* Apply border to inputs in column 4 and 6 */
+        #secondTable td:nth-child(3) input,
+	#secondTable td:nth-child(5) input {
+            border: 1px solid #f0f0f0;
+            background-color: #f0f0f0;
+            pointer-events: none;
+        }
+
+        /* Remove borders for inputs in column 1 and 2 */
+        td:nth-child(2) input,
+	td:nth-child(4) input,
+ 	td:nth-child(5) input {
+            border: 1px solid white;
+        }
+
+	/* Add this CSS to your existing styles */
+	.textarea-description {
+    	width: 100%;
+    	box-sizing: border-box;
+    	overflow-y: hidden; /* Hide the vertical scrollbar */
+	resize: none;
+	}
+
+	/* Apply some basic styling to the divider */
+	.divider {
+    	border: none;
+    	height: 2px; /* You can adjust the height as needed */
+    	background-color: #000; /* Change the background color to your preference */
+    	margin: 0; /* Remove any default margin */
+	}
+
+	/* Style to make the slider span the full width of the screen */
+        input[type="range"] {
+            width: 100%;
+        }
+
+	/* Remove borders for the input with id "guaranteedIncome" */
+        #guaranteedIncome,
+	#incomeReceived1,
+	#incomeToBePaid1,
+	#annuityPrice,
+	#amountProtected,
+	#incomeReceived2,
+	#lumpSum,
+	#jlIncome
+	 {
+            border: none;
+	    pointer-events: none;
+        }
+
+
+
+
+
+
+
+
+
+
+	#incomeTable {
+            display: none;
+        }
+
+        .highlight {
+            background-color: #ffff00; /* You can change this color as needed */
+        }
+
+        #incomeTable thead tr {
+            background-color: #f0f0f0;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+	        .tab-buttons {
+            display: flex;
+        }
+
+        .tab-button {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            background-color: #007bff; /* Change this to your desired active color */
+            color: #fff; /* Text color for the active button */
+        }
+
+
+            .tab-button:nth-child(3).active {
+                background-color: #70ad47; /* Change this to your desired color for the third active button */
+                color: black; /* Additional styles for the third active button if needed */
+            }
+
+            .tab-button:nth-child(4).active {
+                background-color: #ed7d31; /* Change this to your desired color for the third active button */
+                color: black; /* Additional styles for the third active button if needed */
+            }
+
+            .tab-button:nth-child(5).active {
+                background-color: #ffff00; /* Change this to your desired color for the third active button */
+                color: black;
+            }
+
+            .tab-button:nth-child(6).active {
+                background-color: #00b0f0; /* Change this to your desired color for the third active button */
+                /* Additional styles for the third active button if needed */
+            }
+
+
+        .tab {
+            display: none;
+        }
+
+        .outer-border {
+            border: 1px solid #000;
+        }
+
+
+
+
+    </style>
+</head>
+<body>
+    <!-- Create a frozen pane div to hold the elements you want to keep fixed -->
+    <div class="frozen-pane">
+
+
+
+
+
+
+        <button id="refreshButton">Refresh</button>
+        <input type="text" id="nameInput" placeholder="Enter Name">
+        <br><br><label for="enquiryType">Enquiry Type:</label>
+        <select id="enquiryType">
+            <option value="RL enquiry">RL enquiry</option>
+            <option value="Annuity UK">Annuity UK</option>
+            <option value="Annuity Line">Annuity Line</option>
+            <option value="The Annuity Service">The Annuity Service</option>
+            <option value="British Life">British Life</option>
+            <option value="Tesco">Tesco</option>
+        </select>
+        <br><label for="pwCheckbox">PW:</label>
+        <input type="checkbox" id="pwCheckbox">
+        <br><label for="faCheckbox">FA:</label>
+        <input type="checkbox" id="faCheckbox">
+        <br><input type="text" id="NetValue" placeholder="Enter Net Value" oninput="test999()">
+
+
+        <br><br><textarea id="notes" placeholder="Enter notes here..." oninput="resizeTextarea(this)"></textarea>
+
+        <div class="tab-buttons">
+            <div class="tab-button" onclick="openTab('tab1', 0)">1</div>
+            <div class="tab-button" onclick="openTab('tab2', 1)">2</div>
+            <div class="tab-button" onclick="openTab('tab3', 2)">LTA</div>
+            <div class="tab-button" onclick="openTab('tab4', 3)">FTA</div>
+            <div class="tab-button" onclick="openTab('tab5', 4)">4</div>
+            <div class="tab-button" onclick="openTab('tab6', 5)">5</div>
+            <div class="tab-button" onclick="openTab('tab7', 6)">VS.</div>
+            <div class="tab-button" onclick="openTab('tab8', 7)">£</div>
+            <div class="tab-button" onclick="openTab('tab9', 8)">MISC</div>
+            <!--<div class="tab-button" onclick="openTab('tab10', 7)">MAIL</div>-->
+        </div>
+
+
+
+    </div>
+
+    <div id="tab1" class="tab">
+        <p>∎ Good <span id="greeting"></span>. Please could I speak with <mark><span class="nameOutput">(name)</span></mark>?</p>
+        <p>∎ Hello <mark><span class="nameOutput">(name)</span></mark>, my name is Johnathon Davis, I'm an Annuity Consultant with Retirement Line and I'm calling you regarding <mark><span id="enquiryText">(default)</span></mark>.
+        <p>∎ Is it convenient to talk for a few minutes?</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Data Protection</p>
+        <p>∎ I have the details of your enquiry in front of me <mark><span class="nameOutput" ">(name)</span></mark>.
+        <p>∎ To protect your privacy, could I ask you a couple of Data Protection questions to validate I am speaking to the right person?</p>
+        <p>∎ Please could you confirm your data of birth and postcode?</p>
+        <p>∎ Thank you very much for that <mark><span class="nameOutput">(name)</span></mark>.
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Regulatory Information</p>
+        <p>∎ Before I explain how we can assist you, please may I make you aware of a few key points of regulatory information, which I will confirm in writing:</p>
+        <p>∎ Firstly, for your protection, all of our calls are recorded for training and compliance purposes.</p>
+        <p><mark><span id="additionalInfo"></span></mark>
+        <p>∎ Retirement Line Limited is authorised and regulated by the Financial Conduct Authority.</p>
+        <p>∎ We are an annuity broker and work on a non-advised basis, which means that I will not be giving you any advice, just factual information, both verbally and in writing, to help you make your own informed decision.</p>
+        <p>∎ From the options available to you through pension freedoms, we only arrange annuities.</p>
+        <p>∎ If we arrange an annuity for you, there is no fee to pay for our service as we will be paid a commission from the provider which is taken into account when calculating their annuity rate.</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Guidance</p>
+        <p><mark>∎ Can I please ask if you have taken guidance from PensionWise, the Government’s pension guidance service in the last 12 months?</mark>
+        <p>∎ Have you taken advice and received a personal recommendation from a financial adviser?</p>
+        <p>∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should <mark><span id="pensionWiseInfo"></span> guidance</mark> from PensionWise or I can refer you to a regulated Financial Adviser.
+        <p>
+            ∎ Thank you for your patience <mark><span class="nameOutput">(name)</span></mark>.
+            <div class="tab-button" onclick="openTab('tab2', 1)" style="border: 1px solid #000;">2</div>
+    </div>
+
+
+
+    <div id="tab2" class="tab">
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Prospect’s Objectives</p>
+        <p>∎ Can I ask what you are looking to achieve with your pension fund <mark><span class="nameOutput">(name)</span></mark>?</p>
+        <p>∎ As you’re interested in accessing your pension savings, then it is essential that you understand all your options under the pension freedoms, and these are:</p>
+        <table border='1' style='width:100%;'>
+            <tr>
+                <td style='width: 30%; text-align: left; background-color: #f0f0f0; font-weight: bold; white-space: normal;'>1) Lifetime Annuity</td>
+                <td style='width: 70%; text-align: left; white-space: normal;'><span style="color: red;">∎</span> A guaranteed income for the rest of your life, taking into account your health & lifestyle, dependent upon what the annuity provider will pay you</td>
+            </tr>
+            <tr>
+                <td style='width: 30%; text-align: left; background-color: #f0f0f0; font-weight: bold; white-space: normal;'>2) Fixed Term Annuity</td>
+                <td style='width: 70%; text-align: left; white-space: normal;'><span style="color: red;">∎</span> A fixed income of your choice or just your TFC for a temporary period, for example 5 years, then reconsider your options in the future</td>
+            </tr>
+            <tr>
+                <td style='width: 30%; text-align: left; background-color: #f0f0f0; font-weight: bold; white-space: normal;'>3) Drawdown</td>
+                <td style='width: 70%; text-align: left; white-space: normal;'><span style="color: red;">∎</span> A flexible income of your choice or just your TFC, where your future income is generally dependent on how well your investments perform</td>
+            </tr>
+            <tr>
+                <td style='width: 30%; text-align: left; background-color: #f0f0f0; font-weight: bold; white-space: normal;'>4) Cash</td>
+                <td style='width: 70%; text-align: left; white-space: normal;'><span style="color: red;">∎</span> Enabling you to take the whole fund in cash as a lump sum or several ad hoc payments. Each withdrawal being 25% tax-free, 75% taxed</td>
+            </tr>
+            <tr>
+                <td style='width: 30%; text-align: left; background-color: #f0f0f0; font-weight: bold; white-space: normal;'>Alternatively...</td>
+                <td style='width: 70%; text-align: left; white-space: normal;'><span style="color: red;">∎</span> You may be able to use a combination of these options</td>
+            </tr>
+        </table>
+        <p><span style="color: red;">∎</span> I appreciate that there is a lot to consider.</p>
+        <p><span style="color: red;">∎</span> To help you make an informed decision, more comprehensive descriptions of your options in retirement, including relevant risk warnings, are available in the quote summary document and pension income guide which I will send to you after this call.</p>
+        <p><mark>∎ Do you have any preference, for example an income for life with a lifetime annuity, or do you need a higher level of income in the shorter term with a fixed term annuity?</mark>
+        <p>∎ When are you looking to start taking your benefits?</p>
+        <p>∎ Thank you for this <mark><span class="nameOutput">(name)</span></mark>.</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">About Us</p>
+        <p><span style="color: green;">∎</span><span style="color: red;">∎</span> We are the UK's largest annuity broker, and we are proud that our customer-centric and knowledgeable annuity broking service has led to our being appointed to assist the retiring staff of firms like Virgin Money, Tesco and Lloyds Banking Group with their annuity and pension income needs. We also help customers of Wesleyan Assurance.</p>
+        <p><span style="color: red;">∎</span> We are annuity specialists and our objective is to shop around the open market to find you the highest annuity income and help you to decide which type of annuity is most suited to your needs and circumstances.</p>
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='white-space: normal;'>Lifetime Annuity</td>
+                <td style='white-space: normal;'>Fixed Term Annuity</td>
+            </tr>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> We have found the best way to do this is to ask you a few questions about your health and lifestyle to see if you qualify for an enhanced annuity which could significantly boost your income.
+                    <br><br><span style="color: red;">∎</span> This information will then be sent to the annuity providers on our panel who will provide their highest terms. Do you consent for us to collect and share this data?
+
+                    <table border='1' style='width:100%;'>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: center; white-space: normal;'>
+                                <strong><u>IF NO</u></strong>
+                            </td>
+                        </tr>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: left; white-space: normal;'>
+                                <span style="color: red;">∎</span> Just to confirm that providing this information could be very much in your best interests since the possible uplift in income could be as high as 75% or even more for people with very serious issues.
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> We usually find the best way to do this is to ask you a few questions about your health and lifestyle to see if you qualify for an enhanced annuity which could significantly boost your income.
+                    <br><br><span style="color: red;">∎</span> This information will then be sent to the annuity providers on our panel who will provide their highest terms.
+                    <br><br> ∎ However, as you’re only interested in fixed term annuities there is no requirement to take any health or lifestyle information.
+                    <br><br> ∎ Would you say you’re in good health, as you may qualify for an enhanced annuity?
+                    <br><br> ∎ Are you happy to proceed with FTAs?
+                </td>
+            </tr>
+        </table>
+
+        <p>∎ Are you ok with everything I have just explained, and happy to continue <mark><span class="nameOutput">(name)</span></mark>?</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Data Gathering</p>
+        <p>∎ Who are your pension providers?</p>
+        <p>∎ Have you had any quotes from them or any other quotes?</p>
+        <p>∎ What type of pension(s) do you currently hold?</p>
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='white-space: normal;'>Personal Pension</td>
+                <td style='white-space: normal;'>Occupational Pension</td>
+            </tr>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ Did you start this pension prior to July of 1988?
+
+                    <table border='1' style='width:100%;'>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: center; white-space: normal;'>
+                                <strong><u>IF YES</u></strong>
+                            </td>
+                        </tr>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: left; white-space: normal;'>
+                                ∎ Your pension could have safeguarded benefits, such as Guaranteed Annuity Rates, in which case advice may be needed. There is also the possibility of penalties being incurred on transfer.
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ We only deal with Money Purchase, or Defined Contribution pensions; we don’t deal with Final Salary or Defined Benefit schemes. If your scheme contracted out of the second state pension you will have built up some safeguarded benefits, which may mean that you would need to take advice before transferring.
+                </td>
+            </tr>
+        </table>
+        <p><span style="color: red;">∎</span> Are you aware of any in built benefits or potential penalties within your pensions if the fund(s) were to be transferred away?</p>
+        <p>∎ We will endeavour to establish if your plans have any inbuilt benefits or penalties, however, sometimes your funds can be transferred very quickly before this is confirmed. If this is a concern, you may want to check this with your provider yourself, as it is outside of our control.</p>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Annuity Options</p>
+        <p>∎ I will now go through your annuity options to ensure that your income will be paid in the way you require.</p>
+        <p>∎ To start with, please can you tell me the total gross fund value of your pension fund(s)?</p>
+        <p>∎ There are a couple of options available to you with regards to taking out a lump sum before you start your income. Please be aware that this opportunity will generally be lost once an annuity is purchased.</p>
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='white-space: normal;'>1) Tax-Free Cash</td>
+            </tr>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ Are you looking to take up to 25% of your pension fund in tax free cash?
+
+                    <table border='1' style='width:100%;'>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: center; white-space: normal;'>
+                                <strong><u>IF NO</u></strong>
+                            </td>
+                        </tr>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: left; white-space: normal;'>
+                                ∎ Please note, if you do not take all your tax-free cash at the outset it will be treated as taxable income when you take it as an annuity.
+                            </td>
+                        </tr>
+                    </table>
+                    <p><span style="color: red;">(PROTECTED TAX-FREE CASH = OMO)</span></p>
+                </td>
+            </tr>
+        </table>
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='white-space: normal;'>2) Taxable lump sum</td>
+            </tr>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ Do you want to take an additional taxable lump sum, before purchasing your income - if so, how much?
+
+                    <table border='1' style='width:100%;'>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: center; white-space: normal;'>
+                                <strong><u>IF YES</u></strong>
+                            </td>
+                        </tr>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: left; white-space: normal;'>
+                                <span style="color: red;">∎</span> There are two companies on our panel that allow you to take more than 25%, albeit subject to tax at your marginal rate, which, when added to your earned income, could potentially be at 40 or 45% <span style="color: red;">(JUST AND LV)</span>.
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <div class="outer-border">
+            <div class="tab-buttons">
+                <div class="tab-button" onclick="openTab('tab3', 2)" style="background-color: #70ad47;">LTA</div>
+                <div class="tab-button" onclick="openTab('tab4', 3)" style="background-color: #ed7d31;">FTA</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <div id="tab3" class="tab">
+        <p>
+            <mark><span style="color: red;">∎</span> Can you please confirm your marital status?</mark>
+
+            <table border='1' style='width:100%;'>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: center; white-space: normal;'>
+                        <strong><u>IF NOT MARRIED</u></strong>
+                    </td>
+                </tr>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: left; white-space: normal;'>
+                        <span style="color: red;">∎</span> Do you have a partner or financial dependant?
+                    </td>
+                </tr>
+            </table>
+
+        <p><span style="color: red;">∎</span> Unless additional death benefits are included within a single life annuity, the income will cease on your death, whereas a joint life annuity continues to pay an income to a beneficiary such as a spouse, civil partner or a financial dependant.</p>
+        <p>
+            <mark>∎ Are you looking for a single life or joint life annuity?</mark>
+
+
+            <table border='1' style='width:100%;'>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: center; white-space: normal;'>
+                        <strong><u>IF JOINT</u></strong>
+                    </td>
+                </tr>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: left; white-space: normal;'>
+                        ∎ You decide how much of your income you wish your chosen beneficiary to receive after your death, for instance, 50% or 100%.
+                        <br><br> ∎ This usually impacts the level of income payable to you and I can show you the effect this has in the quote.
+                        <br><br> ∎ What % do you require?
+                    </td>
+                </tr>
+            </table>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Death Benefits</p>
+
+
+
+
+        <p><strong><u>1) Guarantee Period</u></strong></p>
+        <p><span style="color: red;">∎</span> This guarantees that should you die within a specified period, then the annuity payments will continue to be paid to your beneficiary for the remaining term after your death.</p>
+        <p><span style="color: red;">∎</span> So, if you were to select say 10 years at the outset and died after 3 years, payments would carry on for a further 7 years. Some providers allow you to choose a Guarantee Period of up to 30 years.</p>
+
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='white-space: normal;'>Single Life</td>
+                <td style='white-space: normal;'>Joint Life</td>
+            </tr>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+
+                    <table border='1' style='width:100%;'>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: center; white-space: normal;'>
+                                <strong><u>IF 5 YEAR GUARANTEE</u></strong>
+                            </td>
+                        </tr>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: left; white-space: normal;'>
+                                <span style="color: red;">∎</span> Would you also like me to quote for a 10 year guarantee period as the difference in cost can be relatively small?
+                            </td>
+                        </tr>
+                    </table>
+
+
+                    <table border='1' style='width:100%;'>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: center; white-space: normal;'>
+                                <strong><u>IF 0 YEAR GUARANTEE</u></strong>
+                            </td>
+                        </tr>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: left; white-space: normal;'>
+                                <span style="color: red;">∎</span> If you select a Single Life annuity with no guarantee period, then on your death, no further payments will be made. 
+                                <br><span style="color: red;">∎</span> I will send you a quote with a 5 and 10 year guarantee period for you to compare the cost of providing a guarantee, which is often quite inexpensive.
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> If you die during a guarantee period under a Joint Life annuity, 100% of the income payment will continue to the end of the guarantee period chosen, but will then revert to the rate selected (50%,100% etc) and will be paid to the second annuitant for the rest of their lives.
+                    <br><span style="color: red;">∎</span> If the second annuitant has pre-deceased you, the income will be paid to your estate until the end of the guarantee period and then ceases.
+                    <br><span style="color: red;">∎</span> On your death, your annuity income would be paid to your beneficiary tax free if you die before age 75 or taxable at the recipient’s marginal tax rate if you die from 75 onwards.
+
+                    <table border='1' style='width:100%;'>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: center; white-space: normal;'>
+                                <strong><u>IF 5 YEAR GUARANTEE</u></strong>
+                            </td>
+                        </tr>
+                        <tr style='background-color: #fbe4d5;'>
+                            <td style='text-align: left; white-space: normal;'>
+                                <span style="color: red;">∎</span> Would you also like me to quote for a 10 year guarantee period as the difference in cost can be relatively small? 
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+
+        <p><strong><u>2) Value Protection</u></strong></p>
+        <p><span style="color: red;">∎</span> This provides a death benefit equal to the annuity purchase price less all the income paid to you prior to your death. This is paid to your nominated beneficiary tax free if you die before age 75.</p>
+
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Annuity Payments</p>
+        
+        <p><mark><span style="color: red;">∎</span> Do you want a level annuity or are you interested in an escalating annuity to help overcome the effects of inflation?</mark></p>
+        
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;'>
+                    <strong><u>IF ESCALATION CONSIDERED</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ An escalating annuity increases each year in line with inflation or at a fixed rate of say 3% or 5%. However, it pays a lower initial income than a level annuity. For example, if 3% escalation is chosen, then the starting payment would be about 33% lower than with a level annuity. I can show you the difference in our quotes.
+                    
+                    <br><br><span style="color: red;"> (IF INTERESTED, ALWAYS PROVIDE A LEVEL QUOTE COMPARISON TO ENABLE THE CUSTOMER TO MAKE AN INFORMED DECISION)</span>
+                </td>
+            </tr>
+        </table>
+
+
+        <p>∎ You can have your payments paid to you monthly, quarterly, six monthly or annually, either in arrears or in advance. If you take them in arrears, then you get a slightly higher payment.</p>
+        <mark>∎ What frequency would you like?</mark>
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;'>
+                    <strong><u>IF PAYMENTS >= QUARTERLY, IN ARREARS AND NO VALUE PROTECTION SELECTED</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ If you choose to receive income in arrears and die prior to the next payment, your beneficiaries will not receive this payment unless you elect to include ‘With proportion’.
+                    
+                    <br><br>∎ This means that a proportional payment will be calculated up until your date of death. There is a cost for including this benefit which would result in a slightly lower income.
+                </td>
+            </tr>
+        </table>
+
+
+        <p><span style="color: green;">∎</span> As I mentioned earlier, medical conditions or lifestyle habits could qualify you for an enhanced annuity. This is one time having a medical or lifestyle problem can be an advantage, so it is really important that you disclose any relevant information to help me secure a higher income for you.</p>
+        
+        
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;' colspan="3">
+                    <strong><u>IF JOINT LIFE</u></strong>
+                </td>
+            </tr>
+
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;' colspan="3">
+                    <span style="color: red;">∎</span> As you are selecting joint life quotations, I will require consent from your spouse/ partner/ dependant for their health and lifestyle information to be sent to the annuity providers on our panel. Is your spouse/ partner/ dependant available?
+                </td>
+            </tr>
+
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='text-align: center; white-space: normal;'>YES</td>
+                <td style='text-align: center; white-space: normal;' colspan="2">NO</td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;' rowspan="3">
+                    <span style="color: red;"> GAIN CONSENT</span>
+
+                    <br><br><span style="color: red;">READ THE 'ABOUT US' SECTION</span>
+                </td>
+                <td style='text-align: center; white-space: normal;'><strong><u>IF MARRIED</u></strong></td>
+                <td style='text-align: center; white-space: normal;'><strong><u>IF NOT MARRIED</u></strong></td>
+            </tr>
+
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> As you’re married we can rely on assumed consent to produce your quotations. 
+
+                    <br><br><span style="color: red;">∎</span> Can you please ask your spouse to look at our Privacy notice in the quote email I will send you?
+                </td>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> As you are not married, I will need to either speak to your partner/dependant, or receive confirmation by email, that they consent for their health/lifestyle information to be sent to the annuity providers on our panel. 
+
+                    <br><br><span style="color: red;">∎</span> What is the best number or email address to get them on?
+                </td>
+            </tr>
+            
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;' colspan="2">
+                    <span style="color: red;">∎</span> Should you proceed on a joint life basis, we will also ask your spouse/ partner/ dependant to confirm their consent within the application.
+                </td>
+            </tr>
+        </table>
+        
+        
+        
+        
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Annuity Information Prompt</p>
+        
+        <p><span style="color: red;">∎</span> We are confident that our lifetime annuity income quote will provide the highest annuity income for you but just to confirm this, should you proceed through ourselves, you have the option to allow your chosen annuity provider to check their quotation against the rest of the annuity market. This is further confirmation that our quote offers you the highest available income.</p>
+        <p><mark><span style="color: red;">∎</span> Do you give consent for your chosen annuity provider to share your personal data for a market leading comparison quote?</mark></p>
+
+        
+        
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0;'>
+                <td style='text-align: center; white-space: normal;'>
+                    RUN QUOTES
+                </td>
+            </tr>
+        </table>
+        
+        <p>∎ I will send these results through to you in an email, together with a summary of your other annuity options. Please read this summary thoroughly as it provides you with appropriate risk warnings.</p>
+        
+        
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;'>
+                    <strong><u>IF RELEVANT</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ All of these quotes assume you will take 25% of your pension fund in tax-free cash.
+                </td>
+            </tr>
+        </table>
+
+
+        <p>∎ Our quote shows standard and enhanced annuities, which provide a guaranteed income for the rest of your life without any investment risk. Please be aware that inflation will reduce the value of a level annuity over time and once in force the annuity cannot be changed.</p>
+
+        <p>∎ The quote also shows fixed term annuities, which are more flexible than a lifetime annuity by providing income for a specific term, rather than for life, usually giving you a lump sum at the end of the term.</p>
+
+        <p>∎ I can explain the fixed term annuity to you now (name), or alternatively, are you happy to receive the quotes and information by email first and then discuss your preferred option with me in a few days’ time?</p>
+
+
+        <div class="tab-button" onclick="openTab('tab5', 4)" style="background-color: #ffff00; border: 1px solid #000;">OUTRO</div>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <div id="tab4" class="tab">
+        <p>
+            <mark><span style="color: red;">∎</span> Can you please confirm your marital status?</mark>
+
+            <table border='1' style='width:100%;'>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: center; white-space: normal;'>
+                        <strong><u>IF NOT MARRIED</u></strong>
+                    </td>
+                </tr>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: left; white-space: normal;'>
+                        <span style="color: red;">∎</span> Do you have a partner or financial dependant?
+                    </td>
+                </tr>
+            </table>
+
+        <p><span style="color: red;">∎</span> Usually, unless additional death benefits are included within a single life annuity, the income would cease on your death, whereas a joint life annuity continues to pay an income to a beneficiary such as a spouse, civil partner or a financial dependant.</p>
+        <p>∎ However… each of the fixed term annuity plans have in-built death benefits, therefore, you do not necessarily need to have a joint life fixed term annuity should you wish to provide a lump sum for your spouse or partner, or have a continuing income in the event of your death.</p>
+        
+        <p>
+            <mark>∎ Are you looking for a single life or joint life annuity?</mark>
+
+
+            <table border='1' style='width:100%;'>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: center; white-space: normal;'>
+                        <strong><u>IF JOINT</u></strong>
+                    </td>
+                </tr>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: left; white-space: normal;'>
+                        ∎ You decide how much of your income you wish your chosen beneficiary to receive after your death, for instance, 50% or 100%.
+                        <br><br> ∎ This usually impacts the level of income payable to you and I can show you the effect this has in the quote.
+                        <br><br> ∎ What % do you require?
+                    </td>
+                </tr>
+            </table>
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Annuity Payments</p>
+        
+        <p><mark>∎ What period are you interested in? Did you wish to deplete your pot over the period (with nothing left at the end) or receive a set amount with a guaranteed amount at the end?</mark></p>
+        
+        <p><mark><span style="color: red;">∎</span> Do you want a level annuity or are you interested in an escalating annuity to help overcome the effects of inflation?</mark></p>
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;'>
+                    <strong><u>IF ESCALATION CONSIDERED</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ Legal & General do not offer escalation (therefore quotes limited to two providers)
+                    <br><br><span style="color: red;">(IF INTERESTED, ALWAYS PROVIDE A LEVEL QUOTE COMPARISON TO ENABLE THE CUSTOMER TO MAKE AN INFORMED DECISION)</span>
+                </td>
+            </tr>
+        </table>
+
+        <p>∎ You can have your payments paid to you monthly, quarterly, six monthly or annually, either in arrears or in advance. If you take them in arrears, then you get a slightly higher payment.</p>
+        <p><mark>∎ What frequency would you like?</mark></p>
+
+
+
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">FTA Description</p>
+
+        <p>∎ I now need to talk through some key regulatory information regarding Fixed Term Annuities…</p>
+        <p><span style="color: red;">∎</span> If you are unwilling to commit to a lifetime annuity right now, you could consider a fixed term annuity, which pays you a regular income for a fixed period of time.</p>
+        <p><span style="color: red;">∎</span> You can choose any amount of income over your specified term of between 1 and 25 years. Alternatively, you can just take your tax-free cash and not take any income at all.</p>
+        <p><span style="color: red;">∎</span> These are designed to pay an income for a fixed term, usually with a guaranteed maturity value at the end of the term.</p>
+        <p><span style="color: red;">∎</span> They can also provide an income for dependents, and a lump sum payment if you die before the maturity date.</p>
+        <p><span style="color: red;">∎</span> If you are planning on making further pension contributions, please be aware that taking an income from a fixed term annuity means these further contributions would be limited to £10,000 per annum indefinitely before a tax charge is payable.</p>
+
+
+
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='white-space: normal;'>GMA FTA</td>
+                <td style='white-space: normal;'>Depleting FTA</td>
+            </tr>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> They give you the flexibility of choosing another retirement income product or to take a taxable lump sum from your pension fund when the plan ends.
+                    <br><br><span style="color: red;">∎</span> FTA’s are not without risks. The main risk is that the maturity amount you receive at the end of the fixed period will not provide you with an adequate amount of future retirement income.
+                    <br><br><span style="color: red;">∎</span> Please note, FTA’s do not take into account lifestyle or medical conditions.
+                </td>
+
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> If you want to take all your pot in cash, you can use a FTA to take it all over a selected term with no maturity amount and without any investment risk.
+                    <br><br><span style="color: red;">∎</span> This could potentially minimise your tax liability by spreading the payments over a number of tax years.
+                    <br><br><span style="color: red;">∎</span> Please note that you should first check with your existing provider if they offer this facility.
+                    <br><br><span style="color: red;">∎</span> As this will take up all your fund, you should consider your other levels of retirement income and be aware that means-tested benefits may not be available to you in the future if you have depleted your fund.
+                </td>
+            </tr>
+        </table>
+
+
+        <p><span style="color: red;">∎</span> Because fixed term annuities are considered more risky than standard conventional or enhanced annuities, I will send you our Fixed Term Annuities Explained document and the Key Features documents for Canada Life, L&G and LV.</p>
+
+        <p><span style="color: red;">∎</span> After reading these documents, if you have any questions or queries, then please don’t hesitate to contact me.</p>
+        
+        <p><span style="color: red;">∎</span> Is that all ok <mark><span class="nameOutput">(name)</span></mark>?</p>
+
+        <p><span style="color: red;">∎</span> If you are at all unsure as to whether a fixed term annuity is suitable for you, we recommend you take advice and if you wish, we can introduce you to a regulated adviser.</p>
+
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0;'>
+                <td style='text-align: center; white-space: normal;'>
+                    RUN QUOTES
+                </td>
+            </tr>
+        </table>
+
+
+        <p>∎ It’s important that you understand the different death benefits that are available from the providers on our panel, to help you make your own informed decision.</p>
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;'>
+                    <strong><u>IF THE CLIENT EXPRESSED A PREFERENCE FOR JOINT LIFE</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ You do not necessarily need to have a joint life fixed term annuity should you wish to provide a lump sum for your spouse or partner, or have a continuing income in the event of your death as each of the fixed term annuity plans have in-built death benefits.
+                    <br><br> ∎ With a joint life fixed term annuity, only available through LV, your selected income would continue to be paid to your spouse or partner until the end of the selected term, when the guaranteed maturity (GMA) would also be paid.
+                    <br><br> ∎ However, this same benefit of a continuing income and GMA is also available, on a single life basis, from Legal & General. Therefore, you should compare quotes from Legal & General and LV.
+                </td>
+            </tr>
+        </table>
+
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='white-space: normal;'>GMA FTA</td>
+                <td style='white-space: normal;'>Depleting FTA</td>
+            </tr>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ Legal & General policies have a <strong>guarantee period</strong> which continues to provide an income until the end of the term, in the event of your death, plus return any growth in the guaranteed maturity amount. A guarantee period option is also available via LV but any GMA is not protected if death occurs before the end of the fixed term.
+                    <br><br>∎ Canada Life and LV policies offer <strong>value protection</strong>, which instead provides a lump sum, in the event of your death, of the annuity purchase price less any income already received at the date of death. Please note that the GMA will therefore not be paid, so any growth in the plan will be lost.
+                    <br><br>∎ Whether your preference is a lump sum or income, the benefit will be paid tax-free if you were to die before the age of 75. Conversely, the benefit would be taxed at your beneficiary’s marginal rate if you were to die after the age 75.
+                </td>
+
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ If you are depleting the fund, the death benefits may be less important to you. Canada Life and LV will generally pay out a lump sum under value protection, whereas Legal & General would continue to pay the income until the end of your chosen term.
+                </td>
+            </tr>
+        </table>
+
+        <p>∎ If you are at all unsure of your options, please read the fixed term annuities explained document and the fixed term annuities matrix, which summarises the death benefits.</p>
+
+        <hr>
+
+        <p>∎ I will send these results through to you in an email, together with a summary of your other annuity options. Please read this summary thoroughly as it provides you with appropriate risk warnings.</p>
+        
+    
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;'>
+                    <strong><u>IF RELEVANT</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ All of these quotes assume you will take 25% of your pension fund in tax-free cash.
+                </td>
+            </tr>
+        </table>
+
+
+        <p>∎ The quotes also shows life time annuities, which provides a guaranteed income for the rest of your life without any investment risk. Please be aware that inflation will reduce the value of a level annuity over time and once in force cannot be changed.</p>
+
+        <p>∎ I can explain the life time annuities to you now <mark><span class="nameOutput">(name)</span></mark>, or alternatively, are you happy to receive the quotes and information by email first and then discuss your preferred option with me in a few days’ time?</p>
+
+        <div class="tab-button" onclick="openTab('tab5', 4)" style="background-color: #ffff00; border: 1px solid #000;">OUTRO</div>
+        
+
+    </div>
+
+
+
+
+
+    <div id="tab5" class="tab">
+
+        <p>∎ Within the quote summary email there are links to our Client Agreement as well as a useful guide to pension income and our annuity risk warnings and benefits document.</p>
+        <p>∎ I recommend that you read these documents to help you understand the risks involved and to make an informed decision.</p>
+        <p>∎ Can I please take the first line of your address, so I can post our information pack to you?</p>
+        <p>∎ This contains a range of informative documents written in simple jargon-free English that many of our customers have found invaluable in helping them understand all their options under the new pension freedoms.</p>
+        <p>∎ Do you have any concerns or questions which need clarifying?</p>
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;' colspan="2">
+                    <strong><u>IF NO PW GUIDANCE</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;' colspan="2">
+                <td style='text-align: left; white-space: normal;' colspan="2">
+                    <span style="color: red;">∎</span> You confirmed earlier that you had not taken any recent guidance from PensionWise. 
+                    <br><span style="color: red;">∎</span> PW is a government service that offers free, impartial guidance with an independent pension specialist, to help you make an informed decision. 
+                    <br><span style="color: red;">∎</span> It aims to help you understand your overall financial situation when you retire and the different options that you need to consider.
+                    <br><span style="color: red;">∎</span> Under new rules, before your pension savings can be transferred, you either need to attend an appointment with PW or you have to opt out of an appointment. What would be your preference? To have an appointment or to opt out?
+                </td>
+            </tr>
+            <tr style='background-color: #f0f0f0; font-weight: bold;'>
+                <td style='text-align: center; white-space: normal;'>Appointment</td>
+                <td style='text-align: center; white-space: normal;'>Unsure</td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> You can book an appointment yourself online or by telephone. Booking details are contained with the quote email. Alternatively, I can book an appointment for you now.
+                </td>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> If you do decide you would like an appointment, you can book it yourself online or by telephone. Booking details are contained with the quote email. Alternatively, I can book an appointment for you.
+                </td>
+            </tr>
+        </table>
+
+        <p>∎ It’s been very enjoyable speaking with you <mark><span class="nameOutput">(name)</span></mark> and I hope I have managed to assist you in understanding your options.</p>
+        <p>∎ Pensions can be complicated and daunting yet reaching the right decision can be vitally important to the future lives of many people so please don’t hesitate to let me know at any time if you have any further questions, queries or concerns, no matter how trivial.</p>
+        <p>∎ My telephone number is 01733 902043.</p>
+        <p>∎ I will call you again at <span style="color: red;">(time)</span> on <span style="color: red;">(date)</span>. Can I just confirm the best numbers to call you on?</p>
+        <p>∎ Finally, for your protection, it is our company policy to always ask Data Protection questions each time we speak with you on the phone.</p>
+
+        <div class="tab-button" onclick="openTab('tab6', 5)" style="background-color: #00b0f0; border: 1px solid #000;">APP</div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <div id="tab6" class="tab">
+
+
+
+        <p><span style="color: red;">∎</span> The application procedure is really very simple, <mark><span class="nameOutput">(name)</span></mark>. All we need to do is go through some final questions for the application form, which will just take a few more minutes.</p>
+        <p><span style="color: red;">∎</span> I will then email/post the pre-completed application form to you, for you to check through and if you are satisfied, to sign and return to me using our freepost label facility <span style="color: red;">(explain how this works)</span>.</p>
+
+
+
+        <table border='1' style='width:100%;'>
+            <tr style='font-weight: bold;'>
+                <td style='white-space: normal; background-color: #70ad47;'>LTA</td>
+                <td style='white-space: normal; background-color: #ed7d31;'>FTA</td>
+            </tr>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> Before I proceed with the completion of the application, can I just ask if there have been any changes in either your lifestyle or medical conditions (or your partner’s if joint life) since we started discussing your annuity requirements?
+                    <br><br><span style="color: red;">∎</span> This is important, since any changes could qualify you for a higher income payment. Likewise, if there are any changes before your annuity is set up, please let me know.
+                    <br><br><span style="color: red;">∎</span> Please note, the annuity provider reserves the right to verify that the medical and lifestyle information you have provided in your application, is accurate and true.
+                </td>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> Lifestyle issues and medical conditions are not taken into account when calculating the income payable under a FTA. This means we may not have quoted you the highest income available on the open market should you qualify for an LTA enhanced annuity.
+                    <br><br><span style="color: red;">∎</span> Can you confirm that you are happy to proceed with the FTA without us taking into consideration changes that may be applicable in either your medical or lifestyle?
+                    <br><br><span style="color: red;">∎</span> The annuity you are applying for contains elements of risk that you should understand before you proceed. The risk warnings are shown in our email quote and in our annuity risk warnings and benefits document.
+                    <br><br><span style="color: red;">∎</span> Please confirm that you have received, read and that you fully understand each of the following documents that we have sent to you regarding your chosen annuity, namely:
+                    <ol>
+                        <li>The providers’ Key Features documents</li>
+                        <li>The risk warnings in our email quote relevant to the annuity you have chosen and our annuity risk warnings and benefits document</li>
+                        <li>Our Fixed Term Annuities Explained document</li>
+                    </ol>
+
+                    <span style="color: red;">∎</span> If you are at all unsure as to whether this plan is suitable for you, we recommend you take advice and if you like, we can introduce you to a regulated financial adviser.
+
+                </td>
+            </tr>
+        </table>
+        
+        <p>∎ Please note, if you or your employer are still making contributions, these cannot be accepted by your chosen annuity provider once your pension savings have been transferred to them.</p>
+        <p>∎ So, to complete the application form, I will need:</p>
+        <ol>
+            <li>National Insurance number <span style="color: red;">(*2 for JL)</span></li>
+            <li>Bank details</li>
+            <li>Passport or driving licence number <span style="color: red;">(*2 for JL)</span></li>
+            <li>Current pension scheme details – provider name, address, policy number(s), gross fund, type of pension</li>
+            <li>
+                <table border='1' style='width:100%;'>
+                    <tr style='background-color: #fbe4d5;'>
+                        <td style='text-align: center; white-space: normal;'>
+                            <strong><u>IF ENHANCED LTA</u></strong>
+                        </td>
+                    </tr>
+                    <tr style='background-color: #fbe4d5;'>
+                        <td style='text-align: left; white-space: normal;'>
+                            Doctor’s address and telephone number
+                        </td>
+                    </tr>
+                </table>
+            </li>
+        </ol>
+
+        <p>∎ Please note, there could be a delay in processing the annuity should you:</p>
+        <ol>  
+            <li>Omit any of the information</li>
+            <li>Fail to check the application is correct</li>
+            <li>Fail to sign AND date the documentation</li>
+        </ol>
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #f0f0f0;'>
+                <td style='text-align: center; white-space: normal;'>
+                    COMPLETE APPLICATION FORM ON SYSTEM
+                </td>
+            </tr>
+        </table>
+
+        <p>∎ So what happens next?</p>
+        <p>∎ I will send you via email an application pack, this includes:</p>
+
+        <ol>  
+            <li>Guidelines for completing the application form and confirmation of documentation needed</li>
+            <li>Pre-completed Application form and freepost address label</li>
+            <li>Retirement Line Declaration which includes Letter(s) of Authority for each pension fund and our Pension Wise – Your decision document</li>
+            <li>A full annuity provider quotation</li>
+            <li>Cancellation Notice – <span style="color: red;">(IF QUERIED THIS DOCUMENT EXPLAINS THE TERMS AND CONDITIONS SHOULD YOU WISH TO CANCEL THE CONTRACT)</span></li>
+            <li>Key Features Document</li>
+        </ol>
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;'>
+                    <strong><u>IF LTA</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    <span style="color: red;">∎</span> So that we can be sure you fully understand the details of <span style="color: red;">(name of annuity selected)</span>, it is very important that you read the Key Features Document which fully describes all the features, terms and conditions of this product.
+                </td>
+            </tr>
+        </table>
+
+        <p>∎ All you need to do is...</p>
+        <ol>  
+            <li>Check the details of the application thoroughly, then sign and date the application form</li>
+            <li>Check, sign and date the Letter(s) of Authority, PensionWise – your decision document, Retirement Line Limited Declaration and Client Agreement</li>
+            <li>Return the application form, letter(s) of authority and any other relevant documentation (ID for example if required) to us using the freepost address label provided.</li>
+            <li>Send us any of your pension paperwork e.g. benefit statement, policy document, etc. (if not already supplied)</li>
+        </ol>
+
+        <p>∎ When we receive your application form...</p>
+
+        <p>∎ You will be allocated your own personal dedicated Customer Relationship Consultant within our admin team. This consultant’s role is aimed at removing any stress that our customers can experience throughout the time it takes to complete the annuity process.</p>
+
+        <p>∎ Your appointed Customer Relationship Consultant will liaise with your current pension provider and your selected annuity provider to ensure a smooth annuity set up.</p>
+        
+        <p>∎ On your behalf, they handle all of the paperwork and take care of the communication between all parties. They will personally keep you updated by email or by phone, usually once a fortnight.</p>
+
+        <p>∎ So you can relax and we will deal with all the paperwork!</p>
+
+        <p>∎ Please be aware...</p>
+
+        <table border='1' style='width:100%;'>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: center; white-space: normal;'>
+                    <strong><u>IF TAKING TAX FREE CASH</u></strong>
+                </td>
+            </tr>
+            <tr style='background-color: #fbe4d5;'>
+                <td style='text-align: left; white-space: normal;'>
+                    ∎ Most people want their tax-free cash and annuity income as quickly as possible and our total service is geared to achieving this objective. That’s why we send a freepost label which means an application can be back in our hands within 24 hours of first contact for any customer who is in a hurry.
+                </td>
+            </tr>
+        </table>
+
+
+        <p><span style="color: red;">∎</span> We cannot guarantee or make any promises as to the length of time it will take to process your annuity, as this depends very much on the service we receive from your existing pension provider(s) and the chosen annuity provider. However, the average time is currently 8 – 10 weeks.</p>
+        <p><span style="color: red;">∎</span> Please note that during the early stages of our administration process, we will not be able to speak to or gain information from your provider(s) until they have registered your signed letter of authority. A few pension providers will not accept third party authorisations and, if this is applicable to you, then we may ask you to assist us with the transfer, but do not worry, we will be on hand to guide you every step of the way.</p>
+
+        <p>∎ For many reasons outside our control, some cases go through more quickly, and some will take longer. For example, delays can occur due to a large increased consumer demand for annuities.</p>
+        <p>∎ As you are a client of your pension provider, they have a duty of care to assist you, so if you are happy to personally pursue your pension provider to make your fund transfer as quickly as possible, we have found that this can really speed things up.</p>
+
+        <p><span style="color: red;">∎</span> During the administration process, the value of your pension fund could fluctuate depending on where it is invested. Should you wish to avoid its’ value declining, then you could ask your provider to switch your fund into a cash fund – but you would then not benefit from any future investment increases in the fund value.</p>
+
+        <p><span style="color: red;">∎</span> All annuity quotations have an expiry period and if the validation period of your original quotation has expired prior to the transfer of your funds, your annuity income will be based on the annuity rates at that time.</p>
+
+        <p><span style="color: red;">∎</span> This means that your final pension payment could be higher or lower than it is today but you will be informed of this at the time your annuity is set up. This is outside of our control and is exactly the same across the annuity industry.</p>
+
+        <p><span style="color: red;">∎</span> I must stress that at no point do we handle any of your money, we simply arrange a smooth transfer from your existing pension provider(s) to your selected annuity provider, in this case.... <span style="color: red;">(name of new provider)</span>. As I said before, obviously, the sooner you return the application to us, the sooner we can get the process started.</p>
+
+        <hr>
+        
+        <p>∎ It’s been very enjoyable speaking with you today <mark><span class="nameOutput">(name)</span></mark> and I really appreciate you placing your business with us.</p>
+
+        <p>∎ I will call you at <span style="color: red;">(time)</span> on <span style="color: red;">(date)</span> to make sure you have received the application pack and to answer any queries you may have.</p>
+
+        <p>∎ I am here to assist you in any way at all and if you need to discuss anything in the meantime, please call me on my direct telephone number which is 01733 902043.</p>
+
+        <p>∎ Do you have any questions before I go?</p>
+
+    </div>
+
+
+
+
+
+
+    <div id="tab7" class="tab">
+        <br><button type="button" onclick="clearWebAddress()">Clear</button>
+        <input type="text" id="webAddress" name="webAddress" placeholder="Enter 'Quote Results' URL">
+        <button type="button" onclick="openWebAddress()">Open</button>
+        (Click 'Re-Quote')
+
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;"> LTA</p>
+
+
+        <table id="firstTable">
+            <thead>
+                <tr>
+                    <th>Note</th>
+                    <th>Income</th>
+                    <th>Freq.</th>
+                    <th>£/%</th>
+                    <th>Diff.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Row 1 -->
+                <tr>
+                    <td><textarea name="description[]" class="textarea-description" rows="1"></textarea></td>
+                    <td><input type="text" name="income[]" class="income-input" data-row-index="0" <input type="text" id="NetValue" oninput="calculateIncomeDifference();"></td>
+                    <td>
+                        <select name="frequency[]">
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                            <option value="bi-annually">Bi-annually</option>
+                            <option value="annually">Annually</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="income_per_payment[]" readonly />
+                        <br>
+                        <input type="text" name="22income_per_payment[]" readonly />
+                    </td>
+                    <td>
+                        <select name="compare_to[]">
+                            <option value="1" selected>Row 1</option>
+                            <option value="2">Row 2</option>
+                            <option value="3">Row 3</option>
+                            <!-- Add options for all rows -->
+                        </select>
+                        <br>
+                        <input type="text" name="income_difference[]" readonly />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Add a button to add a new row -->
+        <br><button id="addRowButton">Add Row</button>
+
+
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;"> FTA</p>
+
+
+
+
+        <table id="secondTable">
+            <thead>
+                <tr>
+                    <th>Note</th>
+                    <th>Income</th>
+                    <th>Term</th>
+                    <th>GMA</th>
+                    <th>Growth</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Row 1 -->
+                <tr>
+                    <td><textarea name="description[]" class="textarea-description" rows="1"></textarea></td>
+                    <td><input type="text" name="income[]" class="income-input" data-row-index="0" oninput="calculateGrowth();"></td>
+                    <td>
+                        <select name="term[]">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5" selected>5</option> <!-- This option is selected by default -->
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                        </select>
+                        <br>
+                        <select name="escalation[]">
+                            <option value="Level">Level</option>
+                            <option value="3%">3%</option>
+                            <option value="5%">5%</option>
+                        </select>
+                        <br>
+                        <input type="text" name="income_term[]" readonly />
+                    </td>
+                    <td><input type="text" name="gma[]" class="income-input" data-row-index="0" oninput="calculateGrowth();">
+                    <td>
+                        <input type="text" name="gma_growth[]" readonly />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Add a button to add a new row to the second table -->
+        <br><button id="addRowButtonSecondTable">Add Row</button>
+    </div>    
+
+
+    <div id="tab8" class="tab">
+
+
+
+
+        <br><input type="text" id="income1" placeholder="Enter Income">
+
+        <table border='1' style='width:100%;'>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    <label for="slider"><strong><u>Guarantee Period:</u></strong> <span id="sliderValue">10</span> years</label>
+                    <input type="range" id="slider" name="slider" min="0" max="30" value="10">
+                    <br>
+
+                    <label for="guaranteedIncome">Guaranteed Income:</label>
+                    <input type="text" id="guaranteedIncome" name="guaranteedIncome" readonly>
+                    <br>
+
+                    <label for="deathSlider1">Death: <span id="deathValue1">1</span> years</label>
+                    <input type="range" id="deathSlider1" name="deathSlider1" min="1" max="50" value="1">
+                    <br>
+
+                    <label for="incomeReceived1">Income Received:</label>
+                    <input type="text" id="incomeReceived1" name="incomeReceived1" readonly>
+                    <br>
+
+                    <label for="incomeToBePaid1">Income to Be Paid:</label>
+                    <input type="text" id="incomeToBePaid1" name="incomeToBePaid1" readonly>
+                </td>
+            </tr>
+        </table>
+
+        <table border='1' style='width:100%;'>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    <label for="slider2"><strong><u>Value Protection:</u></strong> <span id="sliderValue2">100</span>%</label>
+                    <input type="range" id="slider2" name="slider2" min="1" max="100" value="100">
+                    <br>
+
+                    <label for="annuityPrice">Annuity Purchase Price: <span id="NetValue"></span></label>
+                    <input type="text" id="annuityPrice" name="annuityPrice" readonly>
+                    <br>
+
+                    <label for="amountProtected">Amount Protected:</label>
+                    <input type="text" id="amountProtected" name="amountProtected" readonly>
+                    <br>
+
+                    <label for="deathSlider2">Death: <span id="deathValue2">1</span> years</label>
+                    <input type="range" id="deathSlider2" name="deathSlider2" min="1" max="50" value="1">
+                    <br>
+
+                    <label for="incomeReceived2">Income Received:</label>
+                    <input type="text" id="incomeReceived2" name="incomeReceived2" readonly>
+                    <br>
+
+                    <label for="lumpSum">Lump Sum:</label>
+                    <input type="text" id="lumpSum" name="lumpSum" readonly>
+                </td>
+            </tr>
+        </table>
+
+        <table border='1' style='width:100%;'>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    <label for="slider3"><strong><u>Joint Life:</u></strong> <span id="sliderValue3">100</span>%</label>
+                    <input type="range" id="slider3" name="slider3" min="1" max="100" value="100">
+                    <br>
+                    <label for="jlIncome">JL Income:</label>
+                    <input type="text" id="jlIncome" name="jlIncome" readonly>
+                </td>
+            </tr>
+        </table>
+
+        <table border='1' style='width:100%;'>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    <label for="dob"><strong><u>DOB:</u></strong></label>
+                    <input type="date" id="dob">
+                    <br><id ="ageLabel">Age: <span id="ageValue"></span>
+                </td>
+            </tr>
+        </table>
+
+
+
+        <table border='1' style='width:100%;'>
+            <tr>
+                <td style='text-align: left; white-space: normal;'>
+                    <label for="escalation2"><strong><u>Escalation:</u></strong></label>
+                    <input type="text" id="escalation2" name="escalation2">
+                    <br>
+                    <label for="durationSlider">Duration: <span id="durationValue">5</span> years</label>
+                    <input type="range" id="durationSlider" name="durationSlider" min="1" max="50" value="5">
+                    <br>
+
+                    <table id="incomeTable">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Income</th>
+                                <th>Increase</th>
+                                <th>Cumulative Income</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+    <div id="tab9" class="tab">
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">WORK IN PROGRESS... Include useful soundbites here!</p>
+
+        <hr>
+
+        <p style="text-align: center; font-weight: bold; text-decoration: underline;">Best Quote Guarantee</p>
+
+        "We will send a £250 M&S voucher if we cannot either match or improve an alternative annuity rate which you find elsewhere..."
+    </div>
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+        // Show Tab 1 by default
+        openTab('tab1', 0);
+
+        function openTab(tabName, buttonIndex) {
+
+            // Scroll to the top of the page
+            window.scrollTo({
+            top: 0,
+            behavior: "smooth" // optional: adds smooth scrolling effect
+            });
+
+
+
+            var i;
+            var tabs = document.getElementsByClassName("tab");
+            for (i = 0; i < tabs.length; i++) {
+                tabs[i].style.display = "none";
+            }
+            document.getElementById(tabName).style.display = "block";
+
+            var tabButtons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            tabButtons[buttonIndex].classList.add("active");
+        }
+
+
+
+
+
+
+        function resizeTextarea(textarea) {
+            textarea.style.height = 'auto'; // Reset the height to auto to calculate the new height
+            textarea.style.height = textarea.scrollHeight + 'px'; // Set the new height based on content
+        }
+
+        // Attach the resizeTextarea function to all textarea elements with the name "description[]"
+        const descriptionTextareas = document.querySelectorAll('textarea[name="description[]"]');
+        descriptionTextareas.forEach(textarea => {
+            textarea.addEventListener('input', function () {
+                resizeTextarea(this);
+            });
+        });
+
+
+        setGreeting();
+        setEnquiryText();
+        setAdditionalInfo();
+        setPensionWiseInfo();
+
+        function setGreeting() {
+            var greetingElement = document.getElementById('greeting');
+            var currentTime = new Date();
+            var hours = currentTime.getHours();
+
+            if (hours < 12) {
+                greetingElement.textContent = 'morning';
+            } else if (hours < 18) {
+                greetingElement.textContent = 'afternoon';
+            } else {
+                greetingElement.textContent = 'evening';
+            }
+
+            updateNameOutput('nameInput', 'nameOutput');
+        }
+
+        function updateNameOutput(inputId, outputClass) {
+            var nameInput = document.getElementById(inputId);
+            var nameOutputs = document.getElementsByClassName(outputClass);
+            var nameValue = nameInput.value.trim();
+
+            // Set placeholder text if name is empty
+            var placeholderText = nameValue === '' ? '(name)' : nameValue;
+
+            // Update all elements with the specified class
+            for (var i = 0; i < nameOutputs.length; i++) {
+                nameOutputs[i].textContent = placeholderText;
+            }
+        }
+
+        function setEnquiryText() {
+            var enquiryType = document.getElementById('enquiryType').value;
+            var enquiryText = document.getElementById('enquiryText');
+
+            switch (enquiryType) {
+                case 'RL enquiry':
+                    enquiryText.textContent = 'your enquiry made on our website';
+                    break;
+                case 'Annuity UK':
+                    enquiryText.textContent = 'your enquiry made on the Annuity UK website';
+                    break;
+                case 'Annuity Line':
+                    enquiryText.textContent = 'your enquiry made on the Annuity Line website';
+                    break;
+                case 'The Annuity Service':
+                    enquiryText.textContent = 'your enquiry made on The Annuity Service website';
+                    break;
+                case 'British Life':
+                    enquiryText.textContent = 'your enquiry made on the Annuity Search website';
+                    break;
+                case 'Tesco':
+                    enquiryText.textContent = 'your enquiry made through the Tesco Pension Scheme';
+                    break;
+                default:
+                    enquiryText.textContent = '(default)';
+                    break;
+            }
+        }
+
+        function setAdditionalInfo() {
+            var enquiryType = document.getElementById('enquiryType').value;
+            var additionalInfo = document.getElementById('additionalInfo');
+
+            switch (enquiryType) {
+                case 'Annuity UK':
+                    additionalInfo.textContent = '∎ The Annuity UK service is provided by Retirement Line.';
+                    break;
+                case 'Annuity Line':
+                    additionalInfo.textContent = '∎ The Annuity Line service is provided by Retirement Line.';
+                    break;
+                case 'The Annuity Service':
+                    additionalInfo.textContent = '∎ The Annuity Service is provided by Retirement Line.';
+                    break;
+                case 'Tesco':
+                    additionalInfo.innerHTML = "∎ This may also be requested by Tesco's, who may wish to monitor a small number of calls for quality assurance purposes. <br><br>∎ Tesco have appointed Retirement Line to provide their annuity brokering service.";
+                    break;
+                default:
+                    additionalInfo.textContent = ''; // Clear the content if not matching any of the specified types
+                    break;
+            }
+        }
+
+        function setPensionWiseInfo() {
+            var pensionWiseCheckbox = document.getElementById('pwCheckbox');
+            var pensionWiseInfo = document.getElementById('pensionWiseInfo');
+
+            if (pensionWiseCheckbox.checked) {
+                pensionWiseInfo.textContent = 're-seek';
+            } else {
+                pensionWiseInfo.textContent = 'seek';
+            }
+        }
+
+        // Function to refresh the page
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function calculateAge() {
+            const dobInput = document.getElementById("dob");
+            const ageValue = document.getElementById("ageValue");
+
+            if (dobInput.value) {
+                const dobDate = new Date(dobInput.value);
+                const today = new Date();
+
+                let years = today.getFullYear() - dobDate.getFullYear();
+                let months = today.getMonth() - dobDate.getMonth();
+                let days = today.getDate() - dobDate.getDate();
+
+                if (days < 0) {
+                    // Calculate the total days in the previous month
+                    const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                    const daysInPreviousMonth = tempDate.getDate();
+
+                    // Calculate days remaining in the previous month
+                    days += daysInPreviousMonth;
+
+                    months--; // Adjust months
+                }
+
+                if (months < 0) {
+                    years--; // Adjust years
+                    months += 12;
+                }
+
+                ageValue.textContent = `${years} years, ${months} months, ${days} days`;
+            } else {
+                ageValue.textContent = ''; // Clear age value if DOB is empty
+            }
+        }
+
+
+        function formatCurrencyWithCommas(value) {
+            if (isNaN(value)) return '';
+
+            // Round to 2 decimal places and convert to string
+            const formattedValue = value.toFixed(2).toString();
+
+            // Split the string into parts before and after the decimal point
+            const [integerPart, decimalPart] = formattedValue.split('.');
+
+            // Add commas for thousands in the integer part
+            const integerWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            // Combine the integer and decimal parts with the currency symbol '£'
+            return `£${integerWithCommas}.${decimalPart}`;
+        }
+
+
+        // JavaScript code to calculate income per payment and income difference
+        const tableBody = document.querySelector('tbody');
+
+        function calculateIncomeDifference() {
+            const incomeInputs = tableBody.querySelectorAll('.income-input');
+            const netValueInput = document.getElementById("NetValue");
+
+            incomeInputs.forEach(input => {
+                const rowIndex = input.closest('tr').rowIndex - 1; // Adjust for 0-based index
+                const row = tableBody.rows[rowIndex];
+                const incomeInput = row.querySelector('[name="income[]"]');
+                const incomeDifferenceInput = row.querySelector('[name="income_difference[]"]');
+                const income22Input = row.querySelector('[name="22income_per_payment[]"]');
+
+                const income = parseFloat(incomeInput.value);
+                const frequencySelect = row.querySelector('[name="frequency[]"]');
+                const frequency = frequencySelect.value;
+
+                // Get the net value pack amount
+                const netValue = parseFloat(netValueInput.value);
+
+                // Calculate income per payment
+                let incomePerPayment = 0;
+                if (frequency === 'monthly') {
+                    incomePerPayment = income / 12;
+                } else if (frequency === 'quarterly') {
+                    incomePerPayment = income / 4;
+                } else if (frequency === 'bi-annually') {
+                    incomePerPayment = income / 2;
+                } else if (frequency === 'annually') {
+                    incomePerPayment = income;
+                }
+
+                incomePerPaymentInput = row.querySelector('[name="income_per_payment[]"]');
+                incomePerPaymentInput.value = formatCurrencyWithCommas(incomePerPayment);
+
+                // Calculate income difference
+                const compareToSelect = row.querySelector('[name="compare_to[]"]');
+                const compareTo = parseInt(compareToSelect.value);
+
+                if (!isNaN(compareTo) && compareTo !== rowIndex + 1) {
+                    const compareRow = tableBody.rows[compareTo - 1]; // Adjust for 0-based index
+                    const compareIncomePerPayment = parseFloat(compareRow.querySelector('[name="income_per_payment[]"]').value.replace("£", ""));
+                    const incomeDifference = incomePerPayment - compareIncomePerPayment;
+                    incomeDifferenceInput.value = formatCurrencyWithCommas(incomeDifference);
+                } else {
+                    incomeDifferenceInput.value = '';
+                }
+
+                // Calculate the percentage based on income divided by 30000
+                const percentage = ((income / netValue) * 100).toFixed(2); // Calculate the percentage with 2 decimal places
+                income22Input.value = isNaN(percentage) ? '' : `${percentage}%`;
+            });
+        }
+
+        // Function to add a new row to the table
+        function addNewRow() {
+            const newRow = tableBody.insertRow();
+            const rowIndex = tableBody.rows.length - 1; // Adjust for 0-based index
+            newRow.innerHTML = `
+                        <td><textarea name="description[]" class="textarea-description" rows="1"></textarea></td>
+                        <td><input type="text" name="income[]" class="income-input" data-row-index="${rowIndex}" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" /></td>
+                        <td>
+                            <select name="frequency[]">
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="bi-annually">Bi-annually</option>
+                                <option value="annually">Annually</option>
+                            </select>
+                        </td>
+                        <td>
+                    <input type="text" name="income_per_payment[]" readonly />
+                            <br>
+                    <input type="text" name="22income_per_payment[]" readonly />
+                </td>
+                        <td>
+                            <select name="compare_to[]">
+                                ${Array.from({ length: tableBody.rows.length }, (_, i) => `<option value="${i + 1}">Row ${i + 1}</option>`).join('')}
+                            </select>
+                    <br>
+                        <input type="text" name="income_difference[]" readonly />
+                        </td>
+                    `;
+
+            // Attach event listener to the new income input field
+            const incomeInput = newRow.querySelector('[name="income[]"]');
+            incomeInput.addEventListener('input', calculateIncomeDifference);
+
+            // Attach event listener to the description textarea for resizing
+            const descriptionTextarea = newRow.querySelector('.textarea-description');
+            descriptionTextarea.addEventListener('input', function () {
+                resizeTextarea(this);
+            });
+
+            // Update "Vs." dropdown options for all rows
+            updateCompareToOptions();
+        }
+
+        // Function to dynamically update "Vs." dropdown options for all rows
+        function updateCompareToOptions() {
+            const compareToSelects = document.querySelectorAll('[name="compare_to[]"]');
+
+            compareToSelects.forEach((select, currentIndex) => {
+                // Store the currently selected value
+                const selectedValue = select.value;
+
+                // Update the options for this select element
+                select.innerHTML = Array.from({ length: compareToSelects.length }, (_, i) => {
+                    const optionValue = i + 1;
+                    const isSelected = optionValue === +selectedValue ? 'selected' : '';
+                    return `<option value="${optionValue}" ${isSelected}>Row ${optionValue}</option>`;
+                }).join('');
+            });
+        }
+
+        function openWebAddress() {
+            var webAddressInput = document.getElementById("webAddress").value;
+            if (webAddressInput) {
+                window.open(webAddressInput, "_blank");
+            }
+        }
+
+        function clearWebAddress() {
+            document.getElementById("webAddress").value = "";
+        }
+
+        // Attach event listener to the "Add Row" button
+        const addRowButton = document.getElementById('addRowButton');
+        addRowButton.addEventListener('click', addNewRow);
+
+        // Attach event listeners to all input fields in the table
+        tableBody.addEventListener('input', calculateIncomeDifference);
+
+        // Initialize "Vs." dropdown options
+        updateCompareToOptions();
+
+
+
+        // Attach the refreshPage function to the refresh button's click event
+        const refreshButton = document.getElementById("refreshButton");
+        refreshButton.addEventListener("click", refreshPage);
+
+        var nameInput = document.getElementById('nameInput');
+        var enquiryType = document.getElementById('enquiryType');
+        var pwCheckbox = document.getElementById('pwCheckbox');
+
+        nameInput.addEventListener('input', setGreeting);
+        enquiryType.addEventListener('change', setEnquiryText);
+        enquiryType.addEventListener('change', setAdditionalInfo);
+        pwCheckbox.addEventListener('change', setPensionWiseInfo);
+
+        // Attach the calculateAge function to the input's change event
+        const dobInput = document.getElementById("dob");
+        dobInput.addEventListener("change", calculateAge);
+
+        // Initialize the enquiry text
+        setEnquiryText();
+        setAdditionalInfo();
+        setPensionWiseInfo();
+        calculateAge();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function test999() {
+            calculateIncomeDifference()
+            calculateGrowth()
+        }
+
+
+
+
+
+
+
+
+
+
+        function addNewRowToSecondTable() {
+            const tableBody2 = document.querySelector('#secondTable tbody');
+            const newRow = tableBody2.insertRow();
+            const rowIndex = tableBody2.rows.length - 1; // Adjust for 0-based index
+            newRow.innerHTML = `
+                <td><textarea name="description[]" class="textarea-description" rows="1"></textarea></td>
+                <td><input type="text" name="income[]" class="income-input" data-row-index="${rowIndex}" oninput="calculateGrowth();" /></td>
+                <td>
+                    <select name="term[]">
+                    <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                    <option value="5" selected>5</option> <!-- This option is selected by default -->
+                    <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                                <option value="24">24</option>
+                    <option value="25">25</option>
+                    </select>
+                <br>
+                    <select name="escalation[]">
+                                <option value="Level">Level</option>
+                                <option value="3%">3%</option>
+                                <option value="5%">5%</option>
+                            </select>
+                <br>
+                    <input type="text" name="income_term[]" readonly />
+                </td>
+                <td><input type="text" name="gma[]" class="income-input" data-row-index="${rowIndex}" oninput="calculateGrowth();" /></td>
+                <td>
+                    <input type="text" name="gma_growth[]" readonly />
+                </td>
+            `;
+
+
+
+            // Attach event listener to the description textarea for resizing
+            const descriptionTextarea = newRow.querySelector('.textarea-description');
+            descriptionTextarea.addEventListener('input', function () {
+                resizeTextarea(this);
+            });
+        }
+
+        // Add a button to add a new row to the second table
+        const addRowButtonSecondTable = document.getElementById('addRowButtonSecondTable');
+        addRowButtonSecondTable.addEventListener('click', addNewRowToSecondTable);
+
+
+
+
+
+
+
+
+
+
+        // JavaScript code to calculate FTA growth
+        const tableBody2 = document.querySelector('#secondTable tbody');
+
+        // Attach event listeners to all input fields in the table
+        tableBody2.addEventListener('input', calculateGrowth);
+
+
+
+        function calculateGrowth() {
+            const incomeInputs = tableBody2.querySelectorAll('.income-input');
+            const netValueInput = document.getElementById("NetValue");
+
+            incomeInputs.forEach(input => {
+                const rowIndex = input.closest('tr').rowIndex - 1; // Adjust for 0-based index
+                const row = tableBody2.rows[rowIndex];
+
+                const incomeInput = parseFloat(row.querySelector('[name="income[]"]').value) || 0;
+                const termSelect = parseInt(row.querySelector('[name="term[]"]').value);
+                const gmaInput = parseFloat(row.querySelector('[name="gma[]"]').value) || 0;
+
+                const incomeTerm = row.querySelector('[name="income_term[]"]');
+                const escalationSelect = row.querySelector('[name="escalation[]"]');
+                const gmaGrowth = row.querySelector('[name="gma_growth[]"]');
+
+                // Get the selected escalation value (level, 3%, or 5%)
+                const escalation = escalationSelect.value;
+
+                // Calculate the growth for the current row
+                let wow;
+                if (escalation === "Level") {
+                    wow = incomeInput * termSelect;
+                } else if (escalation === "3%") {
+                    wow = incomeInput * (Math.pow(1.03, termSelect) - 1) / 0.03;
+                } else if (escalation === "5%") {
+                    wow = incomeInput * (Math.pow(1.05, termSelect) - 1) / 0.05;
+                }
+
+                const growth = (wow + gmaInput) - parseFloat(netValueInput.value) || 0;
+
+                incomeTerm.value = formatCurrencyWithCommas(wow);
+
+                // Set the value of the gma_growth input for the current row
+                gmaGrowth.value = formatCurrencyWithCommas(growth);
+
+
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const income1Field = document.getElementById("income1");
+        const slider = document.getElementById("slider");
+        const guaranteedIncomeField = document.getElementById("guaranteedIncome");
+        const sliderValue = document.getElementById("sliderValue");
+
+        const deathSlider1 = document.getElementById("deathSlider1");
+        const deathValue1 = document.getElementById("deathValue1");
+        const incomeReceived1Field = document.getElementById("incomeReceived1");
+        const incomeToBePaid1Field = document.getElementById("incomeToBePaid1");
+
+
+        // Function to update the guaranteed income field and the label
+        function updateGuaranteedIncome() {
+            const income1 = parseFloat(income1Field.value);
+            const sliderVal = parseFloat(slider.value);
+            const guaranteedIncome = income1 * sliderVal;
+            guaranteedIncomeField.value = formatCurrencyWithCommas(guaranteedIncome);
+            sliderValue.textContent = sliderVal;
+            updateIncomeToBePaid1();
+        }
+
+        // Function to update income received, income to be paid, and death value for GP
+        function updateIncomeToBePaid1() {
+            const income1 = parseFloat(income1Field.value);
+            const sliderVal = parseFloat(slider.value);
+            const deathVal1 = parseFloat(deathSlider1.value);
+            const incomeReceived1 = income1 * deathVal1;
+            incomeReceived1Field.value = formatCurrencyWithCommas(incomeReceived1);
+            const incomeToBePaid1 = income1 * (sliderVal - deathVal1);
+
+
+            incomeToBePaid1Field.value = formatCurrencyWithCommas(Math.max(incomeToBePaid1, 0));
+
+            deathValue1.textContent = deathVal1;
+        }
+
+        income1Field.addEventListener("input", updateGuaranteedIncome);
+        slider.addEventListener("input", updateGuaranteedIncome);
+        deathSlider1.addEventListener("input", updateIncomeToBePaid1);
+
+        // Initialize the guaranteed income, income received, and lump sum when the page loads
+        updateGuaranteedIncome();
+        updateIncomeToBePaid1();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const netValueInput = document.getElementById("NetValue");
+        const annuityPriceInput = document.getElementById("annuityPrice");
+        const amountProtected = document.getElementById("amountProtected");
+        const sliderValue2 = document.getElementById("sliderValue2");
+
+
+
+
+
+
+
+
+
+        const incomeReceived2Field = document.getElementById("incomeReceived2");
+
+        const lumpSum = document.getElementById("lumpSum");
+
+
+        slider2.addEventListener("input", updateSum);
+        deathSlider2.addEventListener("input", updateSum);
+        income1Field.addEventListener("input", updateSum);
+        netValueInput.addEventListener("input", updateSum);
+
+
+        function updateSum() {
+
+            const income1 = parseFloat(netValueInput.value);
+            const sliderVal = parseFloat(slider2.value);
+
+            const income2 = parseFloat(income1Field.value);
+
+            const deathVal2 = parseFloat(deathSlider2.value);
+
+            const incomeReceived2 = income2 * deathVal2;
+
+
+            incomeReceived2Field.value = formatCurrencyWithCommas(incomeReceived2);
+
+            const ap = ((income1 / 100) * sliderVal) - incomeReceived2;
+
+            lumpSum.value = formatCurrencyWithCommas(Math.max(ap, 0));
+
+            sliderValue2.textContent = sliderVal;
+            deathValue2.textContent = deathVal2;
+
+            annuityPrice.value = formatCurrencyWithCommas(income1);
+            amountProtected.value = formatCurrencyWithCommas(((income1 / 100) * sliderVal));
+
+        }
+
+
+
+
+
+
+
+
+
+
+        const jlIncome = document.getElementById("jlIncome");
+        income1Field.addEventListener("input", updateJL);
+        slider3.addEventListener("input", updateJL);
+
+
+        function updateJL() {
+
+            const sliderVal = parseFloat(slider3.value);
+            const income3 = parseFloat(income1Field.value);
+
+
+
+            const jl = (income3 / 100) * sliderVal;
+
+
+
+            jlIncome.value = formatCurrencyWithCommas(jl);
+
+            sliderValue3.textContent = sliderVal;
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Add event listeners for the input fields and slider
+        const escalationInput = document.getElementById("escalation2");
+        const durationSlider = document.getElementById("durationSlider");
+
+        let highlighted = false;
+
+        income1Field.addEventListener("input", updateTable);
+        escalationInput.addEventListener("input", updateTable);
+        durationSlider.addEventListener("input", updateTable);
+        netValueInput.addEventListener("input", updateTable);
+
+        function updateTable() {
+            const incomeTable = document.getElementById("incomeTable");
+            const tableBody = incomeTable.querySelector("tbody");
+            const income = parseFloat(income1Field.value);
+            const escalation = parseFloat(escalationInput.value);
+            const duration = parseInt(durationSlider.value);
+            const netValue = parseFloat(netValueInput.value);
+            let cumulativeIncome = 0;
+
+            // Clear the previous table and reset highlighting
+            tableBody.innerHTML = "";
+            highlighted = false;
+
+            durationValue.textContent = duration
+
+            if (!isNaN(income) && !isNaN(escalation) && !isNaN(duration)) {
+                // Create and populate the new table
+                for (let year = 1; year <= duration; year++) {
+                    const row = tableBody.insertRow();
+                    const yearCell = row.insertCell(0);
+                    yearCell.textContent = year;
+
+                    const incomeCell = row.insertCell(1);
+                    const increaseCell = row.insertCell(2); // New column for increase
+                    const cumulativeIncomeCell = row.insertCell(3);
+
+                    const incomeValue = income * Math.pow((1 + escalation / 100), year - 1);
+                    incomeCell.textContent = formatCurrencyWithCommas(incomeValue);
+
+                    const increaseValue = year > 1 ? incomeValue - (income * Math.pow(1 + escalation / 100, year - 2)) : 0; // Calculate increase
+                    increaseCell.textContent = formatCurrencyWithCommas(increaseValue);
+
+                    cumulativeIncome += incomeValue;
+                    cumulativeIncomeCell.textContent = formatCurrencyWithCommas(cumulativeIncome);
+
+                    // Highlight the row if cumulative income is greater than or equal to net value
+                    if (!highlighted && cumulativeIncome >= netValue) {
+                        row.classList.add("highlight");
+                        highlighted = true;
+                    }
+                }
+
+                incomeTable.style.display = "table";
+            } else {
+                incomeTable.style.display = "none";
+            }
+        }
+
+        // Initial table update
+        updateTable();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
