@@ -304,7 +304,7 @@
         <p style="text-align: center; font-weight: bold; text-decoration: underline;">Guidance</p>
         <p><mark>∎ Can I please ask if you have taken guidance from PensionWise, the Government’s pension guidance service in the last 12 months?</mark>
         <p>∎ Have you taken advice and received a personal recommendation from a financial adviser?</p>
-        <p>∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should <mark><span id="pensionWiseInfo"></span> guidance</mark> from PensionWise or I can refer you to a regulated Financial Adviser.
+        <p>∎ If at any point you are uncertain about which options to choose, or your personal circumstances have changed, or there has been a significant change in the value of your pension savings, then you should <mark><span id="pensionWiseInfo"></span> guidance</mark> from PensionWise or <span id="faInfo"></span>.
         <p>
             ∎ Thank you for your patience <mark><span class="nameOutput">(name)</span></mark>.
             <div class="tab-button" onclick="openTab('tab2', 1)" style="border: 1px solid #000;">2</div>
@@ -1585,6 +1585,28 @@
             }
         }
 
+
+        function setFAInfo() {
+            var enquiryType = document.getElementById('enquiryType').value;
+            var faInfo = document.getElementById('faInfo');
+
+            switch (enquiryType) {
+                case 'Tesco':
+                    faInfo.innerHTML = '<mark>I can refer you to Origen Financial Services an IFA provided, at preferential rates, for Tesco scheme members</mark>';
+                    break;
+                default:
+                    faInfo.textContent = 'I can refer you to a regulated Financial Adviser';
+                    break;
+            }
+        }
+
+
+
+
+
+
+
+
         function setPensionWiseInfo() {
             var pensionWiseCheckbox = document.getElementById('pwCheckbox');
             var pensionWiseInfo = document.getElementById('pensionWiseInfo');
@@ -1801,8 +1823,9 @@
 
         nameInput.addEventListener('input', setGreeting);
         enquiryType.addEventListener('change', setEnquiryText);
-        enquiryType.addEventListener('change', setAdditionalInfo);
+        enquiryType.addEventListener('change', setAdditionalInfo);   
         pwCheckbox.addEventListener('change', setPensionWiseInfo);
+        enquiryType.addEventListener('change', setFAInfo);  
 
         // Attach the calculateAge function to the input's change event
         const dobInput = document.getElementById("dob");
@@ -1812,6 +1835,7 @@
         setEnquiryText();
         setAdditionalInfo();
         setPensionWiseInfo();
+        setFAInfo();
         calculateAge();
 
 
