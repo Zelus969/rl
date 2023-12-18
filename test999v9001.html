@@ -248,6 +248,45 @@
 
 
 
+
+            	/* Style for the text area */
+                #NetValue {
+            width: 100%;
+            box-sizing: border-box;
+            resize: none; /* Disable manual resizing */
+            overflow: hidden; /* Hide the scrollbars initially */
+        }
+
+
+        /* Style for the text area */
+        #enquiryType {
+            width: 100%;
+            box-sizing: border-box;
+            resize: none; /* Disable manual resizing */
+            overflow: hidden; /* Hide the scrollbars initially */
+        }
+
+
+
+
+        #container {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+  }
+
+  #refreshButton {
+    margin-right: 5px; /* Adjust the margin as needed */
+  }
+
+  #nameInput {
+    flex: 1;
+    box-sizing: border-box;
+  }
+
+
+
+
+
     </style>
 </head>
 <body>
@@ -260,8 +299,10 @@
         <div class="frozen-pane">
 
 
-            <button id="refreshButton">Refresh</button>
-            <input type="text" id="nameInput" placeholder="Enter Name">
+            <div id="container">
+                <button id="refreshButton">Refresh</button>
+                <input type="text" id="nameInput" placeholder="Enter Name">
+              </div>
 
             <table border='1' style='width:100%;'>
                 <tr>
@@ -277,7 +318,8 @@
                         </select>
                         <br><label for="pwCheckbox">PW:</label>
                         <input type="checkbox" id="pwCheckbox">
-                        <br><label for="faCheckbox">FA:</label>
+                        <label>&nbsp;</label>
+                        <label for="faCheckbox">FA:</label>
                         <input type="checkbox" id="faCheckbox">
                         <br><input type="text" id="NetValue" placeholder="Enter Net Value" oninput="test999()">
                     </td>
@@ -516,6 +558,7 @@
 
 
         <div id="tab3" class="tab">
+            <p style="text-align: center; font-weight: bold; text-decoration: underline;">LTA</p>
             <p>
                 <mark><span style="color: red;">∎</span> Can you please confirm your marital status?</mark>
 
@@ -624,6 +667,19 @@
 
             <p><strong><u>2) Value Protection</u></strong></p>
             <p><span style="color: red;">∎</span> This provides a death benefit equal to the annuity purchase price less all the income paid to you prior to your death. This is paid to your nominated beneficiary tax free if you die before age 75.</p>
+
+            <table border='1' style='width:100%;'>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: center; white-space: normal;'>
+                        <strong><u>IF JOINT</u></strong>
+                    </td>
+                </tr>
+                <tr style='background-color: #fbe4d5;'>
+                    <td style='text-align: left; white-space: normal;'>
+                        <span style="color: red;">(CHANGE TO "DEATH OF LAST SURVIVOR" - I.E. THE LUMP SUM IS PAID ON THE SECOND DEATH. "DEATH OF ANNUITANT" MEANS JL AND VP = MAX 100%)</span>
+                    </td>
+                </tr>
+            </table>
 
             <p style="text-align: center; font-weight: bold; text-decoration: underline;">Annuity Payments</p>
             
@@ -773,6 +829,7 @@
 
 
         <div id="tab4" class="tab">
+            <p style="text-align: center; font-weight: bold; text-decoration: underline;">FTA</p>
             <p>
                 <mark><span style="color: red;">∎</span> Can you please confirm your marital status?</mark>
 
@@ -962,6 +1019,7 @@
 
 
         <div id="tab5" class="tab">
+            <p style="text-align: center; font-weight: bold; text-decoration: underline;">OUTRO</p>
 
             <p>∎ Within the quote summary email there are links to our Client Agreement as well as a useful guide to pension income and our annuity risk warnings and benefits document.</p>
             <p>∎ I recommend that you read these documents to help you understand the risks involved and to make an informed decision.</p>
@@ -1019,6 +1077,8 @@
 
 
         <div id="tab6" class="tab">
+
+            <p style="text-align: center; font-weight: bold; text-decoration: underline;">APP</p>
 
 
 
