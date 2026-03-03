@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Branching Script Reader</title>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .no-select { user-select: none; }
+
+  /* ================= TOP BAR ================= */
+  #top-bar {
+    background-color: #f0f0f0;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 1000;
+  }
+
+  #top-bar select {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  /* ================= LAYOUT ================= */
+  #main-container {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  #content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ================= TAB STYLING ================= */
+  .tab-style {
+    flex: 1;
+    padding: 12px 0;
+    cursor: pointer;
+    background: #f3f3f3;
+    border: none;
+    border-right: 1px solid #ccc;
+    transition: background 0.2s;
+  }
+
+  .tab-style:hover {
+    background: #eaeaea;
+  }
+
+  .tab-style.active {
+    background-color: var(--act-color, #007bff); /* Uses the color defined in HTML */
+    color: #fff;
+  }
+
+  /* ================= REAL TAB BAR ================= */
+  #horizontal-pane {
+    display: flex;
+    background: #f3f3f3;
+    border-bottom: 1px solid #ccc;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  #horizontal-pane .tab-style:last-child {
+    border-right: none;
+  }
+
+  .tab-btn.hidden {
+    display: none;
+  }
+
+  /* ================= CONTENT ================= */
+  #content {
+    flex: 1;
+    padding: 0 5px;
+    overflow: auto;
+  }
+
+  .script-block {
+    margin-bottom: 1.5em;
+  }
+
+  .button-group {
+    display: flex;
+    width: 100%; /* Spans the full width of the container */
+    gap: 2px;    /* Small gap between buttons */
+    margin: 10px 0;
+  }
+
+  .button-group button {
+    flex: 1;     /* Forces buttons to grow equally */
+    padding: 5px;
+    cursor: pointer;
+    border: 1px solid #7f7f7f;
+    background: #f3f3f3;
+  }
+
+  .button-group button.selected {
+    background-color: #007bff;
+    color: white !important;
+    font-weight: bold;
+  }
+
+  .button-group button:hover {
+    background-color: #eaeaea; /* Same grey as the right pane */
+  }
+
+  .button-group button.selected:hover {
+    background-color: #007bff; /* A slightly darker blue when hovering over a selected button */
+    color: white;
+  }
+
+  table {
+      width: 100%;
+      border-collapse: collapse; 
+  }
+
+  table, th, td {
+      border: 1px solid #ccc;
+  }
+
+  td {
+      padding: 10px;
+      text-align: left;
+      vertical-align: top; /* Keeps text at the top if one side is longer */
+  }
+
+  td p {
+    margin-top: 0;      /* Removes gap at the top */
+    margin-bottom: 1;   /* Removes gap at the bottom */
+
+  }
+
+  .label-cell {
+      background-color: #f0f0f0;
+      font-weight: bold;
+  }
+
+  /* ================= DYNAMIC TABLE ================= */
+  .pension-card {
+    border: 1px solid black;
+    background-color: #f0f0f0;
+    padding: 8px; /* Reduced padding */
+    margin-bottom: 10px;
+    border-radius: 6px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 6px; /* Tight gaps */
+  }
+
+  .full-width {
+    grid-column: span 2;
+  }
+
+  .pension-card input, .pension-card select {
+    width: 100%;
+    padding: 4px 6px; /* Narrower inputs */
+    box-sizing: border-box;
+    font-size: 12px; /* Smaller font to save space */
+    height: 28px; /* Fixed height for consistency */
+  }
+
+  /* Target small text for select placeholders */
+  .pension-card select {
+    color: #757575;
+  }
+
+  .btn-del-card {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    color: #888;
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 5;
+  }
+  
+  .btn-del-card:hover { color: red; }
+
+  /* ================= RIGHT PANE ================= */
+  #right-pane {
+    width: 100px;
+    min-width: 100px;
+    max-width: 600px;
+    background-color: #fafafa;
+    border-left: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #drag-handle {
+    position: absolute;
+    top: 0;
+    left: -5px;
+    width: 10px;
+    height: 100%;
+    cursor: ew-resize;
+  }
+
+  .copy-btn {
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: left; 
+    display: flex; 
+    flex-direction: column; 
+
+    justify-content: flex-start; 
+    padding: 0px 0px; 
+    height: auto; 
+    white-space: pre-wrap;
+  }
+
+  /* Hide summary buttons by default if they only contain the header */
+  .dynamic-summary-btn {
+    display: none !important; /* Hidden until content is added */
+    margin-bottom: 10px;
+  }
+
+/* Class to show the button */
+  .dynamic-summary-btn.has-content {
+    display: flex !important;
+  }
+
+  /* ================= MULTI-MODAL STYLES ================= */
+  #modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; /* KEY: Allows clicking the script underneath */
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-window {
+    display: none; /* Hidden by default */
+    background: white;
+    width: 85%;
+    max-width: 450px;
+    max-height: 75vh;
+    border-radius: 8px;
+    position: relative;
+    padding: 20px;
+    /* Box-shadow creates the 'dim' look without blocking mouse clicks */
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0,0,0,0.5);
+    overflow-y: auto;
+    pointer-events: auto; /* Re-enables clicking inside the pop-up */
+    border: 1px solid #ccc;
+  }
+
+  .close-modal-btn {
+    position: absolute; top: 5px; right: 10px;
+    border: none; background: none; font-size: 24px; cursor: pointer; color: #888;
+  }
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= MODAL OVERLAY ================= -->
+<div id="modal-overlay">
+    <div id="modal-1" class="modal-window">
+        <button class="close-modal-btn" onclick="closeAllModals()">&times;</button>
+        <p>∎ Good <span class="time-greeting"></span>. My name is Johnathon Davis and I'm an Annuity Specialist at Retirement Line. I'm having a chat with <mark><span class="client-name">(name)</span></mark> about their pension options and will be providing them with some annuity quotations. The basis we are looking at is a joint life annuity meaning if you outlive <mark><span class="client-name">(name)</span></mark>, the income will pass over to you.</p>
+        <p>∎ For me to be able to run the quotations, it involves asking some questions in relation to your health and lifestyle, to see if they qualify for an enhancement, which could give <mark><span class="client-name">(name)</span></mark> a higher level of income. This information will then be sent to the annuity providers on our panel who will provide their highest terms.</p>
+        <p>∎ Do you consent for us to collect and share this data?</p>
+        <div class="button-group">
+            <button onclick="updateSummary('fta-btn', 'JL Data Consent: Yes', 'jl-consent', this); closeAllModals()">Yes</button>
+            <button onclick="updateSummary('fta-btn', 'JL Data Consent: No', 'jl-consent', this); closeAllModals()">No</button>
+        </div>
+    </div>
+  
+  <div id="modal-2" class="modal-window">
+    <button class="close-modal-btn" onclick="closeAllModals()">×</button>
+    
+    <div style="margin-top:15px;">
+        <select id="lsa-provider-select" style="width:100%;">
+            <option value="just" selected>JUST</option>
+            <option value="lg">Legal & General (L&G)</option>
+            <option value="sl">Standard Life</option>
+            <option value="canada">Canada Life</option>
+            <option value="aviva">Aviva</option>
+            <option value="lv">LV</option>
+        </select>
+    </div>
+
+    <!-- All provider blocks – only one is visible at a time -->
+    <div id="lsa-just"     class="lsa-provider-block" style="display:none;">
+        <p style="text-align:center;font-weight:bold;text-decoration:underline;">JUST</p>
+        ∎ Will the TFC lump sum indicated take you over the current LSA of £268,275?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Will the TFC indicated take you over the current LSA? - Yes', 'lsa1', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Will the TFC indicated take you over the current LSA? - No', 'lsa1', this)">No</button>
+        </div>
+        ∎ Will the TFC lump sum indicated take you over the current LSDBA of £1,073,100?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Will the TFC indicated take you over the current LSDBA? - Yes', 'lsa2', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Will the TFC indicated take you over the current LSDBA? - No', 'lsa2', this)">No</button>
+        </div>
+        ∎ Do you have any protections in place against the LSA or LSDBA?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - Yes', 'lsa3', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - No', 'lsa3', this)">No</button>
+        </div>
+    </div>
+
+    <div id="lsa-lg"       class="lsa-provider-block" style="display:none;">
+        <p style="text-align:center;font-weight:bold;text-decoration:underline;">L&G</p>
+        ∎ Are you about to take a TFC sum that takes you over the current LSA?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Are you about to take a TFC sum that takes you over the current LSA? - Yes', 'lsa1', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Are you about to take a TFC sum that takes you over the current LSA? - No', 'lsa1', this)">No</button>
+        </div>
+        ∎ Are you about to take a TFC sum that takes you over the current LSDBA?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Are you about to take a TFC sum that takes you over the current LSDBA? - Yes', 'lsa2', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Are you about to take a TFC sum that takes you over the current LSDBA? - No', 'lsa2', this)">No</button>
+        </div>
+    </div>
+
+    <div id="lsa-sl"       class="lsa-provider-block" style="display:none;">
+        <p style="text-align:center;font-weight:bold;text-decoration:underline;">Standard Life</p>
+        ∎ Do you have any protections? (if yes, we can only accept applications under the OMO route)
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - Yes', 'lsa1', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - No', 'lsa1', this)">No</button>
+        </div>
+        ∎ If you have requested any TFC, will this exceed your LSA? (if yes, we will not be able to pay any TFC cash that exceeds your LSA)
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• If you have requested any TFC, will this exceed your LSA? - Yes', 'lsa2', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• If you have requested any TFC, will this exceed your LSA? - No', 'lsa2', this)">No</button>
+        </div>
+        ∎ Please confirm the amount of LSA you have remaining:
+        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Please confirm the amount of LSA you have remaining? - ' + this.value, 'lsa3')">
+    </div>
+
+    <div id="lsa-canada"   class="lsa-provider-block" style="display:none;">
+        <p style="text-align:center;font-weight:bold;text-decoration:underline;">Canada Life</p>
+        ∎ Are you about to take a TFC sum that takes you over the current LSA?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Are you about to take a TFC sum that takes you over the current LSA? - Yes', 'lsa1', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Are you about to take a TFC sum that takes you over the current LSA? - No', 'lsa1', this)">No</button>
+        </div>
+        ∎ Please indicate how much of your LSA you have already used:
+        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Please indicate how much of your LSA you have already used - ' + this.value, 'lsa2')">
+        ∎ Are you about to take a TFC sum that takes you over the current LSDBA?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Are you about to take a TFC sum that takes you over the current LSDBA? - Yes', 'lsa3', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Are you about to take a TFC sum that takes you over the current LSDBA? - No', 'lsa3', this)">No</button>
+        </div>
+        ∎ Please indicate how much of your LSDBA you have already used:
+        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Please indicate how much of your LSDBA you have already used - ' + this.value, 'lsa4')">
+        ∎ Do you have any protections?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - Yes', 'lsa5', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - No', 'lsa5', this)">No</button>
+        </div>
+    </div>
+
+    <div id="lsa-aviva"    class="lsa-provider-block" style="display:none;">
+        <p style="text-align:center;font-weight:bold;text-decoration:underline;">Aviva</p>
+        ∎ Do you have enough unused LSA and LSDBA to cover the payment of the TFC you are about to take?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Do you have enough unused LSA and LSDBA to cover the payment of the TFC you are about to take? - Yes', 'lsa1', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Do you have enough unused LSA and LSDBA to cover the payment of the TFC you are about to take? - No', 'lsa1', this)">No</button>
+        </div>
+        ∎ Do you have any protections?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - Yes', 'lsa2', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - No', 'lsa2', this)">No</button>
+        </div>
+        ∎ Do you have a transitional TFC certificate?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Do you have a transitional TFC certificate? - Yes', 'lsa3', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Do you have a transitional TFC certificate? - No', 'lsa3', this)">No</button>
+        </div>
+    </div>
+
+    <div id="lsa-lv"       class="lsa-provider-block" style="display:none;">
+        <p style="text-align:center;font-weight:bold;text-decoration:underline;">LV</p>
+        ∎ Will the TFC requested take you over the current LSA?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Will the TFC requested take you over the current LSA? - Yes', 'lsa1', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Will the TFC requested take you over the current LSA? - No', 'lsa1', this)">No</button>
+        </div>
+        ∎ Will the TFC requested take you over the current LSDBA?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Will the TFC requested take you over the current LSDBA? - Yes', 'lsa2', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Will the TFC requested take you over the current LSDBA? - No', 'lsa2', this)">No</button>
+        </div>
+        ∎ Do you have any protections?
+        <div class="button-group">
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - Yes', 'lsa3', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - No', 'lsa3', this)">No</button>
+        </div>
+    </div>
+
+
+
+</div>
+
+    
+</div>
+
+<!-- ================= TOP BAR ================= -->
+<div id="top-bar">
+  <button onclick="location.reload()">Refresh</button>
+  <select id="enquirytype">
+    <option value="RL enquiry" selected>RL enquiry</option>
+    <option value="Annuity UK">Annuity UK</option>
+    <option value="Annuity Line">Annuity Line</option>
+    <option value="Tesco">Tesco</option>
+    <option value="NEST">NEST</option>
+    <option value="Lloyds">Lloyds</option>
+    <option value="Virgin">YCB (Virgin)</option>
+    <option value="Wesleyan">Wesleyan</option>
+    <option value="MoneyService">The Money Service</option>
+    <option value="WPSA">WPSA</option>
+    <option value="IFA Introduced">IFA Introduced</option>
+  </select>
+  <button id="toggleVisibility">></button>
+</div>
+
+<!-- ================= MAIN ================= -->
+<div id="main-container">
+
+  <!-- LEFT -->
+  <div id="content-wrapper">
+    <div id="horizontal-pane">
+      <button class="tab-btn tab-style" data-tab="1">1</button>
+      <button class="tab-btn tab-style" data-tab="2">2</button>
+      <button class="tab-btn tab-style" data-tab="3">LTA</button>
+      <button class="tab-btn tab-style" data-tab="4" style="--act-color: #f47e3c;">FTA</button>
+      <button class="tab-btn tab-style" data-tab="5">5</button>
+      <button class="tab-btn tab-style" data-tab="6">6</button>
+    </div>
+    <div id="content"></div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right-pane">
+    <div id="drag-handle"></div>
+    <div style="padding:2px; text-align: center;">
+
+        <div style="border-bottom: 1px solid #ccc;">
+            <button class="copy-btn" style="text-align: center; margin-top: 5px; margin-bottom: 5px; padding: 10px;" onclick="openModal('modal-1')">🧮 Calc</button>
+            <button class="copy-btn" style="text-align: center; margin-top: 5px; margin-bottom: 5px; padding: 10px;" onclick="openModal('modal-2')">📝 LSA</button>
+        </div>
+
+        <h4>Information Summary</h4>
+        <button id="advised-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">WPSA<div id="advised-source-header"></div></button>
+        <button id="ifa-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">IFA Introduced:<div id="ifa-source-header"></div></button>
+        <button id="copy-summary-btn" class="copy-btn" onclick="copyButtonText(this)"><div id="summary-header">DP and RI Complete</div></button>
+        <button id="fta-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">Pension Policies:<div id="fta-source-header"></div></button>
+        <button id="pw-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">TEST<div id="pw-source-header"></div></button>
+        <button id="lsa-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">LSA Questions:<div id="lsa-source-header"></div></button>
+
+    </div>
+  </div>
+
+</div>
+
+<script src="scripts-data.js"></script>
+
+<script>
+/* ================= SCRIPT BLOCKS ================= */
+
+
+
+/* ================= TAB FLOWS ================= */
+const tabFlows = {
+  "RL enquiry": { 1: ['intro_RetirementLine1','dataprotection','ri_RetirementLine','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: ['objectives','options','datagathering','annuityoptions',nextToTab([{tabNumber: 3, tabText: "LTA", tabColour: "#69ae53"},{tabNumber: 4, tabText: "FTA", tabColour: "#f47e3c"}])], 3: ['lsa',nextToTab({tabNumber: 5, tabText: "OUTRO", tabColour: "#007bff"})], 4: [], 5: ['outro'], 6: []},
+  "Annuity UK": { 1: ['intro_AnnuityUK','dataprotection','ri_AnnuityUK','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
+  "Annuity Line": { 1: ['intro_AnnuityLine','dataprotection','ri_AnnuityLine','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
+  "Tesco": { 1: ['intro_Tesco','dataprotection','ri_Tesco','guidance_Tesco','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
+  "NEST": { 1: ['intro_NEST','dataprotection','ri_NEST','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
+  "Lloyds": { 1: ['intro_Lloyds','dataprotection_Lloyds','ri_Lloyds','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
+  "Virgin": { 1: ['intro_Virgin','dataprotection','ri_Virgin','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
+  "Wesleyan": { 1: ['intro_Wesleyan','dataprotection','ri_Wesleyan','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: ['objectives','warning_Wesleyan','options'], 3: [], 4: [], 5: [], 6: []},
+  "MoneyService": { 1: ['intro_MoneyService','dataprotection','ri_MoneyService','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
+  "WPSA": { 1: ['intro_WPSA','dataprotection','ri_WPSA',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
+  "IFA Introduced": { 1: ['intro_IFA','dataprotection','ri_IFA','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []}
+};
+
+let activeTab = 1;
+
+/* ================= LOGIC ================= */
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "morning";
+  if (hour < 18) return "afternoon";
+  return "evening";
+}
+
+function applyAutoGreeting() {
+  // Select all elements with the class 'time-greeting'
+  const greetings = document.querySelectorAll('.time-greeting');
+  
+  // Loop through each one and update the text
+  greetings.forEach(el => {
+    el.textContent = getGreeting();
+  });
+}
+
+function updateVar(className, newValue, defaultValue, element) {
+  // We use querySelectorAll to find every instance of the class
+  const elements = document.querySelectorAll('.' + className);
+  if (elements.length === 0) return;
+
+  elements.forEach(el => {
+    // If it's a button being unselected, use default
+    if (element && element.tagName === 'BUTTON' && !element.classList.contains('selected')) {
+      el.textContent = defaultValue;
+    } else {
+      // If it's an input or a selected button, use the new value
+      el.textContent = newValue || defaultValue;
+    }
+  });
+}
+
+function goToTab(tab) {
+  activeTab = tab;
+  renderFromTab(tab);
+}
+
+function nextToTab(tabConfigs) {
+  // Ensure we are working with an array even if only one config is passed
+  const configs = Array.isArray(tabConfigs) ? tabConfigs : [tabConfigs];
+  
+  const buttonsHtml = configs.map(conf => `<button class="tab-style active" style="flex:1; --act-color: ${conf.tabColour || '#007bff'}; border: none; margin: 0;" onclick="goToTab(${conf.tabNumber})">${conf.tabText}</button>`).join('');
+
+  return `<div class="script-block" style="display:flex; gap:0;">${buttonsHtml}</div>`;
+}
+
+function renderFromTab(tab) {
+  const enquiryType = document.getElementById('enquirytype').value;
+  const flow = tabFlows[enquiryType]?.[tab] || [];
+
+  document.getElementById('content').innerHTML =
+    flow.map(k => typeof k === 'string' ? blocks[k] || k : k).join('');
+
+  document.querySelectorAll('#horizontal-pane .tab-btn').forEach(btn => {
+    const t = btn.dataset.tab;
+    const tabFlow = tabFlows[enquiryType]?.[t] || [];
+    btn.classList.toggle('hidden', tabFlow.length === 0);
+    btn.classList.toggle('active', t == activeTab);
+  });
+
+  document.getElementById('content').scrollTo({ top: 0, behavior: "smooth" });
+
+  applyAutoGreeting();
+}
+
+function addPensionCard() {
+    const container = document.getElementById('pension-container');
+    if (!container) return;
+
+    const card = document.createElement('div');
+    card.className = 'pension-card';
+    card.innerHTML = `
+        <button class="btn-del-card" onclick="this.closest('.pension-card').remove(); syncTableToSummary();">×</button>
+        <div class="card-grid" style="margin-top:15px;">
+            <div><input type="text" placeholder="Provider" class="js-provider" oninput="syncTableToSummary()"></div>
+            <div>
+                <select class="js-pension-type" onchange="syncTableToSummary()">
+                    <option value="" selected disabled>Pension Type...</option>
+                    <option value="Personal Pension">Personal Pension</option>
+                    <option value="Occupational Pension">Occupational Pension</option>
+                </select>
+            </div>
+            <div><input type="text" placeholder="Value £" class="js-value" oninput="syncTableToSummary()"></div>
+            <div>
+                <select class="js-status" onchange="syncTableToSummary()">
+                    <option value="" selected disabled>Status...</option>
+                    <option value="Uncrystallised">Uncrystallised</option>
+                    <option value="Crystallised">Crystallised</option>
+                </select>
+            </div>
+            <div>
+                <select class="js-transfer" onchange="syncTableToSummary()">
+                    <option value="" selected disabled>Transfer Type...</option>
+                    <option value="Full">Full</option>
+                    <option value="Partial">Partial</option>
+                </select>
+            </div>
+            <div>
+                <select class="js-contrib" onchange="syncTableToSummary()">
+                    <option value="" selected disabled>Contributing?</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="full-width"><input type="text" placeholder="Notes" class="js-notes" oninput="syncTableToSummary()"></div>
+        </div>`;
+    container.appendChild(card);
+}
+
+function syncTableToSummary() {
+    const cards = document.querySelectorAll('.pension-card');
+    let summaryLines = [];
+    
+    cards.forEach((card) => {
+        const provider = card.querySelector('.js-provider')?.value.trim() || "";
+        const pType = card.querySelector('.js-pension-type')?.value || "";
+        const rawValue = card.querySelector('.js-value')?.value.trim() || "";
+        const status = card.querySelector('.js-status')?.value || "";
+        const transfer = card.querySelector('.js-transfer')?.value || "";
+        const contrib = card.querySelector('.js-contrib')?.value || "";
+        const notes = card.querySelector('.js-notes')?.value.trim() || "";
+        
+        // Clean the value: remove commas and £ signs to check if it's a number
+        const cleanValue = rawValue.replace(/[£,]/g, '');
+        const isNumeric = cleanValue !== '' && !isNaN(cleanValue);
+
+        if (provider || pType || isNumeric || status || transfer || contrib || notes) {
+            let parts = [];
+
+            if (provider) parts.push(provider);
+            if (pType) parts.push(pType);
+            
+            // Only include value if it's a valid number
+            if (isNumeric) {
+                // Formatting back to a nice string with £
+                parts.push(`£${parseFloat(cleanValue).toLocaleString()}`);
+            }
+            
+            if (status) parts.push(status);
+            if (transfer) parts.push(`${transfer} Transfer`);
+
+            // Updated Contribution Logic
+            if (contrib === "Yes") {
+                parts.push("Still contributing");
+            } else if (contrib === "No") {
+                parts.push("No longer contributing");
+            }
+
+            if (notes) parts.push(notes);
+
+            summaryLines.push(`• ${parts.join(' - ')}`);
+        }
+    });
+
+    let fullText = "";
+    if (summaryLines.length > 0) {
+        fullText = summaryLines.join('\n');
+    }
+
+    updateSummary('fta-btn', fullText, 'pension-list');
+}
+
+/* ================= EVENTS ================= */
+document.querySelectorAll('#horizontal-pane .tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeTab = btn.dataset.tab;
+    renderFromTab(activeTab);
+  });
+});
+
+document.getElementById('enquirytype').addEventListener('change', () => {
+  // 1. Hard reset the buttons to their starting HTML
+  document.getElementById('advised-btn').innerHTML = '<div id="advised-source-header">WPSA</div>';
+  document.getElementById('ifa-btn').innerHTML = '<div id="ifa-source-header">IFA Introduced:</div>';
+  document.getElementById('copy-summary-btn').innerHTML = '<div id="summary-header">DP and RI Complete</div>';
+  document.getElementById('fta-btn').innerHTML = '<div id="fta-source-header">Pension Policies:</div>';
+
+  const enquiryType = document.getElementById('enquirytype').value;
+  
+  // Check if the current activeTab actually has content in the new enquiry type
+  const flow = tabFlows[enquiryType]?.[activeTab] || [];
+  
+  if (flow.length === 0) {
+    activeTab = 1; // Reset to Tab 1 if the current tab is empty for this type
+  }
+  
+  
+  renderFromTab(activeTab);
+  
+ // Remove "has-content" from all dynamic summary buttons
+  document.querySelectorAll('.copy-btn.dynamic-summary-btn').forEach(btn => {
+    btn.classList.remove('has-content');
+  });
+
+  const select = document.getElementById('lsa-provider-select');
+  if (select) {
+      select.dispatchEvent(new Event('change'));
+  }
+});
+
+/* ================= RIGHT PANE ================= */
+function copyButtonText(btnElement) {
+  // .innerText will pick up the text from all the divs inside and 
+  // automatically put them on new lines for you.
+  navigator.clipboard.writeText(btnElement.innerText);
+  
+  const originalColor = btnElement.style.backgroundColor;
+  btnElement.style.backgroundColor = "#d4edda"; 
+  setTimeout(() => btnElement.style.backgroundColor = originalColor, 500);
+}
+
+function updateSummary(buttonId, text, rowId = null, btnElement = null) {
+  const targetBtn = document.getElementById(buttonId);
+  if (!targetBtn) return;
+
+  // 1. Handle Toggle Highlights
+  if (btnElement) {
+    const isAlreadySelected = btnElement.classList.contains('selected');
+    const group = btnElement.parentElement;
+    group.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+    if (isAlreadySelected) {
+      if (rowId) {
+        let existingRow = targetBtn.querySelector('#summary-' + rowId);
+        if (existingRow) existingRow.remove();
+      }
+      checkVisibility(targetBtn); // Check visibility after removing
+      return; 
+    } else {
+      btnElement.classList.add('selected');
+    }
+  }
+
+  // 2. Update/Remove Row
+  if (rowId) {
+    let existingRow = targetBtn.querySelector('#summary-' + rowId);
+    if (!text || text.trim() === "") {
+      if (existingRow) existingRow.remove();
+      checkVisibility(targetBtn);
+      return;
+    }
+    if (existingRow) {
+      existingRow.textContent = text;
+      checkVisibility(targetBtn);
+      return;
+    }
+  }
+
+  // 3. Add Row
+  if (text && text.trim() !== "") {
+    const newLine = document.createElement('div');
+    if (rowId) newLine.id = 'summary-' + rowId;
+    newLine.style.width = "100%";
+    newLine.textContent = text;
+    targetBtn.appendChild(newLine);
+  }
+
+  checkVisibility(targetBtn);
+}
+
+// Helper to show/hide button based on whether it has child divs
+function checkVisibility(btn) {
+    const children = Array.from(btn.children);
+    
+    // Find header divs we want to ignore when checking "real content"
+    const headerDivs = children.filter(el => 
+        el.id === 'advised-source-header' ||
+        el.id === 'ifa-source-header' ||
+        el.id === 'summary-header'    ||
+        el.id === 'fta-source-header' ||
+        el.id === 'pw-source-header'  ||
+        el.id === 'lsa-source-header'
+    );
+
+    // Real content = total children minus the header ones
+    const realContentCount = children.length - headerDivs.length;
+
+    // Show only if we have at least one real content line
+    const hasMeaningfulContent = realContentCount > 0;
+
+    btn.classList.toggle('has-content', hasMeaningfulContent);
+}
+
+function removeLineFromButton(btn, rowId) {
+  let lines = btn.innerText.split('\n');
+  const prefix = `[${rowId}]`;
+  btn.innerText = lines.filter(l => !l.startsWith(prefix)).join('\n');
+}
+
+const rightPane = document.getElementById('right-pane');
+const dragHandle = document.getElementById('drag-handle');
+let isDragging = false;
+
+dragHandle.addEventListener('mousedown', () => {
+  isDragging = true;
+  document.body.classList.add('no-select');
+});
+
+document.addEventListener('mouseup', () => {
+  isDragging = false;
+  document.body.classList.remove('no-select');
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  let w = window.innerWidth - e.clientX;
+  rightPane.style.width = Math.max(100, Math.min(600, w)) + 'px';
+});
+
+let hidden = false;
+document.getElementById('toggleVisibility').addEventListener('click', function() {
+  hidden = !hidden;
+  
+  // Toggle visibility
+  rightPane.style.display = hidden ? 'none' : 'flex';
+  
+  // Toggle button text: If hidden, show "<" to open. If visible, show ">" to close.
+  this.innerText = hidden ? '<' : '>';
+});
+
+/* ================= MULTI-MODAL LOGIC ================= */
+function openModal(modalId) {
+  // Hide all windows first so they don't stack
+  closeAllModals();
+  
+  // Show the overlay container and the specific window requested
+  document.getElementById('modal-overlay').style.display = 'flex';
+  document.getElementById(modalId).style.display = 'block';
+}
+
+function closeAllModals() {
+  document.getElementById('modal-overlay').style.display = 'none';
+  // Hide every element with the modal-window class
+  const windows = document.querySelectorAll('.modal-window');
+  windows.forEach(win => win.style.display = 'none');
+}
+
+// ────────────────────────────────────────────────
+//   Provider switch + clear summary on change
+// ────────────────────────────────────────────────
+
+document.getElementById('lsa-provider-select')?.addEventListener('change', function() {
+    const provider = this.value;
+
+    // ─── 1. Clear the summary text ───────────────────────────────────────
+    const lsaBtn = document.getElementById('lsa-btn');
+    if (lsaBtn) {
+        lsaBtn.innerHTML = 'LSA Questions:<div id="lsa-source-header"></div>';
+        checkVisibility(lsaBtn);
+    }
+
+    // ─── 2. NEW: Clear .selected class from ALL provider blocks ───────────
+    //     (prevents old selections from re-appearing when switching back)
+    document.querySelectorAll('.lsa-provider-block').forEach(block => {
+        block.querySelectorAll('button.selected').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        block.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+    });
+
+    // ─── 3. Hide all blocks ───────────────────────────────────────────────
+    document.querySelectorAll('.lsa-provider-block').forEach(el => {
+        el.style.display = 'none';
+    });
+
+    // ─── 4. Show the chosen one ───────────────────────────────────────────
+    if (provider) {
+        const block = document.getElementById('lsa-' + provider);
+        if (block) {
+            block.style.display = 'block';
+            // Optional: you could also re-clear just this block here, but clearing all is safer & simpler
+        }
+    } else {
+        document.getElementById('lsa-empty').style.display = 'block';
+    }
+});
+
+document.getElementById('lsa-provider-select').value = 'just';
+// Trigger the change event so the questions appear and summary clears
+document.getElementById('lsa-provider-select').dispatchEvent(new Event('change'));
+
+/* ================= INIT ================= */
+renderFromTab(activeTab);
+</script>
+
+</body>
+</html>
+
+
+
+
