@@ -143,7 +143,6 @@
   td p {
     margin-top: 0;      /* Removes gap at the top */
     margin-bottom: 1;   /* Removes gap at the bottom */
-
   }
 
   .label-cell {
@@ -178,11 +177,6 @@
     box-sizing: border-box;
     font-size: 12px; /* Smaller font to save space */
     height: 28px; /* Fixed height for consistency */
-  }
-
-  /* Target small text for select placeholders */
-  .pension-card select {
-    color: #757575;
   }
 
   .btn-del-card {
@@ -222,6 +216,20 @@
     cursor: ew-resize;
   }
 
+  .function-btn {
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    display: flex; 
+    flex-direction: column;
+
+    justify-content: flex-start; 
+    padding: 0px 0px; 
+    height: auto; 
+    white-space: pre-wrap;
+  }
+
   .copy-btn {
     font-size: 14px;
     cursor: pointer;
@@ -243,7 +251,7 @@
     margin-bottom: 10px;
   }
 
-/* Class to show the button */
+  /* Class to show the button */
   .dynamic-summary-btn.has-content {
     display: flex !important;
   }
@@ -280,36 +288,58 @@
     border: none; background: none; font-size: 24px; cursor: pointer; color: #888;
   }
 
+  .crossover-annual {
+    background-color: #d1fae5; /* Light green */
+    font-weight: bold;
+  }
+
+  .crossover-cumulative {
+      background-color: #dbeafe; /* Light blue */
+      font-weight: bold;
+  }
+
+  .both-crossover {
+      background-color: #fef3c7; /* Light amber */
+      font-weight: bold;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 4px;
+  }
+
 </style>
 </head>
 
 <body>
 
-<!-- ================= MODAL OVERLAY ================= -->
 <div id="modal-overlay">
-    <div id="modal-1" class="modal-window">
-        <button class="close-modal-btn" onclick="closeAllModals()">&times;</button>
-        <p>∎ Good <span class="time-greeting"></span>. My name is Johnathon Davis and I'm an Annuity Specialist at Retirement Line. I'm having a chat with <mark><span class="client-name">(name)</span></mark> about their pension options and will be providing them with some annuity quotations. The basis we are looking at is a joint life annuity meaning if you outlive <mark><span class="client-name">(name)</span></mark>, the income will pass over to you.</p>
-        <p>∎ For me to be able to run the quotations, it involves asking some questions in relation to your health and lifestyle, to see if they qualify for an enhancement, which could give <mark><span class="client-name">(name)</span></mark> a higher level of income. This information will then be sent to the annuity providers on our panel who will provide their highest terms.</p>
-        <p>∎ Do you consent for us to collect and share this data?</p>
-        <div class="button-group">
-            <button onclick="updateSummary('fta-btn', 'JL Data Consent: Yes', 'jl-consent', this); closeAllModals()">Yes</button>
-            <button onclick="updateSummary('fta-btn', 'JL Data Consent: No', 'jl-consent', this); closeAllModals()">No</button>
-        </div>
-    </div>
-  
+  <!-- ================= MODAL 1 OVERLAY ================= -->
+  <div id="modal-1" class="modal-window">
+      <button class="close-modal-btn" onclick="closeAllModals()">&times;</button>
+      <p>∎ Good <span class="time-greeting"></span>. My name is Johnathon Davis and I'm an Annuity Specialist at Retirement Line. I'm having a chat with <mark><span class="client-name">(name)</span></mark> about their pension options and will be providing them with some annuity quotations. The basis we are looking at is a joint life annuity meaning if you outlive <mark><span class="client-name">(name)</span></mark>, the income will pass over to you.</p>
+      <p>∎ For me to be able to run the quotations, it involves asking some questions in relation to your health and lifestyle, to see if they qualify for an enhancement, which could give <mark><span class="client-name">(name)</span></mark> a higher level of income. This information will then be sent to the annuity providers on our panel who will provide their highest terms.</p>
+      <p>∎ Do you consent for us to collect and share this data?</p>
+      <div class="button-group">
+          <button onclick="updateSummary('fta-btn', 'JL Data Consent: Yes', 'jl-consent', this); closeAllModals()">Yes</button>
+          <button onclick="updateSummary('fta-btn', 'JL Data Consent: No', 'jl-consent', this); closeAllModals()">No</button>
+      </div>
+  </div>
+
+  <!-- ================= MODAL 2 OVERLAY ================= -->
   <div id="modal-2" class="modal-window">
     <button class="close-modal-btn" onclick="closeAllModals()">×</button>
     
     <div style="margin-top:15px;">
-        <select id="lsa-provider-select" style="width:100%;">
-            <option value="just" selected>JUST</option>
-            <option value="lg">Legal & General (L&G)</option>
-            <option value="sl">Standard Life</option>
-            <option value="canada">Canada Life</option>
-            <option value="aviva">Aviva</option>
-            <option value="lv">LV</option>
-        </select>
+      <select id="lsa-provider-select" style="width:100%;">
+          <option value="just" selected>JUST</option>
+          <option value="lg">Legal & General (L&G)</option>
+          <option value="sl">Standard Life</option>
+          <option value="canada">Canada Life</option>
+          <option value="aviva">Aviva</option>
+          <option value="lv">LV</option>
+      </select>
     </div>
 
     <!-- All provider blocks – only one is visible at a time -->
@@ -422,11 +452,236 @@
           <button onclick="updateSummary('lsa-btn', '• Do you have any protections? - No', 'lsa3', this)">No</button>
         </div>
     </div>
+  </div>
 
+  <!-- ================= MODAL 3 OVERLAY ================= -->
+  <div id="modal-3" class="modal-window">
+      <button class="close-modal-btn" onclick="closeAllModals()">&times;</button>
+      <p>∎ RPI Zero Floor means that if the retail prices index is increasing, the income will increase accordingly, however if RPI goes negative the income will stay level until RPI increases again.</p>
+      <p>∎ RPI No Floor means that the income will do whatever RPI does, and if RPI goes negative, the client’s income will fall in line with this.</p>
+      <p>∎ LPI 2.5%: RPI with a cap at 2.5% (i.e. that the rate of RPI would be applied unless it exceeded 2.5%).</p>
+      <p>∎ LPI 5%: RPI with a cap at 5% (i.e. that the rate of RPI would be applied unless it exceeded 5%).</p>
+      <p>∎ Please note: Both forms of LPI carry a “zero floor” so will stay level if RPI ever goes negative.</p>
 
+      <p>•	Standard Life RPI is based on ‘Zero Floor’</p>
+      <p>•	Aviva is based on ‘Zero Floor’ </p>
+      <p>•	Legal & General is based on ‘Zero Floor’</p>
+      <p>•	Scottish Widows is based on ‘No Floor’</p>
+      <p>•	Canada Life is based on ‘No Floor’</p>
+      <p>•	JUST can provide both With Floor and No Floor quotes (our quote portal will automatically show With Floor results).</p>
+  </div>
 
+  <!-- ================= MODAL 4 OVERLAY ================= -->
+  <div id="modal-4" class="modal-window">
+      <button class="close-modal-btn" onclick="closeAllModals()">&times;</button>
+      <p style="text-align:center;font-weight:bold;text-decoration:underline;">DP WITH THE ANNUITANT</p>
+      <p>∎ We are annuity specialists and our objective is to shop around the open market to find you the highest annuity income and help you to decide which type of annuity is most suited to your needs and circumstances.</p>
+      <p>∎ We have found the best way to do this is to ask you a few questions about your health and lifestyle to see if you qualify for an enhanced annuity which could significantly boost your income.</p>
+      <p>∎ This information will then be sent to the annuity providers on our panel who will provide their highest terms. Do you consent for us to collect and share this data?</p>
+
+      <table>
+        <tr style="background-color: #fbe4d5;">
+            <th style="text-align: center;"><strong><u>IF NO</u></strong></th>
+        </tr>
+        <tr style="background-color: #fbe4d5;">
+            <td>
+                ■ Just to confirm that providing this information could be very much in your best interests since the possible uplift in income could be as high as 75% or even more for people with very serious issues.
+            </td>
+        </tr>
+      </table>
+
+      <p>∎	We are confident that our lifetime annuity income quote will provide the highest annuity income for you but just to confirm this, should you proceed through ourselves, you have the option to allow your chosen annuity provider to check their quotation against the rest of the annuity market. This is further confirmation that our quote offers you the highest available income.</p>
+      <p>∎	Do you give consent for your chosen annuity provider to share your personal data for a market leading comparison quote?</p>
+      <p>∎	Are you happy to place an authority on file to speak <mark>(blank)</mark> on this call and on all future calls?</p>
+  </div>
+
+  <!-- ================= MODAL 5 OVERLAY ================= -->
+  <div id="modal-5" class="modal-window">
+      <button class="close-modal-btn" onclick="closeAllModals()">&times;</button>
+      <p style="text-align:center;font-weight:bold;text-decoration:underline;">LTA</p>
+
+      <div id="lta-container">
+        <div class="pension-card annuity-card">
+            <button class="btn-del-card" onclick="this.closest('.pension-card').remove();">×</button>
+
+            <div class="form-grid">
+                <select class="js-calc-type" style="grid-column: 1 / -1; text-align:center;">
+                    <option value="rate" selected>Annuity Rate</option>
+                    <option value="income">Annuity Income</option>
+                    <option value="purchase">Purchase Price</option>
+                </select>
+
+                <label>Purchase Price:</label>
+                <input type="text" class="js-purchase" placeholder="£0.00">
+
+                <label>Annual Income:</label>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <input type="text" class="js-income" placeholder="£0.00">
+                    <select class="js-freq">
+                        <option value="12">Monthly</option>
+                        <option value="4">Quarterly</option>
+                        <option value="2">6 Monthly</option>
+                    </select>
+                    <span class="js-payment-label" style="font-weight:bold; font-size:13px; text-align:center;">Monthly payment: £0.00</span>
+                </div>
+
+                <label>Annuity Rate (%):</label>
+                <input type="number" class="js-rate" step="0.0001" disabled>
+
+                <div class="formula js-formula-display" style="grid-column: 1 / -1; text-align:center; font-style:italic;">
+                    Rate = (Income ÷ Purchase Price) × 100
+                </div>
+                
+                <textarea placeholder="Notes..." style="grid-column: 1 / -1; width:100%; field-sizing: content; box-sizing: border-box; resize:none"></textarea>
+            </div>
+        </div>
+      </div>
+
+      <div class="button-group">
+          <button onclick="addAnnuityCard()">+ Add LTA Calculation</button>
+      </div>
+
+      <p style="text-align:center;font-weight:bold;text-decoration:underline;">FTA</p>
+
+      <div id="fta-container">
+        <div class="pension-card fixed-term-card">
+            <button class="btn-del-card" onclick="this.closest('.pension-card').remove();">×</button>
+
+            <div class="form-grid">
+                <textarea placeholder="Notes..." style="grid-column: 1 / -1; width:100%; field-sizing: content; box-sizing: border-box; resize:none"></textarea>
+
+                <label>Purchase Price:</label>
+                <input type="text" class="js-purchase" placeholder="£0.00">
+
+                <label>Annual Income:</label>
+                <input type="text" class="js-income" placeholder="£0.00">
+
+                <label>Term:</label>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <select class="js-term">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5" selected>5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                    </select>   
+                    <select class="js-escalation">
+                        <option value="0">Level</option>
+                        <option value="0.03">3%</option>
+                        <option value="0.05">5%</option>
+                    </select>
+                    <span class="js-cumulative-label" style="font-weight:bold; font-size:13px; text-align:center;">
+                        Cumulative Income: £0.00
+                    </span>
+                </div>
+
+                <label>GMA:</label>
+                <input type="text" class="js-gma" placeholder="£0.00">
+
+                <textarea class="js-growth" style="grid-column: 1 / -1; width:100%; field-sizing: content; box-sizing: border-box; resize:none; background-color: #f9f9f9; font-family: monospace; padding: 8px;" disabled></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button onclick="addFixedTermCard()">+ Add FTA Calculation</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 6 OVERLAY ================= -->
+  <div id="modal-6" class="modal-window">
+      <button class="close-modal-btn" onclick="closeAllModals()">&times;</button>
+
+      <table border="1" style="width:100%;">
+          <tbody>
+              <tr>
+                  <td>
+                      <div class="form-grid">
+                          <label for="dob">DOB:</label>
+                          <input type="date" id="dob">
+                          <label style="grid-column: span 2;">Age: <span id="ageValue"></span></label>
+                      </div>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+
+      <br>
+
+      <table border="1" style="width:100%;">
+          <tbody>
+              <tr>
+                  <td>
+                      <div class="form-grid">
+                          <label for="initialEscalating">Esc. Income:</label>
+                          <input type="text" class = "js-value" id="initialEscalating" placeholder="£0.00">
+
+                          <label for="escalation">Esc. Rate (%):</label>
+                          <input type="number" id="escalation" step="0.1">
+
+                          <label for="levelIncome">Level Income:</label>
+                          <input type="text" class = "js-value" id="levelIncome" placeholder="£0.00">
+
+                          <label for="durationSlider">Duration: <span id="durationValue">5</span> years</label>
+                          <input type="range" id="durationSlider" min="1" max="50" value="5">
+                      </div>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+
+      <div id="tableWrapper" style="display: none; margin-top: 10px;">
+          <div class="legend">
+              <div class="legend-item">
+                  <div class="box" style="background: #d1fae5; width: 12px; height: 12px; display: inline-block;"></div> 
+                  Annual Income Crossover: <span id="annualCrossoverYear">-</span>
+              </div>
+              <div class="legend-item">
+                  <div class="box" style="background: #dbeafe; width: 12px; height: 12px; display: inline-block;"></div> 
+                  Cumulative Crossover: <span id="cumulativeCrossoverYear">-</span>
+              </div>
+          </div>
+
+          <table id="incomeTable" style="width: 100%; margin-top: 10px;">
+              <thead>
+                  <tr>
+                      <th class="label-cell">Year</th>
+                      <th class="label-cell">Esc. Income</th>
+                      <th class="label-cell">Inc.</th>
+                      <th class="label-cell">Cumul. Esc.</th>
+                      <th class="label-cell">Cumul. Level</th>
+                  </tr>
+              </thead>
+              <tbody id="incomeBody"></tbody>
+          </table>
+      </div>
+  </div>
 </div>
-
     
 </div>
 
@@ -434,18 +689,7 @@
 <div id="top-bar">
   <button onclick="location.reload()">Refresh</button>
   <select id="enquirytype">
-    <option value="RL enquiry" selected>RL enquiry</option>
-    <option value="Annuity UK">Annuity UK</option>
-    <option value="Annuity Line">Annuity Line</option>
-    <option value="Tesco">Tesco</option>
-    <option value="NEST">NEST</option>
-    <option value="Lloyds">Lloyds</option>
-    <option value="Virgin">YCB (Virgin)</option>
-    <option value="Wesleyan">Wesleyan</option>
-    <option value="MoneyService">The Money Service</option>
-    <option value="WPSA">WPSA</option>
-    <option value="IFA Introduced">IFA Introduced</option>
-  </select>
+    </select>
   <button id="toggleVisibility">></button>
 </div>
 
@@ -454,14 +698,7 @@
 
   <!-- LEFT -->
   <div id="content-wrapper">
-    <div id="horizontal-pane">
-      <button class="tab-btn tab-style" data-tab="1">1</button>
-      <button class="tab-btn tab-style" data-tab="2">2</button>
-      <button class="tab-btn tab-style" data-tab="3">LTA</button>
-      <button class="tab-btn tab-style" data-tab="4" style="--act-color: #f47e3c;">FTA</button>
-      <button class="tab-btn tab-style" data-tab="5">5</button>
-      <button class="tab-btn tab-style" data-tab="6">6</button>
-    </div>
+    <div id="horizontal-pane"></div>
     <div id="content"></div>
   </div>
 
@@ -470,66 +707,193 @@
     <div id="drag-handle"></div>
     <div style="padding:2px; text-align: center;">
 
-        <div style="border-bottom: 1px solid #ccc;">
-            <button class="copy-btn" style="text-align: center; margin-top: 5px; margin-bottom: 5px; padding: 10px;" onclick="openModal('modal-1')">🧮 Calc</button>
-            <button class="copy-btn" style="text-align: center; margin-top: 5px; margin-bottom: 5px; padding: 10px;" onclick="openModal('modal-2')">📝 LSA</button>
-        </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border-bottom: 1px solid #ccc; padding: 2px 0;">
+          <button class="function-btn" onclick="openModal('modal-1')">JL</button>
+          <button class="function-btn" onclick="openModal('modal-2')">LSA</button>
+          <button class="function-btn" onclick="openModal('modal-3')">RPI</button>
+          <button class="function-btn" onclick="openModal('modal-4')">Auth</button>
+          <button class="function-btn" onclick="openModal('modal-5')">🆚</button>
+          <button class="function-btn" onclick="openModal('modal-6')">🔢</button>
+      </div>
 
-        <h4>Information Summary</h4>
-        <button id="advised-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">WPSA<div id="advised-source-header"></div></button>
-        <button id="ifa-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">IFA Introduced:<div id="ifa-source-header"></div></button>
-        <button id="copy-summary-btn" class="copy-btn" onclick="copyButtonText(this)"><div id="summary-header">DP and RI Complete</div></button>
-        <button id="fta-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">Pension Policies:<div id="fta-source-header"></div></button>
-        <button id="pw-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">TEST<div id="pw-source-header"></div></button>
-        <button id="lsa-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">LSA Questions:<div id="lsa-source-header"></div></button>
+      <h4>Information Summary</h4>
+      <button id="advised-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">WPSA<div id="advised-source-header"></div></button>
+      <button id="ifa-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">IFA Introduced:<div id="ifa-source-header"></div></button>
+      <button id="copy-summary-btn" class="copy-btn" onclick="copyButtonText(this)"><div id="summary-header">DP and RI Complete</div></button>
+      <button id="fta-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">Pension Policies:<div id="fta-source-header"></div></button>
+      <button id="pw-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">TEST<div id="pw-source-header"></div></button>
+      <button id="lsa-btn" class="copy-btn dynamic-summary-btn" onclick="copyButtonText(this)">LSA Questions:<div id="lsa-source-header"></div></button>
 
     </div>
   </div>
 
 </div>
 
-<script src="scripts-data.js"></script>
-
 <script>
-/* ================= SCRIPT BLOCKS ================= */
 
+let currentTab = 1;
 
+/* ================= INITIALIZATION ================= */
+window.onload = () => {
+    const enquirySelect = document.getElementById('enquirytype');
 
-/* ================= TAB FLOWS ================= */
-const tabFlows = {
-  "RL enquiry": { 1: ['intro_RetirementLine1','dataprotection','ri_RetirementLine','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: ['objectives','options','datagathering','annuityoptions',nextToTab([{tabNumber: 3, tabText: "LTA", tabColour: "#69ae53"},{tabNumber: 4, tabText: "FTA", tabColour: "#f47e3c"}])], 3: ['lsa',nextToTab({tabNumber: 5, tabText: "OUTRO", tabColour: "#007bff"})], 4: [], 5: ['outro'], 6: []},
-  "Annuity UK": { 1: ['intro_AnnuityUK','dataprotection','ri_AnnuityUK','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
-  "Annuity Line": { 1: ['intro_AnnuityLine','dataprotection','ri_AnnuityLine','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
-  "Tesco": { 1: ['intro_Tesco','dataprotection','ri_Tesco','guidance_Tesco','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
-  "NEST": { 1: ['intro_NEST','dataprotection','ri_NEST','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
-  "Lloyds": { 1: ['intro_Lloyds','dataprotection_Lloyds','ri_Lloyds','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
-  "Virgin": { 1: ['intro_Virgin','dataprotection','ri_Virgin','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
-  "Wesleyan": { 1: ['intro_Wesleyan','dataprotection','ri_Wesleyan','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: ['objectives','warning_Wesleyan','options'], 3: [], 4: [], 5: [], 6: []},
-  "MoneyService": { 1: ['intro_MoneyService','dataprotection','ri_MoneyService','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
-  "WPSA": { 1: ['intro_WPSA','dataprotection','ri_WPSA',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []},
-  "IFA Introduced": { 1: ['intro_IFA','dataprotection','ri_IFA','guidance','vulnerablecustomers',nextToTab({tabNumber: 2, tabText: "2", tabColour: "#007bff"})], 2: [], 3: [], 4: [], 5: [], 6: []}
+    // 1. Populate the Dropdown from tabFlows keys
+    Object.keys(tabFlows).forEach((key, index) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = key;
+        
+        // Optional: Set the first item as selected by default
+        if (index === 0) opt.selected = true;
+        
+        enquirySelect.appendChild(opt);
+    });
+    
+    // 2. Initial Render
+    renderAllTabs();
+
+    // 3. Listen for Enquiry Changes
+    enquirySelect.addEventListener('change', () => {
+      currentTab = 1;
+
+      // Clear ONLY the data rows from the summary buttons
+      const summaryDataRows = document.querySelectorAll('.copy-btn div:not(#summary-header):not([id*="-source-header"])');
+      summaryDataRows.forEach(row => row.remove());
+
+      // Reset the blue highlights on any remaining UI buttons
+      document.querySelectorAll('.button-group button').forEach(btn => btn.classList.remove('selected'));
+
+      // Re-run the smart visibility check
+      document.querySelectorAll('.copy-btn').forEach(btn => checkVisibility(btn));
+
+      // Modal and Tab Refresh
+      const providerSelect = document.getElementById('lsa-provider-select');
+      if (providerSelect) {
+          providerSelect.selectedIndex = 0;
+          providerSelect.dispatchEvent(new Event('change'));
+      }
+
+      // Clear all text inputs inside modals EXCEPT modal-5 and modal-6
+      document.querySelectorAll('.modal-window:not(#modal-5, #modal-6) input').forEach(input => {input.value = '';});
+
+      updateVar('client-name', '(name)', '(name)');
+      renderAllTabs();
+    });
+
+    // 4. Listen for Tab Button Clicks
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabNum = parseInt(btn.getAttribute('data-tab'));
+            switchTab(tabNum);
+        });
+    });
+
+    // 5. Modal Provider Selector Logic
+    const providerSelect = document.getElementById('lsa-provider-select');
+    if (providerSelect) {
+        providerSelect.addEventListener('change', (e) => {
+            const provider = e.target.value;
+            document.querySelectorAll('.lsa-provider-block').forEach(b => b.style.display = 'none');
+            const activeBlock = document.getElementById('lsa-' + provider);
+            if (activeBlock) activeBlock.style.display = 'block';
+        });
+        // Set initial provider view
+        providerSelect.dispatchEvent(new Event('change'));
+    }
 };
 
-let activeTab = 1;
+/* ================= CORE FUNCTIONS ================= */
+function renderAllTabs() {
+    const enquiry = document.getElementById('enquirytype').value;
+    const flowData = tabFlows[enquiry];
+    const labels = flowData.labels || {};
 
-/* ================= LOGIC ================= */
-function getGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "morning";
-  if (hour < 18) return "afternoon";
-  return "evening";
+    const paneContainer = document.getElementById('horizontal-pane');
+    const contentContainer = document.getElementById('content');
+
+    // 1. Clear existing tabs and panes
+    paneContainer.innerHTML = "";
+    contentContainer.innerHTML = "";
+
+    // 2. Loop through the keys in flowData that are numbers (the tabs)
+    Object.keys(flowData).forEach(key => {
+        if (!isNaN(key)) { // Only process keys 1, 2, 3, etc.
+            const tabNum = parseInt(key);
+            const labelText = labels[tabNum] || tabNum; // Use label if exists, else use number
+            const blocksForTab = flowData[tabNum];
+
+            // Only create the tab if it has content
+            if (blocksForTab.length > 0) {
+                // Create the Button
+                const btn = document.createElement('button');
+                btn.className = `tab-btn tab-style ${tabNum === currentTab ? 'active' : ''}`;
+                btn.setAttribute('data-tab', tabNum);
+                btn.textContent = labelText;
+                btn.onclick = () => switchTab(tabNum);
+                paneContainer.appendChild(btn);
+
+                // Create the Content Pane
+                const pane = document.createElement('div');
+                pane.id = `tab-pane-${tabNum}`;
+                pane.className = "tab-content-pane";
+                pane.style.display = (tabNum === currentTab) ? 'block' : 'none';
+
+                // Fill the Pane with blocks
+                let tabHtml = "";
+                blocksForTab.forEach(blockKey => {
+                    if (typeof blockKey === 'string' && blocks[blockKey]) {
+                        tabHtml += blocks[blockKey];
+                    } else if (typeof blockKey === 'function') {
+                        tabHtml += blockKey();
+                    }
+                });
+                pane.innerHTML = tabHtml;
+                contentContainer.appendChild(pane);
+            }
+        }
+    });
+
+    document.getElementById('content').scrollTo({ top: 0, behavior: "smooth" });
+    
+    updateTimeGreetings();
 }
 
-function applyAutoGreeting() {
-  // Select all elements with the class 'time-greeting'
-  const greetings = document.querySelectorAll('.time-greeting');
-  
-  // Loop through each one and update the text
-  greetings.forEach(el => {
-    el.textContent = getGreeting();
-  });
+function switchTab(num) {
+    currentTab = num;
+    for (let i = 1; i <= 6; i++) {
+        const pane = document.getElementById(`tab-pane-${i}`);
+        if (pane) pane.style.display = (i === num) ? 'block' : 'none';
+    }
+    updateTabUI();
 }
 
+function updateTabUI() {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.getAttribute('data-tab')) === currentTab);
+    });
+}
+
+function nextToTab(config) {
+    return function() {
+        const configs = Array.isArray(config) ? config : [config];
+        let buttons = configs.map(c => `
+            <button style="background-color:${c.tabColour || '#007bff'}; color:white;" 
+                    onclick="switchTab(${c.tabNumber})">
+                ${c.tabText}
+            </button>`).join('');
+        return `<div class="button-group">${buttons}</div>`;
+    };
+}
+
+function copyButtonText(btnElement) {
+  navigator.clipboard.writeText(btnElement.innerText);
+  const originalColor = btnElement.style.backgroundColor;
+  btnElement.style.backgroundColor = "#d4edda"; 
+  setTimeout(() => btnElement.style.backgroundColor = originalColor, 500);
+}
+
+/* ================= UTILITIES ================= */
 function updateVar(className, newValue, defaultValue, element) {
   // We use querySelectorAll to find every instance of the class
   const elements = document.querySelectorAll('.' + className);
@@ -546,214 +910,44 @@ function updateVar(className, newValue, defaultValue, element) {
   });
 }
 
-function goToTab(tab) {
-  activeTab = tab;
-  renderFromTab(tab);
-}
-
-function nextToTab(tabConfigs) {
-  // Ensure we are working with an array even if only one config is passed
-  const configs = Array.isArray(tabConfigs) ? tabConfigs : [tabConfigs];
-  
-  const buttonsHtml = configs.map(conf => `<button class="tab-style active" style="flex:1; --act-color: ${conf.tabColour || '#007bff'}; border: none; margin: 0;" onclick="goToTab(${conf.tabNumber})">${conf.tabText}</button>`).join('');
-
-  return `<div class="script-block" style="display:flex; gap:0;">${buttonsHtml}</div>`;
-}
-
-function renderFromTab(tab) {
-  const enquiryType = document.getElementById('enquirytype').value;
-  const flow = tabFlows[enquiryType]?.[tab] || [];
-
-  document.getElementById('content').innerHTML =
-    flow.map(k => typeof k === 'string' ? blocks[k] || k : k).join('');
-
-  document.querySelectorAll('#horizontal-pane .tab-btn').forEach(btn => {
-    const t = btn.dataset.tab;
-    const tabFlow = tabFlows[enquiryType]?.[t] || [];
-    btn.classList.toggle('hidden', tabFlow.length === 0);
-    btn.classList.toggle('active', t == activeTab);
-  });
-
-  document.getElementById('content').scrollTo({ top: 0, behavior: "smooth" });
-
-  applyAutoGreeting();
-}
-
-function addPensionCard() {
-    const container = document.getElementById('pension-container');
-    if (!container) return;
-
-    const card = document.createElement('div');
-    card.className = 'pension-card';
-    card.innerHTML = `
-        <button class="btn-del-card" onclick="this.closest('.pension-card').remove(); syncTableToSummary();">×</button>
-        <div class="card-grid" style="margin-top:15px;">
-            <div><input type="text" placeholder="Provider" class="js-provider" oninput="syncTableToSummary()"></div>
-            <div>
-                <select class="js-pension-type" onchange="syncTableToSummary()">
-                    <option value="" selected disabled>Pension Type...</option>
-                    <option value="Personal Pension">Personal Pension</option>
-                    <option value="Occupational Pension">Occupational Pension</option>
-                </select>
-            </div>
-            <div><input type="text" placeholder="Value £" class="js-value" oninput="syncTableToSummary()"></div>
-            <div>
-                <select class="js-status" onchange="syncTableToSummary()">
-                    <option value="" selected disabled>Status...</option>
-                    <option value="Uncrystallised">Uncrystallised</option>
-                    <option value="Crystallised">Crystallised</option>
-                </select>
-            </div>
-            <div>
-                <select class="js-transfer" onchange="syncTableToSummary()">
-                    <option value="" selected disabled>Transfer Type...</option>
-                    <option value="Full">Full</option>
-                    <option value="Partial">Partial</option>
-                </select>
-            </div>
-            <div>
-                <select class="js-contrib" onchange="syncTableToSummary()">
-                    <option value="" selected disabled>Contributing?</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </div>
-            <div class="full-width"><input type="text" placeholder="Notes" class="js-notes" oninput="syncTableToSummary()"></div>
-        </div>`;
-    container.appendChild(card);
-}
-
-function syncTableToSummary() {
-    const cards = document.querySelectorAll('.pension-card');
-    let summaryLines = [];
-    
-    cards.forEach((card) => {
-        const provider = card.querySelector('.js-provider')?.value.trim() || "";
-        const pType = card.querySelector('.js-pension-type')?.value || "";
-        const rawValue = card.querySelector('.js-value')?.value.trim() || "";
-        const status = card.querySelector('.js-status')?.value || "";
-        const transfer = card.querySelector('.js-transfer')?.value || "";
-        const contrib = card.querySelector('.js-contrib')?.value || "";
-        const notes = card.querySelector('.js-notes')?.value.trim() || "";
-        
-        // Clean the value: remove commas and £ signs to check if it's a number
-        const cleanValue = rawValue.replace(/[£,]/g, '');
-        const isNumeric = cleanValue !== '' && !isNaN(cleanValue);
-
-        if (provider || pType || isNumeric || status || transfer || contrib || notes) {
-            let parts = [];
-
-            if (provider) parts.push(provider);
-            if (pType) parts.push(pType);
-            
-            // Only include value if it's a valid number
-            if (isNumeric) {
-                // Formatting back to a nice string with £
-                parts.push(`£${parseFloat(cleanValue).toLocaleString()}`);
-            }
-            
-            if (status) parts.push(status);
-            if (transfer) parts.push(`${transfer} Transfer`);
-
-            // Updated Contribution Logic
-            if (contrib === "Yes") {
-                parts.push("Still contributing");
-            } else if (contrib === "No") {
-                parts.push("No longer contributing");
-            }
-
-            if (notes) parts.push(notes);
-
-            summaryLines.push(`• ${parts.join(' - ')}`);
-        }
-    });
-
-    let fullText = "";
-    if (summaryLines.length > 0) {
-        fullText = summaryLines.join('\n');
-    }
-
-    updateSummary('fta-btn', fullText, 'pension-list');
-}
-
-/* ================= EVENTS ================= */
-document.querySelectorAll('#horizontal-pane .tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    activeTab = btn.dataset.tab;
-    renderFromTab(activeTab);
-  });
-});
-
-document.getElementById('enquirytype').addEventListener('change', () => {
-  // 1. Hard reset the buttons to their starting HTML
-  document.getElementById('advised-btn').innerHTML = '<div id="advised-source-header">WPSA</div>';
-  document.getElementById('ifa-btn').innerHTML = '<div id="ifa-source-header">IFA Introduced:</div>';
-  document.getElementById('copy-summary-btn').innerHTML = '<div id="summary-header">DP and RI Complete</div>';
-  document.getElementById('fta-btn').innerHTML = '<div id="fta-source-header">Pension Policies:</div>';
-
-  const enquiryType = document.getElementById('enquirytype').value;
-  
-  // Check if the current activeTab actually has content in the new enquiry type
-  const flow = tabFlows[enquiryType]?.[activeTab] || [];
-  
-  if (flow.length === 0) {
-    activeTab = 1; // Reset to Tab 1 if the current tab is empty for this type
-  }
-  
-  
-  renderFromTab(activeTab);
-  
- // Remove "has-content" from all dynamic summary buttons
-  document.querySelectorAll('.copy-btn.dynamic-summary-btn').forEach(btn => {
-    btn.classList.remove('has-content');
-  });
-
-  const select = document.getElementById('lsa-provider-select');
-  if (select) {
-      select.dispatchEvent(new Event('change'));
-  }
-});
-
-/* ================= RIGHT PANE ================= */
-function copyButtonText(btnElement) {
-  // .innerText will pick up the text from all the divs inside and 
-  // automatically put them on new lines for you.
-  navigator.clipboard.writeText(btnElement.innerText);
-  
-  const originalColor = btnElement.style.backgroundColor;
-  btnElement.style.backgroundColor = "#d4edda"; 
-  setTimeout(() => btnElement.style.backgroundColor = originalColor, 500);
-}
-
 function updateSummary(buttonId, text, rowId = null, btnElement = null) {
   const targetBtn = document.getElementById(buttonId);
   if (!targetBtn) return;
 
-  // 1. Handle Toggle Highlights
+  // 1. Handle Toggle Highlights (the UI buttons the user clicks)
   if (btnElement) {
     const isAlreadySelected = btnElement.classList.contains('selected');
     const group = btnElement.parentElement;
+    
+    // Deselect others in the same group
     group.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+    
     if (isAlreadySelected) {
+      // If clicking the same button twice, "deselect" and remove the text
+      btnElement.classList.remove('selected');
       if (rowId) {
         let existingRow = targetBtn.querySelector('#summary-' + rowId);
         if (existingRow) existingRow.remove();
       }
-      checkVisibility(targetBtn); // Check visibility after removing
+      checkVisibility(targetBtn); 
       return; 
     } else {
       btnElement.classList.add('selected');
     }
   }
 
-  // 2. Update/Remove Row
+  // 2. Update existing Row if it exists
   if (rowId) {
     let existingRow = targetBtn.querySelector('#summary-' + rowId);
+    
+    // If text is empty, remove the row
     if (!text || text.trim() === "") {
       if (existingRow) existingRow.remove();
       checkVisibility(targetBtn);
       return;
     }
+    
+    // If row exists, just change the text
     if (existingRow) {
       existingRow.textContent = text;
       checkVisibility(targetBtn);
@@ -761,11 +955,12 @@ function updateSummary(buttonId, text, rowId = null, btnElement = null) {
     }
   }
 
-  // 3. Add Row
+  // 3. Add New Row if it doesn't exist
   if (text && text.trim() !== "") {
     const newLine = document.createElement('div');
     if (rowId) newLine.id = 'summary-' + rowId;
     newLine.style.width = "100%";
+    newLine.style.whiteSpace = "pre-wrap"; // Ensures text wraps correctly
     newLine.textContent = text;
     targetBtn.appendChild(newLine);
   }
@@ -773,11 +968,10 @@ function updateSummary(buttonId, text, rowId = null, btnElement = null) {
   checkVisibility(targetBtn);
 }
 
-// Helper to show/hide button based on whether it has child divs
 function checkVisibility(btn) {
     const children = Array.from(btn.children);
     
-    // Find header divs we want to ignore when checking "real content"
+    // Identify headers that should NOT count as data
     const headerDivs = children.filter(el => 
         el.id === 'advised-source-header' ||
         el.id === 'ifa-source-header' ||
@@ -787,19 +981,30 @@ function checkVisibility(btn) {
         el.id === 'lsa-source-header'
     );
 
-    // Real content = total children minus the header ones
+    // Subtract headers from total children to see if we have actual notes
     const realContentCount = children.length - headerDivs.length;
 
-    // Show only if we have at least one real content line
+    // Only show (add 'has-content') if there is actual data
     const hasMeaningfulContent = realContentCount > 0;
-
     btn.classList.toggle('has-content', hasMeaningfulContent);
 }
 
-function removeLineFromButton(btn, rowId) {
-  let lines = btn.innerText.split('\n');
-  const prefix = `[${rowId}]`;
-  btn.innerText = lines.filter(l => !l.startsWith(prefix)).join('\n');
+
+function updateTimeGreetings() {
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
+    document.querySelectorAll('.time-greeting').forEach(el => el.textContent = greeting);
+}
+
+function openModal(id) { 
+    closeAllModals()
+    document.getElementById('modal-overlay').style.display = 'flex'; 
+    document.getElementById(id).style.display = 'block'; 
+}
+
+function closeAllModals() { 
+    document.getElementById('modal-overlay').style.display = 'none'; 
+    document.querySelectorAll('.modal-window').forEach(m => m.style.display = 'none'); 
 }
 
 const rightPane = document.getElementById('right-pane');
@@ -833,76 +1038,487 @@ document.getElementById('toggleVisibility').addEventListener('click', function()
   this.innerText = hidden ? '<' : '>';
 });
 
-/* ================= MULTI-MODAL LOGIC ================= */
-function openModal(modalId) {
-  // Hide all windows first so they don't stack
-  closeAllModals();
-  
-  // Show the overlay container and the specific window requested
-  document.getElementById('modal-overlay').style.display = 'flex';
-  document.getElementById(modalId).style.display = 'block';
-}
 
-function closeAllModals() {
-  document.getElementById('modal-overlay').style.display = 'none';
-  // Hide every element with the modal-window class
-  const windows = document.querySelectorAll('.modal-window');
-  windows.forEach(win => win.style.display = 'none');
-}
-
-// ────────────────────────────────────────────────
-//   Provider switch + clear summary on change
-// ────────────────────────────────────────────────
-
-document.getElementById('lsa-provider-select')?.addEventListener('change', function() {
-    const provider = this.value;
-
-    // ─── 1. Clear the summary text ───────────────────────────────────────
-    const lsaBtn = document.getElementById('lsa-btn');
-    if (lsaBtn) {
-        lsaBtn.innerHTML = 'LSA Questions:<div id="lsa-source-header"></div>';
-        checkVisibility(lsaBtn);
-    }
-
-    // ─── 2. NEW: Clear .selected class from ALL provider blocks ───────────
-    //     (prevents old selections from re-appearing when switching back)
-    document.querySelectorAll('.lsa-provider-block').forEach(block => {
-        block.querySelectorAll('button.selected').forEach(btn => {
-            btn.classList.remove('selected');
-        });
-        block.querySelectorAll('input').forEach(input => {
-        input.value = '';
-    });
-    });
-
-    // ─── 3. Hide all blocks ───────────────────────────────────────────────
-    document.querySelectorAll('.lsa-provider-block').forEach(el => {
-        el.style.display = 'none';
-    });
-
-    // ─── 4. Show the chosen one ───────────────────────────────────────────
-    if (provider) {
-        const block = document.getElementById('lsa-' + provider);
-        if (block) {
-            block.style.display = 'block';
-            // Optional: you could also re-clear just this block here, but clearing all is safer & simpler
+// <!-- ================= PENSION CARD LOGIC ================= -->
+document.addEventListener('focusin', (event) => {
+    if (event.target.classList.contains('js-value')) {
+        // Only attach if we haven't already attached it to this specific element
+        if (!event.target.dataset.formatted) {
+            CurrencyFormatter.attach(event.target);
+            event.target.dataset.formatted = "true";
         }
-    } else {
-        document.getElementById('lsa-empty').style.display = 'block';
     }
 });
 
-document.getElementById('lsa-provider-select').value = 'just';
-// Trigger the change event so the questions appear and summary clears
-document.getElementById('lsa-provider-select').dispatchEvent(new Event('change'));
+function addPensionCard() {
+    const container = document.getElementById('pension-container');
+    if (!container) return;
 
-/* ================= INIT ================= */
-renderFromTab(activeTab);
+    const card = document.createElement('div');
+    card.className = 'pension-card';
+    card.innerHTML = `
+        <button class="btn-del-card" onclick="this.closest('.pension-card').remove(); syncTableToSummary();">×</button>
+        <div class="card-grid" style="margin-top:15px;">
+            <div><input type="text" placeholder="Provider" class="js-provider" oninput="syncTableToSummary()"></div>
+            <div>
+                <select class="js-pension-type" onchange="syncTableToSummary()">
+                    <option value="" selected>Type</option>
+                    <option value="Personal Pension">Personal Pension</option>
+                    <option value="Occupational Pension">Occupational Pension</option>
+                </select>
+            </div>
+            <div><input type="text" placeholder="£0.00" class="js-value" oninput="syncTableToSummary()"></div>
+            <div>
+                <select class="js-status" onchange="syncTableToSummary()">
+                    <option value="" selected>Status</option>
+                    <option value="Uncrystallised">Uncrystallised</option>
+                    <option value="Crystallised">Crystallised</option>
+                </select>
+            </div>
+            <div>
+                <select class="js-transfer" onchange="syncTableToSummary()">
+                    <option value="" selected>Transfer Type</option>
+                    <option value="Full">Full</option>
+                    <option value="Partial">Partial</option>
+                </select>
+            </div>
+            <div>
+                <select class="js-contrib" onchange="syncTableToSummary()">
+                    <option value="" selected>Contributing</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="full-width"><input type="text" placeholder="Notes..." class="js-notes" oninput="syncTableToSummary()"></div>
+        </div>`;
+    container.appendChild(card);
+
+    // FIX: Look inside the 'card' specifically, and use the '.' for the class
+    const valueInput = card.querySelector(".js-value");
+    
+    if (valueInput) {
+        CurrencyFormatter.attach(valueInput);
+    }
+}
+
+function syncTableToSummary() {
+    const cards = document.querySelectorAll('.pension-card');
+    let summaryLines = [];
+    
+    cards.forEach((card) => {
+        const provider = card.querySelector('.js-provider')?.value.trim() || "";
+        const pType = card.querySelector('.js-pension-type')?.value || "";
+        const rawValue = card.querySelector('.js-value')?.value.trim() || "";
+        const status = card.querySelector('.js-status')?.value || "";
+        const transfer = card.querySelector('.js-transfer')?.value || "";
+        const contrib = card.querySelector('.js-contrib')?.value || "";
+        const notes = card.querySelector('.js-notes')?.value.trim() || "";
+        
+        // 1. Use your utility to get a clean number (handles £ and commas automatically)
+        const numericValue = CurrencyFormatter.parse(rawValue);
+
+        if (provider || pType || numericValue > 0 || status || transfer || contrib || notes) {
+            let parts = [];
+
+            if (provider) parts.push(provider);
+            if (pType) parts.push(pType);
+            
+            // 2. Use your utility's gbp object to format the summary line
+            if (numericValue > 0) {
+                parts.push(CurrencyFormatter.gbp.format(numericValue));
+            }
+            
+            if (status) parts.push(status);
+            if (transfer) parts.push(`${transfer} Transfer`);
+
+            // Updated Contribution Logic
+            if (contrib === "Yes") {
+                parts.push("Still contributing");
+            } else if (contrib === "No") {
+                parts.push("No longer contributing");
+            }
+
+            if (notes) parts.push(notes);
+
+            summaryLines.push(`• ${parts.join(' - ')}`);
+        }
+    });
+
+    let fullText = "";
+    if (summaryLines.length > 0) {
+        fullText = summaryLines.join('\n');
+    }
+
+    updateSummary('fta-btn', fullText, 'pension-list');
+}
+
+// <!-- ================= MODAL 5 LTA LOGIC ================= -->
+// 1. Setup existing cards on page load
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.annuity-card').forEach(card => {
+        setupAnnuityLogic(card);
+    });
+});
+
+// 2. Function to add NEW cards
+function addAnnuityCard() {
+    const container = document.getElementById('lta-container');
+    const card = document.createElement('div');
+    card.className = 'pension-card annuity-card';
+    
+    // Using the same innerHTML as the starter card
+    card.innerHTML = `
+        <button class="btn-del-card" onclick="this.closest('.pension-card').remove();">×</button>
+        <div class="form-grid">
+            <select class="js-calc-type" style="grid-column: 1 / -1; text-align:center;"><option value="rate" selected>Annuity Rate</option><option value="income">Annuity Income</option><option value="purchase">Purchase Price</option></select>
+            <label>Purchase Price:</label><input type="text" class="js-purchase" placeholder="£0.00">
+            <label>Annual Income:</label>
+            <div style="display:flex; flex-direction:column; gap:4px;"><input type="text" class="js-income" placeholder="£0.00"><select class="js-freq"><option value="12">Monthly</option><option value="4">Quarterly</option><option value="2">6 Monthly</option></select><span class="js-payment-label" style="font-weight:bold; font-size:13px; text-align:center;">Monthly payment: £0.00</span></div>
+            <label>Annuity Rate (%):</label><input type="number" class="js-rate" step="0.0001" disabled>
+            <div class="formula js-formula-display" style="grid-column: 1 / -1; text-align:center; font-style:italic;">Rate = (Income ÷ Purchase Price) × 100</div>
+            <textarea placeholder="Notes..." style="grid-column: 1 / -1; width:100%; field-sizing: content; box-sizing: border-box; resize:none"></textarea>
+        </div>`;
+
+    container.appendChild(card);
+    setupAnnuityLogic(card); // Activate logic for the new card
+}
+
+// 3. The Core Logic (Reusable for any card)
+function setupAnnuityLogic(card) {
+    const calc = card.querySelector(".js-calc-type");
+    const purchase = card.querySelector(".js-purchase");
+    const income = card.querySelector(".js-income");
+    const rate = card.querySelector(".js-rate");
+    const freq = card.querySelector(".js-freq");
+    const label = card.querySelector(".js-payment-label");
+    const formula = card.querySelector(".js-formula-display");
+
+    const gbp = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+    const parse = (v) => parseFloat(v.replace(/[^0-9.-]+/g, "")) || 0;
+
+    function calculate() {
+        const P = parse(purchase.value);
+        const I = parse(income.value);
+        const R = parseFloat(rate.value) || 0;
+
+        if (calc.value === "rate") {
+            if (P && I) rate.value = ((I / P) * 100).toFixed(4);
+        } else if (calc.value === "income") {
+            if (P && R) income.value = gbp.format(P * (R / 100));
+        } else if (calc.value === "purchase") {
+            if (I && R) purchase.value = gbp.format(I / (R / 100));
+        }
+
+        const annualAmt = (calc.value === "income" && P && R) ? (P * (R / 100)) : (calc.value === "rate" ? I : parse(income.value));
+        const intervalPayment = annualAmt / parseFloat(freq.value);
+        label.textContent = `${freq.options[freq.selectedIndex].text} payment: ${gbp.format(intervalPayment)}`;
+    }
+
+    calc.addEventListener("change", () => {
+        purchase.disabled = (calc.value === "purchase");
+        income.disabled = (calc.value === "income");
+        rate.disabled = (calc.value === "rate");
+        
+        const formulas = {
+            rate: "Rate = (Income ÷ Purchase Price) × 100",
+            income: "Income = Purchase Price × (Rate ÷ 100)",
+            purchase: "Purchase Price = Income ÷ (Rate ÷ 100)"
+        };
+        formula.textContent = formulas[calc.value];
+        calculate();
+    });
+
+    [purchase, income, rate, freq].forEach(el => el.addEventListener("input", calculate));
+    
+    // Formatting currency on blur
+    [purchase, income].forEach(el => CurrencyFormatter.attach(el));
+}
+
+// <!-- ================= MODAL 5 FTA LOGIC ================= -->
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.fixed-term-card').forEach(card => {
+        setupFixedTermLogic(card);
+    });
+});
+
+function addFixedTermCard() {
+    const container = document.getElementById('fta-container');
+    const card = document.createElement('div');
+    card.className = 'pension-card fixed-term-card';
+    
+    card.innerHTML = `
+        <button class="btn-del-card" onclick="this.closest('.pension-card').remove();">×</button>
+        <div class="form-grid">
+            <textarea placeholder="Notes..." style="grid-column: 1 / -1; width:100%; field-sizing: content; box-sizing: border-box; resize:none"></textarea>
+            <label>Purchase Price:</label>
+            <input type="text" class="js-purchase" placeholder="£0.00">
+
+            <label>Annual Income:</label>
+            <input type="text" class="js-income" placeholder="£0.00">
+
+            <label>Term:</label>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                <select class="js-term">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5" selected>5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                </select>
+                <select class="js-escalation">
+                    <option value="0">Level</option>
+                    <option value="0.03">3%</option>
+                    <option value="0.05">5%</option>
+                </select>
+                <span class="js-cumulative-label" style="font-weight:bold; font-size:13px; text-align:center;">
+                    Cumulative Income: £0.00
+                </span>
+            </div>
+
+            <label>GMA:</label>
+            <input type="text" class="js-gma" placeholder="£0.00">
+
+            <textarea class="js-growth" style="grid-column: 1 / -1; width:100%; field-sizing: content; box-sizing: border-box; resize:none; background-color: #f8f9fa; border: 1px solid #ccc; padding: 10px; font-family: monospace;" disabled></textarea>
+        </div>`;
+
+    container.appendChild(card);
+    setupFixedTermLogic(card);
+}
+
+function setupFixedTermLogic(card) {
+    const purchase = card.querySelector(".js-purchase");
+    const income = card.querySelector(".js-income");
+    const term = card.querySelector(".js-term");
+    const escalation = card.querySelector(".js-escalation");
+    const gma = card.querySelector(".js-gma");
+    const growthDisplay = card.querySelector(".js-growth");
+    const cumulativeLabel = card.querySelector(".js-cumulative-label");
+
+    const gbp = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+    const parse = (v) => parseFloat(v.replace(/[^0-9.-]+/g, "")) || 0;
+
+    function calculate() {
+        const P = parse(purchase.value);
+        const I = parse(income.value);
+        const T = parseInt(term.value);
+        const E = parseFloat(escalation.value);
+        const G = parse(gma.value);
+
+        // 1. Calculate Cumulative Income
+        let totalIncome = 0;
+        let yearlyAmt = I;
+        for (let i = 0; i < T; i++) {
+            totalIncome += yearlyAmt;
+            yearlyAmt *= (1 + E);
+        }
+
+        cumulativeLabel.textContent = `Cumulative Income: ${gbp.format(totalIncome)}`;
+
+        // 2. Build the detailed Growth formula string
+        if (P > 0 || totalIncome > 0 || G > 0) {
+            const X = totalIncome + G;
+            const Y = X - P;
+
+            const line1 = `${gbp.format(totalIncome)} + ${gbp.format(G)}`;
+            const line2 = `= ${gbp.format(X)} Total Annuity`;
+            const line3 = `${gbp.format(X)} - ${gbp.format(P)}`;
+            const line4 = `= ${gbp.format(Y)} Growth`;
+            
+            growthDisplay.value = `${line1}\n${line2}\n---------------------\n${line3}\n${line4}`;
+        } else {
+            growthDisplay.value = "";
+        }
+    }
+
+    // Event listeners
+    [purchase, income, term, escalation, gma].forEach(el => {
+        el.addEventListener("input", calculate);
+    });
+
+    [purchase, income, gma].forEach(el => CurrencyFormatter.attach(el));
+}
+
+// <!-- ================= MODAL 6 AGE LOGIC ================= -->
+function calculateAge() {
+  const dobInput = document.getElementById("dob");
+  const ageValue = document.getElementById("ageValue");
+
+  if (dobInput.value) {
+    const dobDate = new Date(dobInput.value);
+    const today = new Date();
+
+    let years = today.getFullYear() - dobDate.getFullYear();
+    let months = today.getMonth() - dobDate.getMonth();
+    let days = today.getDate() - dobDate.getDate();
+
+    if (days < 0) {
+      const tempDate = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += tempDate.getDate();
+      months--;
+    }
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    ageValue.textContent = `${years} years, ${months} months, ${days} days`;
+  } else {
+    ageValue.textContent = ""; // Clear if DOB is empty
+  }
+}
+
+// Update age whenever the DOB changes
+document.getElementById("dob").addEventListener("change", calculateAge);
+
+// <!-- ================= MODAL 6 TABLE LOGIC ================= -->
+const inputs = ['initialEscalating', 'escalation', 'levelIncome', 'durationSlider'];
+const elements = {};
+inputs.forEach(id => elements[id] = document.getElementById(id));
+
+const durationValue = document.getElementById('durationValue');
+const tableWrapper = document.getElementById('tableWrapper');
+const incomeBody = document.getElementById('incomeBody');
+const annualCrossoverYearDisplay = document.getElementById('annualCrossoverYear');
+const cumulativeCrossoverYearDisplay = document.getElementById('cumulativeCrossoverYear');
+
+function updateTable() {
+    // 1. Use the parse utility instead of parseFloat for currency fields
+    const startInc = CurrencyFormatter.parse(elements.initialEscalating.value);
+    const levelInc = CurrencyFormatter.parse(elements.levelIncome.value);
+    
+    // Rate and Years are still standard numbers (no £ sign), so parseFloat/parseInt are fine
+    const rateInput = parseFloat(elements.escalation.value);
+    const rateValueProvided = !isNaN(rateInput) && rateInput > 0;
+    const rate = isNaN(rateInput) ? 0 : rateInput / 100;
+    const years = parseInt(elements.durationSlider.value) || 1;
+
+    durationValue.textContent = years;
+
+    // Reset Legend Displays
+    annualCrossoverYearDisplay.textContent = '-';
+    cumulativeCrossoverYearDisplay.textContent = '-';
+
+    // 2. Updated Data Checks: 
+    // Since parse returns 0 if empty, check if values are > 0
+    const hasLevelData = levelInc > 0;
+    const hasEscData = startInc > 0 && rateValueProvided;
+
+    if (!hasLevelData && !hasEscData) {
+        tableWrapper.style.display = 'none';
+        return;
+    }
+
+    tableWrapper.style.display = 'block';
+    incomeBody.innerHTML = '';
+
+    let currentEscIncome = startInc;
+    let totalEsc = 0;
+    let totalLevel = 0;
+
+    let annualCrossoverFound = false;
+    let cumulativeCrossoverFound = false;
+
+    for (let i = 1; i <= years; i++) {
+        totalEsc += currentEscIncome;
+        totalLevel += levelInc;
+        
+        const previousYearIncome = i === 1 ? currentEscIncome : currentEscIncome / (1 + rate);
+        const increaseAmount = i === 1 ? 0 : (currentEscIncome - previousYearIncome);
+
+        const row = document.createElement('tr');
+        
+        let isAnnualCross = false;
+        let isCumulCross = false;
+
+        // 3. Logic check using the cleaned numbers
+        if (levelInc > 0 && startInc > 0 && rateValueProvided) {
+            if (currentEscIncome > levelInc && !annualCrossoverFound) {
+                isAnnualCross = true;
+                annualCrossoverFound = true;
+                annualCrossoverYearDisplay.textContent = "Year " + i;
+            }
+
+            if (totalEsc > totalLevel && !cumulativeCrossoverFound) {
+                isCumulCross = true;
+                cumulativeCrossoverFound = true;
+                cumulativeCrossoverYearDisplay.textContent = "Year " + i;
+            }
+        }
+
+        if (isAnnualCross && isCumulCross) row.className = 'both-crossover';
+        else if (isAnnualCross) row.className = 'crossover-annual';
+        else if (isCumulCross) row.className = 'crossover-cumulative';
+
+        // 4. Using your gbp formatter for the table cells (optional but looks better)
+        row.innerHTML = `
+            <td>${i}</td>
+            <td>${hasEscData ? CurrencyFormatter.gbp.format(currentEscIncome) : '-'}</td>
+            <td>${hasEscData ? CurrencyFormatter.gbp.format(increaseAmount) : '-'}</td>
+            <td>${hasEscData ? CurrencyFormatter.gbp.format(totalEsc) : '-'}</td>
+            <td>${hasLevelData ? CurrencyFormatter.gbp.format(totalLevel) : '-'}</td>
+        `;
+
+        incomeBody.appendChild(row);
+        currentEscIncome *= (1 + rate);
+    }
+}
+
+// Add listeners to all inputs
+inputs.forEach(id => {
+    elements[id].addEventListener('input', updateTable);
+});
+
+// <!-- ================= GLOBAL CURRENCY FORMATTING ================= -->
+const CurrencyFormatter = {
+    gbp: new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }),
+    
+    parse: (v) => parseFloat(String(v).replace(/[^0-9.-]+/g, "")) || 0,
+
+    // The logic you want to reuse
+    attach: function(inputElement) {
+        inputElement.addEventListener("blur", () => {
+            const value = this.parse(inputElement.value);
+            if (value) inputElement.value = this.gbp.format(value);
+        });
+
+        inputElement.addEventListener("focus", () => {
+            inputElement.value = inputElement.value.replace(/[^0-9.-]+/g, "");
+        });
+    }
+};
+
 </script>
+
+<script src="scripts-data.js"></script>
 
 </body>
 </html>
-
 
 
 
