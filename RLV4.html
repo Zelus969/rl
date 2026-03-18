@@ -866,6 +866,8 @@ function switchTab(num) {
         if (pane) pane.style.display = (i === num) ? 'block' : 'none';
     }
     updateTabUI();
+
+    document.getElementById('content').scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function updateTabUI() {
@@ -1149,7 +1151,23 @@ function syncTableToSummary() {
         fullText = summaryLines.join('\n');
     }
 
+    updateRunningTotal();
     updateSummary('fta-btn', fullText, 'pension-list');
+}
+
+function updateRunningTotal() {
+    let total = 0;
+    // Select all input fields with the js-value class
+    const valueInputs = document.querySelectorAll('.js-value');
+
+    valueInputs.forEach(input => {
+        // Use your existing parse logic to get a clean number
+        total += CurrencyFormatter.parse(input.value);
+    });
+
+    // Use your existing gbp formatter to update the UI
+    const display = document.getElementById('total-pension-display');
+    display.innerText = CurrencyFormatter.gbp.format(total);
 }
 
 // <!-- ================= MODAL 5 LTA LOGIC ================= -->

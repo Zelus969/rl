@@ -390,31 +390,31 @@ const blocks = {
           <tr>
               <td class="label-cell">1) Lifetime Annuity</td>
               <td>
-                  ■ A guaranteed income for the rest of your life, taking into account your health & lifestyle, dependent upon what the annuity provider will pay you
+                  ∎ A guaranteed income for the rest of your life, taking into account your health & lifestyle, dependent upon what the annuity provider will pay you
               </td>
           </tr>
           <tr>
               <td class="label-cell">2) Fixed Term Annuity</td>
               <td>
-                  ■ A fixed income of your choice or just your TFC for a temporary period, for example 5 years, then reconsider your options in the future
+                  ∎ A fixed income of your choice or just your TFC for a temporary period, for example 5 years, then reconsider your options in the future
               </td>
           </tr>
           <tr>
               <td class="label-cell">3) Drawdown</td>
               <td>
-                  ■ A flexible income of your choice or just your TFC, where your future income is generally dependent on how well your investments perform
+                  ∎ A flexible income of your choice or just your TFC, where your future income is generally dependent on how well your investments perform
               </td>
           </tr>
           <tr>
               <td class="label-cell">4) Cash</td>
               <td>
-                  ■ Enabling you to take the whole fund in cash as a lump sum or several ad hoc payments. Each withdrawal being 25% tax-free, 75% taxed
+                  ∎ Enabling you to take the whole fund in cash as a lump sum or several ad hoc payments. Each withdrawal being 25% tax-free, 75% taxed
               </td>
           </tr>
           <tr>
               <td class="label-cell">Alternatively...</td>
               <td>
-                  ■ You may be able to use a combination of these options
+                  ∎ You may be able to use a combination of these options
               </td>
           </tr>
       </tbody>
@@ -434,9 +434,9 @@ const blocks = {
       </tr>
       <tr style="background-color: #fbe4d5;">
           <td>
-              <p><mark>■ We have only been appointed by Wesleyan to provide lifetime annuity quotes, therefore before I can provide fixed term quotes you will need to speak to your Wesleyan Financial adviser first.</mark></p>
-              <p><mark>■ However it is not uncommon for a lifetime annuity to pay more income than a fixed term if you qualify for an enhanced rate due to your health or lifestyle. This only applies to Lifetime annuities and not fixed term annuities and I can provide you with a lifetime quote today.</mark></p>
-              ■ I hope you don't mind, can I just ask how would you describe your health currently?
+              <p><mark>∎ We have only been appointed by Wesleyan to provide lifetime annuity quotes, therefore before I can provide fixed term quotes you will need to speak to your Wesleyan Financial adviser first.</mark></p>
+              <p><mark>∎ However it is not uncommon for a lifetime annuity to pay more income than a fixed term if you qualify for an enhanced rate due to your health or lifestyle. This only applies to Lifetime annuities and not fixed term annuities and I can provide you with a lifetime quote today.</mark></p>
+              ∎ I hope you don't mind, can I just ask how would you describe your health currently?
           </td>
       </tr>
     </table>
@@ -456,9 +456,9 @@ const blocks = {
         <tbody>
             <tr>
                 <td>
-                    <p>■ We have found the best way to do this is to ask you a few questions about your health and lifestyle to see if you qualify for an enhanced annuity which could significantly boost your income.</p>
-                    <p>■ This information will then be sent to the annuity providers on our panel who will provide their highest terms.</p>
-                    <p>■ Do you consent for us to collect and share this data?</p>
+                    <p>∎ We have found the best way to do this is to ask you a few questions about your health and lifestyle to see if you qualify for an enhanced annuity which could significantly boost your income.</p>
+                    <p>∎ This information will then be sent to the annuity providers on our panel who will provide their highest terms.</p>
+                    <p>∎ Do you consent for us to collect and share this data?</p>
 
                     <table>
                       <tr style="background-color: #fbe4d5;">
@@ -466,18 +466,18 @@ const blocks = {
                       </tr>
                       <tr style="background-color: #fbe4d5;">
                           <td>
-                              ■ Just to confirm that providing this information could be very much in your best interests since the possible uplift in income could be as high as 75% or even more for people with very serious issues.
+                              ∎ Just to confirm that providing this information could be very much in your best interests since the possible uplift in income could be as high as 75% or even more for people with very serious issues.
                           </td>
                       </tr>
                     </table>
                 </td>
 
                 <td>
-                    <p>■ We usually find the best way to do this is to ask you a few questions about your health and lifestyle to see if you qualify for an enhanced annuity which could significantly boost your income.</p>
-                    <p>■ This information will then be sent to the annuity providers on our panel who will provide their highest terms.</p>
-                    <p>■ However, as you’re only interested in fixed term annuities there is no requirement to take any health or lifestyle information.</p>
-                    <p>■ Would you say you’re in good health, as you may qualify for an enhanced annuity?</p>
-                    <p>■ Are you happy to proceed with FTAs?</p>
+                    <p>∎ We usually find the best way to do this is to ask you a few questions about your health and lifestyle to see if you qualify for an enhanced annuity which could significantly boost your income.</p>
+                    <p>∎ This information will then be sent to the annuity providers on our panel who will provide their highest terms.</p>
+                    <p>∎ However, as you’re only interested in fixed term annuities there is no requirement to take any health or lifestyle information.</p>
+                    <p>∎ Would you say you’re in good health, as you may qualify for an enhanced annuity?</p>
+                    <p>∎ Are you happy to proceed with FTAs?</p>
                 </td>
             </tr>
         </tbody>
@@ -538,6 +538,10 @@ const blocks = {
         </div>
     </div>
     
+    <div class="total-pension-summary" style="font-family: monospace; font-size: 12px;">
+        Total: <span id="total-pension-display">£0.00</span>
+    </div>
+
     <div class="button-group">
       <button onclick="addPensionCard()">+ Add Pension</button>
     </div>
@@ -552,7 +556,7 @@ const blocks = {
         <tbody>
             <tr>
                 <td>
-                    <p>■ Did you start this pension prior to July of 1988?</p>
+                    <p>∎ Did you start this pension prior to July of 1988?</p>
 
                     <table>
                       <tr style="background-color: #fbe4d5;">
@@ -560,14 +564,14 @@ const blocks = {
                       </tr>
                       <tr style="background-color: #fbe4d5;">
                           <td>
-                              ■ Your pension could have safeguarded benefits, such as Guaranteed Annuity Rates, in which case advice may be needed. There is also the possibility of penalties being incurred on transfer.
+                              ∎ Your pension could have safeguarded benefits, such as Guaranteed Annuity Rates, in which case advice may be needed. There is also the possibility of penalties being incurred on transfer.
                           </td>
                       </tr>
                     </table>
                 </td>
 
                 <td>
-                    ■ We only deal with Money Purchase, or Defined Contribution pensions; we don’t deal with Final Salary or Defined Benefit schemes. If your scheme contracted out of the second state pension you will have built up some safeguarded benefits, which may mean that you would need to take advice before transferring.
+                    ∎ We only deal with Money Purchase, or Defined Contribution pensions; we don’t deal with Final Salary or Defined Benefit schemes. If your scheme contracted out of the second state pension you will have built up some safeguarded benefits, which may mean that you would need to take advice before transferring.
                 </td>
             </tr>
         </tbody>
@@ -592,7 +596,7 @@ const blocks = {
         <tbody>
             <tr>
                 <td>
-                    <p>■ Are you looking to take up to 25% of your pension fund in tax free cash?</p>
+                    <p>∎ Are you looking to take up to 25% of your pension fund in tax free cash?</p>
 
                     <table>
                       <tr style="background-color: #fbe4d5;">
@@ -600,7 +604,7 @@ const blocks = {
                       </tr>
                       <tr style="background-color: #fbe4d5;">
                           <td>
-                              ■  Please note, if you do not take all your tax-free cash (including Scheme Specific Tax Free Cash) at the outset the opportunity will be lost and it will be treated as taxable income when you take it as an annuity.
+                              ∎  Please note, if you do not take all your tax-free cash (including Scheme Specific Tax Free Cash) at the outset the opportunity will be lost and it will be treated as taxable income when you take it as an annuity.
                           </td>
                       </tr>
                     </table>
@@ -618,7 +622,7 @@ const blocks = {
         <tbody>
             <tr>
                 <td>
-                    <p>■ Do you want to take an additional taxable lump sum, before purchasing your income - if so, how much?</p>
+                    <p>∎ Do you want to take an additional taxable lump sum, before purchasing your income - if so, how much?</p>
 
                     <table>
                       <tr style="background-color: #fbe4d5;">
@@ -626,7 +630,7 @@ const blocks = {
                       </tr>
                       <tr style="background-color: #fbe4d5;">
                           <td>
-                              ■ There are two companies on our panel that allow you to take more than 25%, albeit subject to tax at your marginal rate, which, when added to your earned income, could potentially be at 40 or 45%.
+                              ∎ There are two companies on our panel that allow you to take more than 25%, albeit subject to tax at your marginal rate, which, when added to your earned income, could potentially be at 40 or 45%.
                           </td>
                       </tr>
                     </table>
@@ -671,7 +675,7 @@ const blocks = {
       </tr>
       <tr style="background-color: #fbe4d5;">
           <td>
-              ■ Do you have a partner or financial dependant?
+              ∎ Do you have a partner or financial dependant?
           </td>
       </tr>
     </table>
@@ -792,7 +796,7 @@ const blocks = {
       </tr>
       <tr style="background-color: #fbe4d5;">
           <td>
-              <p>■ If you choose to receive income in arrears and die prior to the next payment, your beneficiaries will not receive this payment unless you elect to include 'With proportion'.</p> 
+              <p>∎ If you choose to receive income in arrears and die prior to the next payment, your beneficiaries will not receive this payment unless you elect to include 'With proportion'.</p> 
               ∎ This means that a proportional payment will be calculated up until your date of death. There is a cost for including this benefit which would result in a slightly lower income.
           </td>
       </tr>
@@ -806,7 +810,7 @@ const blocks = {
           <th style="text-align: center;" colspan="2"><strong><u>IF JOINT LIFE</u></strong></th>
       </tr>
       <tr style="background-color: #fbe4d5;">
-          <td colspan="2">■ As you are selecting joint life quotations, I will require consent from your spouse/ partner for their health/ lifestyle information to be sent to the annuity providers on our panel. Is your spouse/ partner/ dependant available?</td>
+          <td colspan="2">∎ As you are selecting joint life quotations, I will require consent from your spouse/ partner for their health/ lifestyle information to be sent to the annuity providers on our panel. Is your spouse/ partner/ dependant available?</td>
       </tr>
       <tr style="background-color: #fbe4d5;">
           <tr style="background-color: #f0f0f0;">
@@ -822,7 +826,7 @@ const blocks = {
 
           </td>
           <td>
-              <p>■ Not a problem for today's call as we can rely on assumed consent to produce your quotations. However, if you were to proceed with an annuity purchase your spouse/ partner/ dependent would need to review and sign the medical declaration and the application form to provide consent and declare the information is correct.</p> 
+              <p>∎ Not a problem for today's call as we can rely on assumed consent to produce your quotations. However, if you were to proceed with an annuity purchase your spouse/ partner/ dependent would need to review and sign the medical declaration and the application form to provide consent and declare the information is correct.</p> 
           </td>
       </tr>
     </table>
@@ -893,7 +897,7 @@ const blocks = {
       </tr>
       <tr style="background-color: #fbe4d5;">
           <td>
-              ■ Do you have a partner or financial dependant?
+              ∎ Do you have a partner or financial dependant?
           </td>
       </tr>
     </table>
@@ -944,7 +948,7 @@ const blocks = {
         <tbody>
             <tr>
                 <td>
-                    <p>■ They give you the flexibility of choosing another retirement income product or to take a taxable lump sum from your pension fund when the plan ends.</p>
+                    <p>∎ They give you the flexibility of choosing another retirement income product or to take a taxable lump sum from your pension fund when the plan ends.</p>
                     <p>∎ FTA’s are not without risks. The main risk is that the maturity amount you receive at the end of the fixed period will not provide you with an adequate amount of future retirement income.</p>
                     ∎ Please note, FTA’s do not take into account lifestyle or medical conditions.
                 </td>
@@ -1054,10 +1058,10 @@ const blocks = {
       </tr>
       <tr style="background-color: #fbe4d5;">
           <td colspan="2">
-            ■ You confirmed earlier that you had not taken any recent guidance from <a href="https://www.moneyhelper.org.uk/en/pensions-and-retirement/pension-wise/book-a-free-pension-wise-appointment/book-a-phone-appointment" target="_blank" rel="noopener noreferrer">PensionWise</a>.
-            <br>■ PW is a government service that offers free, impartial guidance with an independent pension specialist, to help you make an informed decision.
-            <br>■ It aims to help you understand your overall financial situation when you retire and the different options that you need to consider.
-            <br>■ Under new rules, before your pension savings can be transferred, you either need to attend an appointment with PW or you have to opt out of an appointment. What would be your preference? To have an appointment or to opt out?
+            ∎ You confirmed earlier that you had not taken any recent guidance from <a href="https://www.moneyhelper.org.uk/en/pensions-and-retirement/pension-wise/book-a-free-pension-wise-appointment/book-a-phone-appointment" target="_blank" rel="noopener noreferrer">PensionWise</a>.
+            <br>∎ PW is a government service that offers free, impartial guidance with an independent pension specialist, to help you make an informed decision.
+            <br>∎ It aims to help you understand your overall financial situation when you retire and the different options that you need to consider.
+            <br>∎ Under new rules, before your pension savings can be transferred, you either need to attend an appointment with PW or you have to opt out of an appointment. What would be your preference? To have an appointment or to opt out?
           </td>
       </tr>
       <tr style="background-color: #fbe4d5;">
