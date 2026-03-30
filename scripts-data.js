@@ -1047,10 +1047,27 @@ const blocks = {
     <p style="text-align:center;font-weight:bold;text-decoration:underline;">Annuity Payments</p>
 
     <p>∎ What period are you interested in? Did you wish to deplete your pot over the period (with nothing left at the end) or receive a set amount with a guaranteed amount at the end?</p>
+
+    <div class="checkbox-group">
+        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', 'FTA: ' + this.value, 'fta-obj-note')">
+    </div>
+
     <p>∎ Do you want a level annuity or are you interested in an escalating annuity to help overcome the effects of inflation?</p>
+
+    <div class="checkbox-group" id="esc-group">
+        <label><input type="checkbox" value="Level" onchange="handleEscalation(this)"> Level</label>
+        <label><input type="checkbox" value="3%" onchange="handleEscalation(this)"> 3%</label>
+        <label><input type="checkbox" value="5%" onchange="handleEscalation(this)"> 5%</label>
+        <label><input type="checkbox" value="RPI" onchange="handleEscalation(this)"> RPI</label>
+        <input type="text" class="custom-esc" placeholder="Other..." oninput="handleEscalation(this)">
+    </div>
+
     <p>∎ You can have your payments paid to you monthly, quarterly, six monthly or annually, either in arrears or in advance. If you take them in arrears, then you get a slightly higher payment.</p>
     <p>∎ What frequency would you like?</p>
 
+    <div class="checkbox-group">
+        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', 'Freq: ' + this.value, 'freq-note')">
+    </div>
 
 
 
