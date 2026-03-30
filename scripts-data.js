@@ -602,7 +602,7 @@ const blocks = {
                         <button onclick="updateSummary('fta-btn', 'TFC: 25%', 'tfc', this)">25%</button>
                         <button onclick="updateSummary('fta-btn', 'TFC: Doesnt want TFC', 'tfc', this)">No TFC</button>
                     </div>
-                    <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'tfc-note')">
+                    <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', 'TFC: ' + this.value, 'tfc-note')">
 
                     
                     <p>
@@ -760,7 +760,7 @@ const blocks = {
                     <p>
 
                     <div class="checkbox-group">
-                        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'sl-gp-note')">
+                        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', 'SL: ' + this.value, 'sl-gp-note')">
                     </div>
 
                 </td>
@@ -783,7 +783,7 @@ const blocks = {
                     <p>
 
                     <div class="checkbox-group">
-                        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'jl-gp-note')">
+                        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', 'JL: ' + this.value, 'jl-gp-note')">
                     </div>
 
                 </td>
@@ -835,7 +835,7 @@ const blocks = {
     <p>∎ What frequency would you want to receive your income payments?</p>
 
     <div class="checkbox-group">
-        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'freq-note')">
+        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', 'Freq: ' + this.value, 'freq-note')">
     </div>
 
 

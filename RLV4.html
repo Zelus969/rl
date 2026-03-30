@@ -956,12 +956,15 @@ function updateSummary(buttonId, text, rowId = null, btnElement = null) {
     }
   }
 
+  // ✅ NEW: strip prefix like "ESC: ", "MED: ", etc.
+  const cleanedText = text.replace(/^[^:]+:\s*/, '').trim();
+
   // 2. Update existing Row if it exists
   if (rowId) {
     let existingRow = targetBtn.querySelector('#summary-' + rowId);
     
-    // If text is empty, remove the row
-    if (!text || text.trim() === "") {
+    // If text is empty (after removing prefix), remove the row
+    if (!cleanedText) {
       if (existingRow) existingRow.remove();
       checkVisibility(targetBtn);
       return;
@@ -969,19 +972,19 @@ function updateSummary(buttonId, text, rowId = null, btnElement = null) {
     
     // If row exists, just change the text
     if (existingRow) {
-      existingRow.textContent = text;
+      existingRow.textContent = text.trim();
       checkVisibility(targetBtn);
       return;
     }
   }
 
   // 3. Add New Row if it doesn't exist
-  if (text && text.trim() !== "") {
+  if (cleanedText) {
     const newLine = document.createElement('div');
     if (rowId) newLine.id = 'summary-' + rowId;
     newLine.style.width = "100%";
-    newLine.style.whiteSpace = "pre-wrap"; // Ensures text wraps correctly
-    newLine.textContent = text;
+    newLine.style.whiteSpace = "pre-wrap";
+    newLine.textContent = text.trim();
     targetBtn.appendChild(newLine);
   }
 
