@@ -598,6 +598,26 @@ const blocks = {
                 <td>
                     <p>∎ Are you looking to take up to 25% of your pension fund in tax free cash?</p>
 
+                    <div class="button-group">
+                        <button onclick="updateSummary('fta-btn', 'TFC: 25%', 'tfc', this)">25%</button>
+                        <button onclick="updateSummary('fta-btn', 'TFC: Doesnt want TFC', 'tfc', this)">No TFC</button>
+                    </div>
+                    <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'tfc-note')">
+
+                    
+                    <p>
+
+
+
+
+
+
+
+
+
+
+
+                    
                     <table>
                       <tr style="background-color: #fbe4d5;">
                           <th style="text-align: center;"><strong><u>IF NO</u></strong></th>
@@ -737,6 +757,12 @@ const blocks = {
                       </tr>
                     </table>
 
+                    <p>
+
+                    <div class="checkbox-group">
+                        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'sl-gp-note')">
+                    </div>
+
                 </td>
 
                 <td>
@@ -753,6 +779,13 @@ const blocks = {
                           </td>
                       </tr>
                     </table>
+                    
+                    <p>
+
+                    <div class="checkbox-group">
+                        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'jl-gp-note')">
+                    </div>
+
                 </td>
             </tr>
         </tbody>
@@ -761,7 +794,10 @@ const blocks = {
     <p><strong><u>2) Value Protection</u></strong></p>
     <p>∎ This provides a death benefit equal to the annuity purchase price less all the income paid to you prior to your death. This is paid to your nominated beneficiary tax free if you die before age 75. If you die from 75 onwards the income will be taxed at the recipients marginal rate.</p>
 
-    
+    <div class="checkbox-group">
+        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'vp-note')">
+    </div>
+
     <table>
       <tr style="background-color: #fbe4d5;">
           <th style="text-align: center;"><strong><u>IF DEATH BENEFIT INCLUDED</u></strong></th>
@@ -776,6 +812,14 @@ const blocks = {
     <p style="text-align:center;font-weight:bold;text-decoration:underline;">Annuity Payments</p>
     <p>∎ Do you want a level annuity or are you interested in an escalating annuity to help overcome the effects of inflation?</p>
 
+    <div class="checkbox-group" id="esc-group">
+        <label><input type="checkbox" value="Level" onchange="handleEscalation(this)"> Level</label>
+        <label><input type="checkbox" value="3%" onchange="handleEscalation(this)"> 3%</label>
+        <label><input type="checkbox" value="5%" onchange="handleEscalation(this)"> 5%</label>
+        <label><input type="checkbox" value="RPI" onchange="handleEscalation(this)"> RPI</label>
+        <input type="text" class="custom-esc" placeholder="Other..." oninput="handleEscalation(this)">
+    </div>
+
     <table>
       <tr style="background-color: #fbe4d5;">
           <th style="text-align: center;"><strong><u>IF ESCALATION CONSIDERED</u></strong></th>
@@ -789,6 +833,87 @@ const blocks = {
 
     <p>∎ You can have your payments paid to you monthly, quarterly, six monthly or annually, either in arrears or in advance. If you take them in arrears, then you get a slightly higher payment.</p>
     <p>∎ What frequency would you want to receive your income payments?</p>
+
+    <div class="checkbox-group">
+        <input type="text" placeholder="Notes..." style="width:100%; box-sizing: border-box;  margin-top:5px;" oninput="updateSummary('fta-btn', this.value, 'freq-note')">
+    </div>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    
 
     <table>
       <tr style="background-color: #fbe4d5;">
@@ -1263,15 +1388,59 @@ const blocks = {
 
   wps_main: `<div class="script-block">
     <p style="text-align:center;font-weight:bold;text-decoration:underline;">Our Objective</p>
-    <p>∎ The application procedure is really very simple, (name). All we need to do is go through some final questions for the application form, which will just take a few more minutes.</p>
+    <p>∎ As annuity specialists our objective is to find you the highest annuity income and help you to decide which type of annuity is most suited to your needs and circumstances.</p>
+    <p>∎ We have found the best way to do this is to ask you a few questions about your health and lifestyle to see if you qualify for an enhanced annuity which could significantly boost your income.</p>
+    <p>∎ This information will then be sent to the annuity providers on our panel who will provide their highest terms.</p>
+    <p>∎ Do you consent for us to collect and share this data?</p>
+
+    <table>
+      <tr style="background-color: #fbe4d5;">
+          <th style="text-align: center;" colspan="2"><strong><u>IF JOINT LIFE</u></strong></th>
+      </tr>
+      <tr style="background-color: #fbe4d5;">
+          <td colspan="2">∎ As you are selecting joint life quotations, I will require consent from your spouse/ partner for their health/ lifestyle information to be sent to the annuity providers on our panel. Is your spouse/ partner/ dependant available?</td>
+      </tr>
+      <tr style="background-color: #fbe4d5;">
+          <tr style="background-color: #f0f0f0;">
+                    <th style="text-align: center;"><strong><u>YES</u></strong></th>
+                    <th style="text-align: center;"><strong><u>NO</u></strong></th>
+          </tr>
+      </tr>
+      <tr style="background-color: #fbe4d5;">
+          <td style="vertical-align: middle; text-align: center;">
+              
+              <button class="copy-btn" style="text-align: center; margin-top: 5px; margin-bottom: 5px; padding: 10px;" onclick="openModal('modal-1')">Open Dialogue</button>
 
 
-    <hr>
+          </td>
+          <td>
+              <p>∎ Not a problem for today's call as we can rely on assumed consent to produce your quotations. However, if you were to proceed with an annuity purchase your spouse/ partner/ dependent would need to review and sign the medical declaration and the application form to provide consent and declare the information is correct.</p> 
+          </td>
+      </tr>
+    </table>
 
-    <p>∎ It’s been very enjoyable speaking with you today <mark><span class="client-name">(name)</span></mark> and I really appreciate you placing your business with us.</p>
-    <p>∎ I will call you at (time) on (date) to make sure you have received the application pack and to answer any queries you may have.</p>
-    <p>∎ I am here to assist you in any way at all and if you need to discuss anything in the meantime, please call me on my direct telephone number which is 01733 902043.</p>
-    <p>∎ Do you have any questions before I go?</p>
+    <p style="text-align:center;font-weight:bold;text-decoration:underline;">Annuity Information Prompt</p>
+    <p>∎ We are confident that our lifetime annuity income quote will provide the highest annuity income for you but just to confirm this, should you proceed through ourselves, you have the option to allow your chosen annuity provider to check their quotation against the rest of the annuity market. This is further confirmation that our quote offers you the highest available income.</p>
+    <p>∎ Do you give consent for your chosen annuity provider to share your personal data for a market leading comparison quote?</p>
+
+    <div class="button-group">
+      <button onclick="updateSummary('fta-btn', 'Market Leading Comparison: Yes', 'comparison_quote', this)">Yes</button>
+      <button onclick="updateSummary('fta-btn', 'Market Leading Comparison: No', 'comparison_quote', this)">No</button>
+    </div>
+
+    <table border="1" style="width:100%;">
+        <tbody>
+            <tr style="background-color: #f0f0f0;">
+                <td style="text-align: center; white-space: normal;">
+                    COMPLETE MEDICAL DETAILS
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>∎ Thank you for your time today and for your close attention throughout the process.</p>
+    <p>∎ As mentioned earlier, we will generate your annuity quotations and send them through to <mark><span class="ifa-name">(IFA name)</span></mark>, who will be back in touch with you to discuss the details.</p>
+    <p>∎ I look forward to hopefully speaking with you again in the future if you decide to proceed with an annuity purchase.</p>
 
   </div>`,
 
