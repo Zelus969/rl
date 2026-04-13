@@ -482,12 +482,14 @@
           <button onclick="updateSummary('lsa-btn', '• Is the maximum tax-free cash required? - Yes', 'lsa1', this)">Yes</button>
           <button onclick="updateSummary('lsa-btn', '• Is the maximum tax-free cash required? - No', 'lsa1', this)">No</button>
         </div>
-        ∎ If no, what percentage or value £ is to be taken:
-        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• If no, what percentage or value £ is to be taken - ' + this.value, 'lsa2')">
+        <ol>
+            <li>If no, what percentage or value £ is to be taken::</li>
+            <li><input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• If no, what percentage or value £ is to be taken - ' + this.value, 'lsa2')"></li>
+        </ol>
         ∎ Amount of Lump Sum Allowance used up for any tax-free cash taken in relation to this annuity %:
-        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Amount of Lump Sum Allowance used up for any tax-free cash taken in relation to this annuity % -' + this.value, 'lsa3')">
+        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Amount of Lump Sum Allowance used up for any tax-free cash taken in relation to this annuity % - ' + this.value, 'lsa3')">
         ∎ Amount of Lump Sum & Death Benefit Allowance used up for any tax-free cash taken in relation to this annuity %:
-        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Amount of Lump Sum & Death Benefit Allowance used up for any tax-free cash taken in relation to this annuity % -' + this.value, 'lsa4')">
+        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Amount of Lump Sum & Death Benefit Allowance used up for any tax-free cash taken in relation to this annuity % - ' + this.value, 'lsa4')">
         ∎ Will the TFC indicated take you over the current standard LSA of £268,275?
         <div class="button-group">
           <button onclick="updateSummary('lsa-btn', '• Will the TFC indicated take you over the current standard LSA of £268,275? - Yes', 'lsa5', this)">Yes</button>
@@ -511,23 +513,25 @@
           <button onclick="updateSummary('lsa-btn', '• Does the ceding schemes include Safeguarded Benefits? - Yes', 'lsa8', this)">Yes</button>
           <button onclick="updateSummary('lsa-btn', '• Does the ceding schemes include Safeguarded Benefits? - No', 'lsa8', this)">No</button>
         </div>
-        ∎ If YES, was advice required under Section 48 of the Pension Schemes Act 2015?
-        <div class="button-group">
-          <button onclick="updateSummary('lsa-btn', '• Was advice required under Section 48 of the Pension Schemes Act 2015? - Yes', 'lsa9', this)">Yes</button>
-          <button onclick="updateSummary('lsa-btn', '• Was advice required under Section 48 of the Pension Schemes Act 2015? - No', 'lsa9', this)">No</button>
-        </div>
-        ∎ If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members?
-        <div class="button-group">
-          <button onclick="updateSummary('lsa-btn', '• If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members? - Yes', 'lsa10', this)">Yes</button>
-          <button onclick="updateSummary('lsa-btn', '• If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members? - No', 'lsa10', this)">No</button>
-        </div>
+        <ol>
+            <li>If YES, was advice required under Section 48 of the Pension Schemes Act 2015?</li>
+            <li><div class="button-group">
+              <button onclick="updateSummary('lsa-btn', '• Was advice required under Section 48 of the Pension Schemes Act 2015? - Yes', 'lsa9', this)">Yes</button>
+              <button onclick="updateSummary('lsa-btn', '• Was advice required under Section 48 of the Pension Schemes Act 2015? - No', 'lsa9', this)">No</button>
+            </div></li>
+            <li>If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members?</li>
+            <li><div class="button-group">
+              <button onclick="updateSummary('lsa-btn', '• If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members? - Yes', 'lsa10', this)">Yes</button>
+              <button onclick="updateSummary('lsa-btn', '• If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members? - No', 'lsa10', this)">No</button>
+            </div></li>
+        </ol>
 
         <hr>
 
-        ∎ Q1. Have you previously taken any pension benefits fromany other pension plan?
+        ∎ Q1. Have you previously taken any pension benefits from any other pension plan?
         <div class="button-group">
-          <button onclick="updateSummary('lsa-btn', 'Q1. Have you previously taken any pension benefits fromany other pension plan? - Yes', 'lsa11', this)">Yes</button>
-          <button onclick="updateSummary('lsa-btn', 'Q1. Have you previously taken any pension benefits fromany other pension plan? - No', 'lsa11', this)">No</button>
+          <button onclick="updateSummary('lsa-btn', 'Q1. Have you previously taken any pension benefits from any other pension plan? - Yes', 'lsa11', this)">Yes</button>
+          <button onclick="updateSummary('lsa-btn', 'Q1. Have you previously taken any pension benefits from any other pension plan? - No', 'lsa11', this)">No</button>
         </div>
         ∎ Q2. Have you applied for any HMRC protections? (provide details if 'yes'. If 'no', go to Q3.)
         <div class="button-group">
@@ -607,12 +611,14 @@
           <button onclick="updateSummary('lsa-btn', '• Is the maximum tax-free cash required? - Yes', 'lsa1', this)">Yes</button>
           <button onclick="updateSummary('lsa-btn', '• Is the maximum tax-free cash required? - No', 'lsa1', this)">No</button>
         </div>
-        ∎ If no, what percentage or value £ is to be taken:
-        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• If no, what percentage or value £ is to be taken - ' + this.value, 'lsa2')">
+        <ol>
+            <li>If no, what percentage or value £ is to be taken::</li>
+            <li><input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• If no, what percentage or value £ is to be taken - ' + this.value, 'lsa2')"></li>
+        </ol>
         ∎ Amount of Lump Sum Allowance used up for any tax-free cash taken in relation to this annuity %:
-        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Amount of Lump Sum Allowance used up for any tax-free cash taken in relation to this annuity % -' + this.value, 'lsa3')">
+        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Amount of Lump Sum Allowance used up for any tax-free cash taken in relation to this annuity % - ' + this.value, 'lsa3')">
         ∎ Amount of Lump Sum & Death Benefit Allowance used up for any tax-free cash taken in relation to this annuity %:
-        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Amount of Lump Sum & Death Benefit Allowance used up for any tax-free cash taken in relation to this annuity % -' + this.value, 'lsa4')">
+        <input type="text" style="width:100%; box-sizing: border-box;" oninput="updateSummary('lsa-btn', '• Amount of Lump Sum & Death Benefit Allowance used up for any tax-free cash taken in relation to this annuity % - ' + this.value, 'lsa4')">
         ∎ Will the TFC indicated take you over the current standard LSA of £268,275?
         <div class="button-group">
           <button onclick="updateSummary('lsa-btn', '• Will the TFC indicated take you over the current standard LSA of £268,275? - Yes', 'lsa5', this)">Yes</button>
@@ -636,16 +642,18 @@
           <button onclick="updateSummary('lsa-btn', '• Does the ceding schemes include Safeguarded Benefits? - Yes', 'lsa8', this)">Yes</button>
           <button onclick="updateSummary('lsa-btn', '• Does the ceding schemes include Safeguarded Benefits? - No', 'lsa8', this)">No</button>
         </div>
-        ∎ If YES, was advice required under Section 48 of the Pension Schemes Act 2015?
-        <div class="button-group">
-          <button onclick="updateSummary('lsa-btn', '• Was advice required under Section 48 of the Pension Schemes Act 2015? - Yes', 'lsa9', this)">Yes</button>
-          <button onclick="updateSummary('lsa-btn', '• Was advice required under Section 48 of the Pension Schemes Act 2015? - No', 'lsa9', this)">No</button>
-        </div>
-        ∎ If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members?
-        <div class="button-group">
-          <button onclick="updateSummary('lsa-btn', '• If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members? - Yes', 'lsa10', this)">Yes</button>
-          <button onclick="updateSummary('lsa-btn', '• If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members? - No', 'lsa10', this)">No</button>
-        </div>
+        <ol>
+            <li>If YES, was advice required under Section 48 of the Pension Schemes Act 2015?</li>
+            <li><div class="button-group">
+              <button onclick="updateSummary('lsa-btn', '• Was advice required under Section 48 of the Pension Schemes Act 2015? - Yes', 'lsa9', this)">Yes</button>
+              <button onclick="updateSummary('lsa-btn', '• Was advice required under Section 48 of the Pension Schemes Act 2015? - No', 'lsa9', this)">No</button>
+            </div></li>
+            <li>If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members?</li>
+            <li><div class="button-group">
+              <button onclick="updateSummary('lsa-btn', '• If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members? - Yes', 'lsa10', this)">Yes</button>
+              <button onclick="updateSummary('lsa-btn', '• If benefits include GMP, have GMP benefits accrued since 17th May 1990 been equalised for male and female members? - No', 'lsa10', this)">No</button>
+            </div></li>
+        </ol>
     </div>
 
 
